@@ -4,6 +4,6 @@ stages:
 
 test:
   stage: test
-  image: homeassistant/amd64-hassio-supervisor
+  image: homeassistant/intel-nuc-homeassistant:0.117.1
   script:
     - hass --script check_config -c .
