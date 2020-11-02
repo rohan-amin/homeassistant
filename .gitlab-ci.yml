@@ -1,0 +1,9 @@
+stages:
+  - test
+  - deploy
+
+test:
+  stage: test
+  image: homeassistant/amd64-hassio-supervisor
+  script:
+    - hass --script check_config -c .
