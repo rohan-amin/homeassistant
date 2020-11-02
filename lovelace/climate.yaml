@@ -1,0 +1,47 @@
+title: Climate
+icon: mdi:temperature-fahrenheit
+path: climate
+panel: true
+cards:
+
+  # A container layout card for all of the cards on this page
+  - type: custom:layout-card
+    layout: auto
+    justify_content: left #left align the entire column
+    cards:
+
+      # Family Room Thermostat
+      - type: custom:simple-thermostat
+        entity: climate.family_room_thermostat
+        step_layout: row
+        step_size: 1
+        #icon: false
+        control: false
+        style: "ha-card {\n  --st-font-size-xl: 30px;\n}\n"
+
+      # Master Bedroom Thermostat
+      - type: custom:simple-thermostat
+        entity: climate.master_bedroom_thermostat
+        step_layout: row
+        step_size: 1
+        #icon: false
+        control: false
+        style: "ha-card {\n  --st-font-size-xl: 30px;\n}\n"
+
+      # Kids Bedroom Thermostat
+      - type: custom:simple-thermostat
+        entity: climate.kids_room_thermostat
+        step_layout: row
+        step_size: 1
+        #icon: false
+        control: false
+        style: "ha-card {\n  --st-font-size-xl: 30px;\n}\n"
+
+      # Basement Thermostat
+      - type: custom:simple-thermostat
+        entity: climate.basement_thermostat
+        step_layout: row
+        step_size: 1
+        #icon: false
+        control: false
+        style: "ha-card {\n  --st-font-size-xl: 30px;\n}\n"

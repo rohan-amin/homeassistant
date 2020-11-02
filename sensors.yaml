@@ -1,0 +1,6 @@
+# SENSORS                                       
+- platform: template                          
+    sensors:                                    
+      master_bedroom_sonos_volume:              
+        value_template: "{{ state_attr('media_player.master_bedroom', 'volume_level') | float(0.0) }}" 
+                                            

@@ -1,0 +1,282 @@
+# Home Assisstant Configuration
+# 1 Castle Walk - Rohan Amin
+
+#uncomment for a page title
+#title: Castle Walk
+
+#loading external library files
+resources:
+  #Mini Media Player Bundle
+  - url: /local/mini-media-player-bundle.js?v=1.9.1
+    type: module
+  #Button Card
+  - url: /local/button-card.js?v=3.3.6
+    type: module
+  #Custom Header
+#  - url: /local/custom-header.js?v=1.7.3
+#    type: module
+  #Slider Entity Row
+  - url: /local/slider-entity-row.js?v=1
+    type: module
+  #Stack in Card
+  - url: /local/stack-in-card.js?v=1
+    type: module
+  #Layout Card
+  - url: /local/layout-card.js?v=16
+    type: module
+  #Card Mod
+  - url: /local/card-mod.js?v=2.0
+    type: module
+  #Decluttering Card
+  - url: /local/decluttering-card.js?v=0.6.3
+    type: module
+  #Fold Entity Row
+  - url: /local/fold-entity-row.js?v=19
+    type: module
+  #Simple Thermostate
+  - url: /local/simple-thermostat.js?v=0.36
+    type: module
+
+
+#Custom Header
+#This removes the large header at the top of the lovelace ui
+#custom_header:
+#  compact_mode: true
+#  options_hide: true
+#  button_text:
+#    options: '{{ hours12 }}:{{ minutesLZ }}'
+
+#Theme
+#theme: midnight
+#action:
+#  - service: frontend.set_theme
+#    data:
+#      name: 'midnight'
+
+# Predefined Button Card Templates
+button_card_templates:
+
+  # REMOTE CONTROL TEMPLATES
+  # Blank Remote Control Buttons
+  rc_blank_template: 
+    color_type: blank-card
+    styles:
+      card:
+        - height: 70px
+        - width: 110px
+        - padding: 0px 0px
+  # Media Player Simple Services Buttons and Base Button Template
+  rc_media_player_template: 
+    variables:
+      icon_id: mdi:cloud-question
+      svc_id: media_player.toggle
+      ent_id: media_player.master_bedroom_tv
+    color_type: icon
+    show_name: true
+    size: 60% #size of the icon
+    styles:
+      card:
+        - height: 70px
+        - width: 110px
+        - padding: 0px 0px
+        - --mdc-ripple-color: green
+        - --mdc-ripple-press-opacity: 0.5
+    icon: '[[[ return variables.icon_id ]]]'
+    tap_action:
+      action: call-service
+      service: '[[[ return variables.svc_id ]]]'
+      service_data:
+        entity_id: '[[[ return variables.ent_id ]]]'
+
+  # Media Player Volume Buttons which need a repeat action
+  rc_media_player_volume_template:
+    template: rc_media_player_template
+    hold_action:
+      action: call-service
+      repeat: 500
+      service: '[[[ return variables.svc_id ]]]'
+      service_data:
+        entity_id: '[[[ return variables.ent_id ]]]'
+
+  # Buttons with Command ID Services (e.g. braviatv_psk,apple tv services)
+  rc_command_id_template:
+    template: rc_media_player_template
+    variables:
+      svc_id: braviatv_psk.bravia_command
+      cmd_id: Num1
+    tap_action:
+      action: call-service
+      # Change the service based on media_player type
+      service: >
+        [[[
+          switch(variables.ent_id){
+            case "media_player.home_theater_ump":
+              return "remote.send_command";
+              break;
+            default:
+              return "braviatv_psk.bravia_command";
+          }
+        ]]]
+      #service: '[[[ return variables.svc_id ]]]'
+      service_data:
+        entity_id: >
+          [[[
+            // need to template the entity_id to switch
+            // to the underlying device since the Universal Media Player
+            // doesn't support other services separate from media_player.
+            // this is necessary to use the braviatv_psk & apple tv services
+            switch(variables.ent_id){
+              case "media_player.master_bedroom_ump":
+                return "media_player.master_bedroom_tv";
+                break;
+              case "media_player.family_room_ump":
+                return "media_player.family_room_tv";
+                break;
+              case "media_player.home_theater_ump":
+                return "remote.apple_tv";
+                break;
+              default:
+                return "ERRORIDCOMMANDID";
+            }
+          ]]]
+        command: '[[[ return variables.cmd_id ]]]'
+
+  # Buttons to Open Apps on TV (uses braviatv_psk services) 
+  rc_openapp_template:
+    template: rc_media_player_template
+    variables:
+      svc_id: braviatv_psk.bravia_open_app
+      app_uri: 'com.sony.dtv.com.netflix.ninja.com.netflix.ninja.MainActivity'
+    tap_action:
+      action: call-service
+      service: '[[[ return variables.svc_id ]]]'
+      service_data:
+        entity_id: >
+          [[[
+            // need to template the entity_id to switch
+            // to the underlying device since the Universal Media Player
+            // doesn't support other services separate from media_player.
+            // this is necessary to use the braviatv_psk services
+            switch(variables.ent_id){
+              case "media_player.master_bedroom_ump":
+                return "media_player.master_bedroom_tv";
+                break;
+              case "media_player.family_room_ump":
+                return "media_player.family_room_tv";
+                break;
+              default: 
+                return "ERRORIDOPENAPP";
+            }
+          ]]]
+        uri: '[[[ return variables.app_uri ]]]'
+
+  # FAN BUTTON TEMPLATES
+
+  # This template applies to all buttons (specifically off button)
+  fan_off_template:
+    # default variables
+    variables:
+      name_id: "off"
+      svc_id: fan.turn_off
+    color_type: card
+    show_icon: false
+    size: 75%
+    spin: false
+    show_state: false
+    show_name: true
+    layout: vertical
+    name: '[[[ return variables.name_id ]]]'
+    triggers_update:
+      - fan.family_room_fan
+      - fan.master_bedroom_fan
+    styles:
+      card:
+        - height: 40px
+        - width: 60px
+        - padding: 0px 0px
+        - background-color: gray
+        - color: black
+        - filter: opacity(30%)
+    state:
+      # if the fan is off and drawing the 'off' button, make the button light green
+      - value: >
+          [[[
+            return ((entity.state == 'off') && (variables.name_id == 'off'));
+          ]]]
+        operator: template
+        styles:
+          card:
+            - background-color: 'rgb(64,191,128)'
+            - color: black
+            - filter: opacity(100%)
+    tap_action:
+      action: call-service
+      service: '[[[ return variables.svc_id ]]]'
+      service_data:
+        entity_id: entity
+
+  # This template inherits 'off' button and adjusts for speed buttons
+  fan_speed_template:
+    template: fan_off_template
+    variables:
+      svc_id: fan.set_speed
+      speed_id: low
+    show_icon: true
+    layout: icon_name
+    state:
+      # if fan is on and the current speed matches the button being draw
+      - value: >
+          [[[
+            return ((entity.state == 'on') && (entity.attributes.speed == variables.speed_id));
+          ]]]
+        operator: template
+        spin: true
+        styles:
+          card:
+            # if button/speed is active, make the button light green and text black
+            - background-color: 'rgb(64,191,128)'
+            - color: black
+            - filter: opacity(100%)
+    tap_action:
+      service_data:
+        speed: '[[[ return variables.speed_id ]]]'
+
+
+  # Movie Theater Buttons
+  movie_theater_button:
+    color_type: card
+    styles:
+      card:
+        - height: 70px
+        - width: 110px
+        - font-size: 12pt
+        - padding: 0px 0px
+        - background-color: rgb(59,102,76)
+        - color: white
+    state:
+      # If the button is on, make it light green
+      - value: 'on'
+        styles:
+          card:
+            - background-color: 'rgb(64,191,128)'
+            - color: black
+            - filter: opacity(100%)
+
+
+views:
+#  - badges: []
+#      - entity: binary_sensor.updater
+#      - entity: person.rohan_amin
+#      - entity: sun.sun
+
+  - !include /config/lovelace/home.yaml
+  - !include /config/lovelace/climate.yaml
+  - !include /config/lovelace/main_level.yaml
+  - !include /config/lovelace/upstairs.yaml
+  - !include /config/lovelace/master_bedroom.yaml
+  - !include /config/lovelace/basement.yaml
+  - !include /config/lovelace/theater.yaml
+  - !include /config/lovelace/remote_control.yaml
+  - !include /config/lovelace/music.yaml
+  - !include /config/lovelace/test.yaml
+

@@ -1,0 +1,496 @@
+
+# Configure a default setup of Home Assistant (frontend, api, etc)
+default_config:
+
+homeassistant:
+  # Name of where Home Assistant is running
+  name: !secret ha_name 
+  # Temperature C for Celcius, F for Farenheit
+  temperature_unit: F
+  # Time Zone - pick from: http://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+  time_zone: America/New_York
+  unit_system: imperial
+
+  # Location information
+  latitude: !secret latitude_home
+  longitude: !secret longitude_home
+  elevation: !secret elevation_home
+
+  # URL information
+  internal_url: !secret internal_url
+
+# LOGGING LEVEL
+logger:
+  default: info
+
+# Text to speech
+tts:
+  - platform: google_translate
+
+# Lovelace UI should be in YAML/manual mode
+lovelace:
+  mode: yaml
+
+# Frontend and Themes
+frontend:
+  #javascript_version: latest
+  themes: !include_dir_merge_named themes/
+
+# Enable Browser Mod
+browser_mod:
+
+# Enable ffmpeg and streams for video streams
+ffmpeg:
+
+stream:
+
+################
+## INPUT SELECT
+################
+input_select:
+  which_tv: #drop down select list for choosing which TV to control with the remote
+    name: Which TV
+    options:
+      - "media_player.family_room_ump"
+      - "media_player.master_bedroom_ump"
+      - "media_player.game_room_tv"
+      - "media_player.home_theater_ump"
+    initial: "media_player.family_room_ump"
+    icon: mdi:television
+
+################
+## INPUT BOOLEAN
+################
+#input_boolean:
+#  home_theater_av_status:
+#    name: Status of Home Theater AV
+#    initial: false
+
+##########
+## PERSON 
+##########
+
+person:
+  - name: Rohan
+    id: ra
+    device_trackers:
+      - device_tracker.rma_unifi
+  
+
+
+#####################
+## INTEGRATIONS BELOW
+#####################
+
+# Lutron
+lutron:
+  host: !secret lutron_host
+  username: !secret lutron_username
+  password: !secret lutron_password
+
+# Sonos Speakers            
+sonos:                      
+  media_player:             
+    hosts:
+      - !secret sonos_hub                #Hub - media_player.sonos_family_room
+      - !secret sonos_portable           #Portable - media_player.sonos_portable
+      - !secret sonos_game_room          #Game Room Playbar - media_player.sonos_game_room
+      - !secret sonos_master_bedroom     #Master Bedroom Playbar - media_player.sonos_master_bedroo
+               
+# Bond
+bond:
+  host: !secret bond_host
+  token: !secret bond_token
+
+# Nest
+badnest:
+  user_id: !secret nest_user_id
+  access_token: !secret nest_access_token 
+  region: us
+
+climate:
+  - platform: badnest
+    scan_interval: 10
+
+
+#OpenWeatherMap configured via UI
+#weather:
+#  - platform: openweathermap
+#    name: Weather
+#    api_key: !secret openweathermap_api_key
+
+#Garage Door Opener
+cover:
+  - platform: myq
+    username: !secret myq_username
+    password: !secret myq_password
+
+#Tesla
+tesla:
+  username: !secret tesla_username
+  password: !secret tesla_password
+  scan_interval: 3600
+
+#Emulated Roku
+emulated_roku:
+  servers:
+    - name: HA ROKU
+      listen_port: 8060
+      
+
+# Denon Receivers
+# Configured via UI
+
+# Monoprice Multizone Amplifier
+# Configured via the UI
+
+# Apple TV
+# Home Theater Apple TV installed via UI using a custom component due to pin codes required
+# renamed to media_player.apple_tv with remote.apple_tv manually
+
+# RING
+# ring integration must be done in the UI since YAML doesn't support 2-factor authentication
+
+# Google Cast
+# Add Chromecast media_players via the Discovery UI integration
+# media_player.family_room_tv_cast
+# media_player.master_bedroom_tv_cast
+# media_player.game_room_tv_cast
+cast:
+  media_player:
+    - host: !secret sony_family_room_tv_host
+ 
+
+# Zoneminder
+zoneminder:
+  - host: !secret zm_host
+    path: !secret zm_path
+    path_zms: !secret zm_path_zms
+    ssl: true
+    verify_ssl: false
+    username: !secret zm_username
+    password: !secret zm_password
+
+camera:
+  - platform: zoneminder
+
+# Cameras
+#camera:
+#  - platform: generic
+#    stream_source: !secret camera_1_rtsp
+#    still_image_url: !secret camera_1_still
+#    name: !secret camera_1_name
+#    username: !secret camera_username
+#    password: !secret camera_password
+#    verify_ssl: false
+
+###########
+## SWITCHES
+###########
+switch:
+  # Sony Projector in Home Theater
+  - platform: sony_projector
+    host: !secret sony_projector_host
+    name: "Sony Projector"
+  # Denon Receiver in Home Theater
+  - platform: telnet
+    switches:
+      denon_x8500h_receiver:
+        resource: !secret denon_x8500h_host
+        port: 23
+        command_on: "ZMON"
+        command_off: "ZMOFF"
+        command_state: "ZM?"
+        value_template: '{{ value == "ZMON" }}'
+        timeout: 0.9
+  # Denon Receiver in Family Room
+  - platform: telnet
+    switches:
+      denon_s750h_receiver:
+        resource: !secret denon_s750h_host
+        port: 23
+        command_on: "ZMON"
+        command_off: "ZMOFF"
+        command_state: "ZM?"
+        value_template: '{{ value == "ZMON" }}'
+        timeout: 0.9
+  # Kitchen Monoprice TV Audio On and Off
+  - platform: template
+    switches:
+      kitchen_tv_audio:
+        value_template: "{{ is_state('media_player.monoprice_kitchen','on') }}"
+        turn_on:
+          service: scene.turn_on
+          data:
+            entity_id: scene.kitchen_tv_audio_on
+        turn_off:
+          service: scene.turn_on
+          data:
+            entity_id: scene.kitchen_tv_audio_off
+  # Kitchen Monoprice TV Audio Mute and Unmute
+  - platform: template
+    switches:
+      kitchen_tv_audio_mute:
+        value_template: "{{ is_state_attr('media_player.monoprice_kitchen','is_volume_muted',true) }}"
+        turn_on:
+          service: scene.turn_on
+          data:
+            entity_id: scene.kitchen_tv_audio_mute
+        turn_off:
+          service: scene.turn_on
+          data:
+            entity_id: scene.kitchen_tv_audio_unmute
+  # Family Room and Kitchen All Audio Mute Switch
+  - platform: template
+    switches:
+      family_room_kitchen_audio_mute:
+        value_template: "{{ (is_state_attr('media_player.denon_avr_s750h','is_volume_muted',true) and is_state_attr('media_player.monoprice_kitchen','is_volume_muted',true)) }}"
+        turn_on:
+          service: scene.turn_on
+          data:
+            entity_id: scene.family_room_kitchen_audio_mute
+        turn_off:
+          service: scene.turn_on
+          data:
+            entity_id: >
+              # Unmute differently if kitchen speakers are off
+              {% if is_state('media_player.monoprice_kitchen','on') %}
+                scene.family_room_kitchen_audio_unmute
+              {% else %}
+                scene.family_room_audio_unmute
+              {% endif %}
+
+
+##########
+## SENSORS
+##########
+sensor:
+  # Badnest for NEST Thermostat Integration
+  - platform: badnest
+  # Flume Water Sensor
+  - platform: flume
+    username: !secret flume_username 
+    password: !secret flume_password
+    client_id: !secret flume_client_id
+    client_secret: !secret flume_client_secret
+  # Date/Time
+  - platform: time_date
+    display_options:
+      - 'date'
+      - 'time'
+      - 'date_time'
+      - 'time_date'
+      - 'date_time_iso'
+  - platform: template
+    sensors:
+      simple_date:
+        friendly_name: "Simple Date"
+        value_template: "{{ as_timestamp(now()) | timestamp_custom('%A %b%e') }}"
+  - platform: template
+    sensors:
+      simple_time:
+        friendly_name: "Simple Time"
+        value_template: "{{ as_timestamp(now()) | timestamp_custom('%I:%M %p') }}"
+
+
+#################
+## MEDIA PLAYERS
+#################
+
+media_player:
+  # Master Bedroom TV
+  - platform: braviatv_psk
+    host: !secret sony_master_bedroom_tv_host
+    psk: !secret sony_master_bedroom_tv_psk
+    mac: !secret sony_master_bedroom_tv_mac
+    amp: True
+    android: True
+    time_format: 12H
+    user_labels: True
+    name: Master Bedroom TV
+
+  # Family Room TV
+  - platform: braviatv_psk
+    host: !secret sony_family_room_tv_host
+    psk: !secret sony_family_room_tv_psk
+    mac: !secret sony_family_room_tv_mac
+    amp: True
+    android: True
+    time_format: 12H
+    user_labels: True
+    name: Family Room TV
+
+  # MASTER BEDROOM Universal Media Player
+  - platform: universal
+    name: Master Bedroom UMP
+    children:
+      # sony tv (first child's state is used)
+      - media_player.master_bedroom_tv
+      # sonos
+      - media_player.sonos_master_bedroom
+    commands:
+      turn_on:
+        service: media_player.turn_on
+        data:
+          entity_id: media_player.master_bedroom_tv
+      turn_off:
+        service: media_player.turn_off
+        data:
+          entity_id: media_player.master_bedroom_tv
+      volume_up:
+        service: media_player.volume_up
+        data:
+          entity_id: media_player.sonos_master_bedroom
+      volume_down:
+        service: media_player.volume_down
+        data:
+          entity_id: media_player.sonos_master_bedroom
+      volume_mute:
+        service: media_player.volume_mute
+        data_template:
+          entity_id: media_player.sonos_master_bedroom
+          is_volume_muted: '{{ is_volume_muted }}'
+      volume_set:
+        service: media_player.volume_set
+        data_template:
+          entity_id: media_player.sonos_master_bedroom
+          volume_level: '{{ volume_level }}'
+      select_source:
+        service: media_player.select_source
+        data_template:
+          entity_id: media_player.master_bedroom_tv
+          source: '{{ source }}'
+  
+    attributes:
+      state: media_player.master_bedroom_tv
+      is_volume_muted: media_player.sonos_master_bedroom|is_volume_muted
+      volume_level: media_player.sonos_master_bedroom|volume_level
+      source: media_player.master_bedroom_tv|source
+      source_list: media_player.master_bedroom_tv|source_list
+
+  # FAMILY ROOM Universal Media Player
+  - platform: universal
+    name: Family Room UMP
+    children:
+      # sony tv (first child's state is used)
+      - media_player.family_room_tv
+      - media_player.denon_avr_s750h
+    # Report the state of the UMP based on a template
+    state_template: >
+      {% if is_state('media_player.family_room_tv','on') and is_state('media_player.denon_avr_s750h','on') %}
+      on
+      {% else %}
+      off
+      {% endif %}
+    commands:
+      turn_on:
+        service: scene.turn_on
+        data:
+          entity_id: scene.family_room_audio_video_on
+      turn_off:
+        service: scene.turn_on
+        data:
+          entity_id: scene.family_room_kitchen_audio_video_off
+      volume_up:
+        service: media_player.volume_up
+        data:
+          entity_id: media_player.denon_avr_s750h
+      volume_down:
+        service: media_player.volume_down
+        data:
+          entity_id: media_player.denon_avr_s750h
+      volume_mute:
+        service: switch.toggle
+        data_template:
+          entity_id: switch.family_room_kitchen_audio_mute
+          #is_volume_muted: '{{ is_volume_muted }}'
+      volume_set:
+        service: media_player.volume_set
+        data_template:
+          entity_id: media_player.denon_avr_s750h
+          volume_level: '{{ volume_level }}'
+      select_source:
+        service: media_player.select_source
+        data_template:
+          entity_id: media_player.denon_avr_s750h
+          source: '{{ source }}'
+  
+    attributes:
+      state: media_player.family_room_tv
+      is_volume_muted: media_player.denon_avr_s750h|is_volume_muted
+      volume_level: media_player.denon_avr_s750h|volume_level
+      source: media_player.denon_avr_s750h|source
+      source_list: media_player.denon_avr_s750h|source_list
+  
+  # HOME THEATER Universal Media Player
+  - platform: universal
+    name: Home Theater UMP
+    children:
+      # Denon Home Theater Receiver 
+      - media_player.denon_avr_x8500h
+    # Report the state of the UMP based on a template
+    state_template: >
+      {% if is_state('media_player.denon_avr_x8500h','playing') and is_state('switch.sony_projector','on') %}
+      on
+      {% else %}
+      off
+      {% endif %}
+    commands:
+      turn_on:
+        service: scene.turn_on
+        data:
+          entity_id: scene.theater_audio_video_on
+      turn_off:
+        service: scene.turn_on
+        data:
+          entity_id: scene.theater_audio_video_off
+      volume_up:
+        service: media_player.volume_up
+        data:
+          entity_id: media_player.denon_avr_x8500h
+      volume_down:
+        service: media_player.volume_down
+        data:
+          entity_id: media_player.denon_avr_x8500h
+      volume_mute:
+        service: media_player.volume_mute
+        data_template:
+          entity_id: media_player.denon_avr_x8500h
+          is_volume_muted: '{{ is_volume_muted }}'
+      volume_set:
+        service: media_player.volume_set
+        data_template:
+          entity_id: media_player.denon_avr_x8500h
+          volume_level: '{{ volume_level }}'
+      select_source:
+        service: media_player.select_source
+        data_template:
+          entity_id: media_player.denon_avr_x8500h
+          source: '{{ source }}'
+
+    attributes:
+      is_volume_muted: media_player.denon_avr_x8500h|is_volume_muted
+      volume_level: media_player.denon_avr_x8500h|volume_level
+      source: media_player.denon_avr_x8500h|source
+      source_list: media_player.denon_avr_x8500h|source_list
+
+#################
+## CLOUD
+#################
+cloud:
+  alexa:
+    filter:
+      include_entities:
+        - media_player.family_room_ump
+    entity_config:
+      media_player.family_room_ump:
+        name: Family Room TV
+        description: Family Room TV and Sound
+          
+
+#group: !include groups.yaml
+automation: !include automations.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml
+#shell_command: !include shell_commands.yaml
+#sensor: !include sensors.yaml

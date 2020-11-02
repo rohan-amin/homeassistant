@@ -1,0 +1,69 @@
+title: Basement
+icon: mdi:alpha-b-box-outline
+path: basement
+panel: true
+cards:
+
+  # A container layout card for all of the cards on this page
+  - type: custom:layout-card
+    layout: auto
+    #column_num: 1 # the whole remote is one card
+    #column_width: 350px # width of the whole remote/column
+    justify_content: left #left align the entire column
+    #flex_grow: 1
+    cards:
+
+      # LIGHTS
+      - type: entities
+        title: Basement Lights
+        state_color: true
+        style: |
+          .card-header {
+            font-size: 16px;
+            padding: 10px 0px 0px 10px;
+          }
+        entities:
+          # Stairs
+          - entity: light.basement_main_stairs
+            name: Stairs
+          # Game Room
+          - type: custom:fold-entity-row
+            head:
+              type: custom:slider-entity-row
+              entity: light.basement_main_game_room
+              name: Game Room
+            entities:
+              - entity: light.basement_main_hallway
+                name: Hallway
+              - entity: switch.basement_main_av_rack_main_av_rack
+                name: AV Rack
+              - entity: light.basement_main_gym_outside
+                name: Outside Gym
+              - entity: light.basement_main_wet_bar
+                name: Wetbar
+          # Bedroom
+          - type: custom:fold-entity-row
+            head:
+              type: custom:slider-entity-row
+              entity: light.basement_bedroom_recessed
+              name: Bedroom
+            entities:
+              - entity: switch.basement_bedroom_window_left
+                name: Left Window
+              - entity: switch.basement_bedroom_window_right
+                name: Right Window
+              - entity: switch.basement_bedroom_closet
+                name: Closet
+          # Bathroom
+          - type: custom:fold-entity-row
+            head:
+              type: custom:slider-entity-row
+              entity: light.basement_bathroom_recessed
+              name: Bathroom
+            entities:
+              - entity: switch.basement_bathroom_wall_sconces
+                name: Wall Sconces
+              - entity: light.basement_bathroom_single
+                name: Spot
+
+

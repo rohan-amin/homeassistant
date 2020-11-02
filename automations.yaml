@@ -1,0 +1,58 @@
+# Process Emulated ROKU from Harmony Remote
+# UP = Toggle Kitchen Speakers
+- id: monoprice_kitchen_toggle
+  alias: Toggle Kitchen Speakers
+  trigger:
+  - platform: event
+    event_type: roku_command
+    event_data:
+      source_name: "HA ROKU"
+      type: keypress
+      key: Up
+  action:
+  - service: switch.toggle
+    entity_id: switch.kitchen_tv_audio
+
+# DOWN = Toggle Kitchen Speakers Mute
+- id: monoprice_kitchen_mute_toggle
+  alias: Toggle Mute on Kitchen Speakers
+  trigger:
+  - platform: event
+    event_type: roku_command
+    event_data:
+      source_name: "HA ROKU"
+      type: keypress
+      key: Down
+  action:
+  - service: switch.toggle
+    entity_id: switch.kitchen_tv_audio_mute
+
+# LEFT = Kitchen Speakers Volume Up
+- id: monoprice_kitchen_volume_up
+  alias: Kitchen Speakers Volume Up
+  trigger:
+  - platform: event
+    event_type: roku_command
+    event_data:
+      source_name: "HA ROKU"
+      type: keypress
+      key: Left
+  action:
+  - service: media_player.volume_up
+    entity_id: media_player.monoprice_kitchen
+
+# RIGHT = Kitchen Speakers Volume Down
+- id: monoprice_kitchen_volume_down
+  alias: Kitchen Speakers Volume Down
+  trigger:
+  - platform: event
+    event_type: roku_command
+    event_data:
+      source_name: "HA ROKU"
+      type: keypress
+      key: Right
+  action:
+  - service: media_player.volume_down
+    entity_id: media_player.monoprice_kitchen
+
+

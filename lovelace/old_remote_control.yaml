@@ -1,0 +1,447 @@
+title: Remote Control
+icon: mdi:remote
+path: remote_control
+panel: true
+cards:
+  - type: custom:layout-card
+    layout: vertical
+    column_num: 1 # the whole remote is one card
+    column_width: 350px # width of the whole remote/column
+    justify_content: left #left align the entire column
+    flex_grow: 1 
+    cards:
+      # TOP ROW TV SELECTOR
+      - type: "custom:button-card"
+        entity: input_select.which_tv
+        icon: mdi:television
+        show_name: false
+        color_type: label-card
+        show_icon: false
+        #size: 30% #size of the icon
+        styles:
+          card:
+            - height: 40px
+            - width:  120px
+            - font-size: 10pt
+        show_state: true
+        tap_action:
+          action: call-service
+          service: input_select.select_next
+          service_data:
+            entity_id: input_select.which_tv
+      # FIRST ROW OF REMOTE
+      - type: horizontal-stack 
+        cards:
+          # BLANK
+          - type: custom:button-card
+            template: rc_blank_template
+          # MUTE
+          - type: "custom:button-card"
+            color_type: icon
+            size: 60% #size of the icon
+            triggers_update:
+              - media_player.master_bedroom
+            styles:
+              card:
+                - height: 40px
+                - width:  60px
+            #icon: mdi:volume-mute
+            # Change the icon if muted or not muted
+            icon: >
+              [[[
+                var which_tv_mute = '';
+
+                switch(states['input_select.which_tv'].state) {
+                  case 'Master Bedroom':
+                    which_tv_mute = 'media_player.master_bedroom';
+                    break;
+                  default:
+                    which_tv_mute = 'media_player.master_bedroom';
+                  }
+
+                var mute_status = (states[which_tv_mute].attributes.is_volume_muted);
+                return (mute_status ? "mdi:volume-off" : "mdi:volume-mute");
+              ]]]
+            tap_action:
+              action: call-service
+              service: media_player.volume_mute
+              service_data:
+                entity_id: >
+                  [[[
+                    switch(states['input_select.which_tv'].state) {
+                      case 'Master Bedroom':
+                        return 'media_player.master_bedroom';
+                        break;
+                      case 'Family Room':
+                        return 'media_player.family_room';
+                        break
+                      default:
+                        return 'media_player.master_bedroom';
+                      }
+                  ]]]
+                is_volume_muted: >
+                  [[[
+                    var which_tv_mute = '';
+
+                    switch(states['input_select.which_tv'].state) {
+                      case 'Master Bedroom':
+                        which_tv_mute = 'media_player.master_bedroom'; 
+                        break;
+                      default:
+                        which_tv_mute = 'media_player.master_bedroom';
+                      }
+
+                    var mute_status = (states[which_tv_mute].attributes.is_volume_muted);
+                    return (mute_status ? false : true);
+                  ]]]
+
+          # BLANK
+          - type: "custom:button-card"
+            template: rc_blank_template
+          # POWER
+          # Don't show this button for Theater
+          - type: conditional
+            conditions:
+              - entity: input_select.which_tv
+                state_not: "Theater"
+            card:
+              type: "custom:button-card"
+              template: rc_media_player_template
+              variables:
+                icon_id: mdi:power
+                svc_id: media_player.toggle
+                ent_id: > 
+                  [[[
+                      switch(states['input_select.which_tv'].state) {
+                        case 'Master Bedroom':
+                          return 'media_player.master_bedroom_tv';
+                          break;
+                        case 'Family Room':
+                          return 'media_player.family_room_tv';
+                          break;
+                        default:
+                          return 'media_player.master_bedroom_tv';
+                        }
+                  ]]]
+          # BLANK
+          - type: "custom:button-card"
+            template: rc_blank_template
+
+      # SECOND ROW - NUMBERS 1,2,3
+      - type: horizontal-stack
+        cards:
+          # BLANK
+          - type: "custom:button-card"
+            template: rc_blank_template
+          # 1
+          - type: "custom:button-card"
+            template: rc_command_id_template
+            variables:
+              icon_id: mdi:numeric-1
+              cmd_id: Num1
+          # 2
+          - type: "custom:button-card"
+            template: rc_command_id_template
+            variables:
+              icon_id: mdi:numeric-2
+              cmd_id: Num2
+          # 3
+          - type: "custom:button-card"
+            template: rc_command_id_template
+            variables:
+              icon_id: mdi:numeric-3
+              cmd_id: Num3
+          # BLANK
+          - type: "custom:button-card"
+            template: rc_blank_template
+
+      # THIRD ROW - NUMBERS 4,5,6
+      - type: horizontal-stack
+        cards:
+          # BLANK
+          - type: "custom:button-card"
+            template: rc_blank_template
+          # 4
+          - type: "custom:button-card"
+            template: rc_command_id_template
+            variables:
+              icon_id: mdi:numeric-4
+              cmd_id: Num4
+          # 5
+          - type: "custom:button-card"
+            template: rc_command_id_template
+            variables:
+              icon_id: mdi:numeric-5
+              cmd_id: Num5
+          # 6
+          - type: "custom:button-card"
+            template: rc_command_id_template
+            variables:
+              icon_id: mdi:numeric-6
+              cmd_id: Num6
+          # BLANK
+          - type: "custom:button-card"
+            template: rc_blank_template
+
+      # FOURTH ROW - NUMBERS 7,8,9
+      - type: horizontal-stack
+        cards:
+          # BLANK
+          - type: "custom:button-card"
+            template: rc_blank_template
+          # 7
+          - type: "custom:button-card"
+            template: rc_command_id_template
+            variables:
+              icon_id: mdi:numeric-7
+              cmd_id: Num7
+          # 8
+          - type: "custom:button-card"
+            template: rc_command_id_template
+            variables:
+              icon_id: mdi:numeric-8
+              cmd_id: Num8
+          # 9
+          - type: "custom:button-card"
+            template: rc_command_id_template
+            variables:
+              icon_id: mdi:numeric-9
+              cmd_id: Num9
+          # SHOW VOLUME LEVEL
+          - type: "custom:button-card"
+            show_name: false
+            triggers_update: all
+            color_type: card
+            show_icon: false
+            styles:
+              card:
+                - height: 30px
+                - width: 62px
+                - font-size: 8pt
+            show_label: true
+            label: >
+              [[[
+                 var which_tv_volume_level = '';
+
+                 switch(states['input_select.which_tv'].state) {
+                   case 'Master Bedroom':
+                     which_tv_volume_level = 'media_player.master_bedroom';
+                     break;
+                   default:
+                     which_tv_volume_level = 'media_player.master_bedroom';
+                   }
+
+                 var volume_level = (states[which_tv_volume_level].attributes.volume_level);
+                 return volume_level;
+               ]]]
+
+      # FIFTH ROW - CHANNEL UP and VOLUME UP
+      - type: horizontal-stack
+        cards:
+          # CHANNEL UP
+          - type: "custom:button-card"
+            template: rc_command_id_template
+            variables:
+              icon_id: mdi:arrow-up-bold
+              cmd_id: ChannelUp
+          # BLANK
+          - type: "custom:button-card"
+            template: rc_blank_template
+          # 0
+          - type: "custom:button-card"
+            template: rc_command_id_template
+            variables:
+              icon_id: mdi:numeric-0
+              cmd_id: Num0
+          # BLANK
+          - type: "custom:button-card"
+            template: rc_blank_template
+          # VOLUME UP
+          - type: "custom:button-card"
+            template: rc_media_player_volume_template
+            variables:
+              icon_id: mdi:volume-plus
+              svc_id: media_player.volume_up
+              ent_id: media_player.master_bedroom 
+
+      # SIXTH ROW - CHANNEL DOWN and VOLUME DOWN
+      - type: horizontal-stack
+        cards:
+          # CHANNEL DOWN
+          - type: "custom:button-card"
+            template: rc_command_id_template
+            variables:
+              icon_id: mdi:arrow-down-bold
+              cmd_id: ChannelDown
+          # BLANK
+          - type: "custom:button-card"
+            template: rc_blank_template
+          # ARROW UP
+          - type: "custom:button-card"
+            template: rc_command_id_template
+            variables:
+              icon_id: mdi:arrow-up
+              cmd_id: CursorUp
+          # BLANK
+          - type: "custom:button-card"
+            template: rc_blank_template
+         # VOLUME DOWN
+          - type: "custom:button-card"
+            template: rc_media_player_volume_template
+            variables:
+              icon_id: mdi:volume-minus
+              svc_id: media_player.volume_down
+              ent_id: media_player.master_bedroom 
+
+      # SEVENTH ROW - LEFT ARROW - OK - RIGHT ARROW
+      - type: horizontal-stack
+        cards:
+          # BLANK
+          - type: "custom:button-card"
+            template: rc_blank_template
+          # ARROW LEFT
+          - type: "custom:button-card"
+            template: rc_command_id_template
+            variables:
+              icon_id: mdi:arrow-left
+              cmd_id: CursorLeft
+          # ENTER/OK
+          - type: "custom:button-card"
+            template: rc_command_id_template
+            variables:
+              icon_id: mdi:check
+              cmd_id: DpadCenter
+          # ARROW RIGHT
+          - type: "custom:button-card"
+            template: rc_command_id_template
+            variables:
+              icon_id: mdi:arrow-right
+              cmd_id: CursorRight
+          # BLANK
+          - type: "custom:button-card"
+            template: rc_blank_template
+
+      # EIGHTH ROW - BACK DOWN HOME
+      - type: horizontal-stack
+        cards:
+          # BACK/EXIT
+          - type: "custom:button-card"
+            template: rc_command_id_template
+            variables:
+              icon_id: mdi:subdirectory-arrow-left
+              cmd_id: Exit
+          # BLANK
+          - type: "custom:button-card"
+            template: rc_blank_template
+          # ARROW DOWN
+          - type: "custom:button-card"
+            template: rc_command_id_template
+            variables:
+              icon_id: mdi:arrow-down
+              cmd_id: CursorDown
+          # BLANK
+          - type: "custom:button-card"
+            template: rc_blank_template
+          # HOME
+          - type: "custom:button-card"
+            template: rc_command_id_template
+            variables:
+              icon_id: mdi:home
+              cmd_id: Home 
+
+      # NINTH ROW - NETFLIX, YOUTUBE, AMAZON
+      - type: horizontal-stack
+        cards:
+          # BLANK
+          - type: "custom:button-card"
+            template: rc_blank_template
+          # NETFLIX
+          - type: "custom:button-card"
+            template: rc_openapp_template
+            variables:
+              icon_id: mdi:netflix
+              app_uri: 'com.sony.dtv.com.netflix.ninja.com.netflix.ninja.MainActivity'
+          # YOUTUBE TV
+          - type: "custom:button-card"
+            template: rc_openapp_template
+            variables:
+              icon_id: mdi:youtube-tv
+              app_uri: 'com.sony.dtv.com.google.android.youtube.tvunplugged.com.google.android.apps.youtube.tvunplugged.activity.MainActivity' 
+          # AMAZON PRIME
+          - type: "custom:button-card"
+            template: rc_openapp_template
+            variables:
+              icon_id: mdi:amazon
+              app_uri: 'com.sony.dtv.com.amazon.amazonvideo.livingroom.com.amazon.ignition.IgnitionActivity'
+          # DISNEY PLUS
+          - type: "custom:button-card"
+            template: rc_openapp_template
+            variables:
+              icon_id: mdi:alpha-d-box
+              app_uri: 'com.sony.dtv.com.disney.disneyplus.com.bamtechmedia.dominguez.main.MainActivity'
+
+      # TENTH ROW - STOP PAUSE PLAY REWIND FORWARD
+      - type: horizontal-stack
+        cards:
+          # STOP
+          - type: "custom:button-card"
+            template: rc_command_id_template
+            variables:
+              icon_id: mdi:stop
+              cmd_id: Stop
+          # PAUSE
+          - type: "custom:button-card"
+            template: rc_command_id_template
+            variables:
+              icon_id: mdi:pause 
+              cmd_id: Pause
+          # PLAY
+          - type: "custom:button-card"
+            template: rc_command_id_template
+            variables:
+              icon_id: mdi:play
+              cmd_id: Play
+          # REWIND
+          - type: "custom:button-card"
+            template: rc_command_id_template
+            variables:
+              icon_id: mdi:rewind
+              cmd_id: Rewind
+          # FAST FORWARD
+          - type: "custom:button-card"
+            template: rc_command_id_template
+            variables:
+              icon_id: mdi:fast-forward
+              cmd_id: Forward
+
+      # OPTIONAL ROWS DEPENDING ON WHICH_TV
+      # FOR FAMILY ROOM
+      - type: conditional
+        conditions:
+          - entity: input_select.which_tv
+            state: "Family Room"
+        card:
+          type: horizontal-stack
+          cards:
+            # REWIND
+            - type: "custom:button-card"
+              template: rc_command_id_template
+              variables:
+                icon_id: mdi:rewind
+                cmd_id: Rewind
+            # FAST FORWARD
+            - type: "custom:button-card"
+              template: rc_command_id_template
+              variables:
+                icon_id: mdi:fast-forward
+                cmd_id: Forward
+
+
+#       cards:
+#       # VOLUME SLIDER BUTTTON
+#       - type: 'custom:slider-entity-row'
+#         entity: media_player.master_bedroom
+#         name: Volume
+#         icon: mdi:volume-high
+#         hide_state: false
+#         step: 1

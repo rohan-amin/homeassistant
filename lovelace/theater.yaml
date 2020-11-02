@@ -1,0 +1,171 @@
+title: Theater
+icon: mdi:theater
+path: theater
+panel: true
+
+cards:
+
+  # A container layout card for all of the cards on this page
+  - type: custom:layout-card
+    layout: auto
+    #column_num: 1 # the whole remote is one card
+    #column_width: 350px # width of the whole remote/column
+    justify_content: left #left align the entire column
+    #flex_grow: 1
+    cards:
+      # FIRST ROW - LIGHTS
+      - type: entities
+        title: Home Theater Lights
+        state_color: true
+        style: |
+          .card-header {
+            font-size: 16px;
+            padding: 10px 0px 0px 10px;
+          }
+        entities:
+          # Recessed Lights
+          - type: custom:fold-entity-row
+            head:
+              type: custom:slider-entity-row
+              entity: light.basement_media_room_recessed
+              name: Home Theater
+            entities:
+              # Wall Sconces
+              - type: custom:slider-entity-row
+                entity: light.basement_media_room_wall_sconces
+                name: Wall Sconces
+              # Floor Strip
+              - type: custom:slider-entity-row
+                entity: light.basement_media_room_floor_strip
+                name: Floor Strip
+              - type: call-service
+                name: Movie Time
+                service: scene.turn_on
+                service_data:
+                  entity_id: scene.movie_lights
+
+      # SECOND ROW
+      - type: horizontal-stack
+        cards:
+          # Movie Time Lights Scene
+          - type: custom:button-card
+            template: movie_theater_button
+            entity: scene.movie_lights
+            icon: mdi:lightbulb-outline
+            name: Movie Time
+            tap_action:
+              action: call-service
+              service: scene.turn_on
+              service_data:
+                entity_id: scene.movie_lights 
+          # Movie Over Lights Scene
+          - type: custom:button-card
+            template: movie_theater_button
+            entity: scene.movie_over_lights
+            icon: mdi:lightbulb-on-outline
+            name: Movie Over
+            tap_action:
+              action: call-service
+              service: scene.turn_on
+              service_data:
+                entity_id: scene.movie_over_lights
+          # Blank
+          - type: "custom:button-card"
+            template: rc_blank_template
+
+      # THIRD ROW
+      - type: horizontal-stack
+        cards:
+         # Turn on A/V
+          - type: custom:button-card
+            template: movie_theater_button
+            entity: scene.theater_audio_video_on
+            icon: mdi:audio-video
+            name: Turn on A/V
+            tap_action:
+              action: call-service
+              service: scene.turn_on
+              service_data:
+                entity_id: scene.theater_audio_video_on
+         # Turn off A/V
+          - type: custom:button-card
+            template: movie_theater_button
+            entity: scene.theater_audio_video_on
+            icon: mdi:audio-video
+            name: Turn off A/V
+            tap_action:
+              action: call-service
+              service: scene.turn_on
+              service_data:
+                entity_id: scene.theater_audio_video_off
+          # Blank
+          - type: "custom:button-card"
+            template: rc_blank_template
+
+
+      # FOURTH ROW
+      - type: horizontal-stack
+        cards:
+          # Turn on Apple TV
+          - type: custom:button-card
+            template: movie_theater_button
+            icon: mdi:apple
+            name: Turn on ATV
+            tap_action:
+              action: call-service
+              service: remote.send_command
+              service_data:
+                entity_id: remote.apple_tv
+                command: menu
+         # Turn off Apple TV
+          - type: custom:button-card
+            template: movie_theater_button
+            icon: mdi:apple
+            name: Turn off ATV
+            tap_action:
+              action: call-service
+              service: remote.send_command
+              service_data:
+                entity_id: remote.apple_tv
+                command: suspend
+         # Blank
+          - type: "custom:button-card"
+            template: rc_blank_template
+
+
+      # FIFTH ROW
+      - type: horizontal-stack
+        cards:
+          # Projector
+          - type: custom:button-card
+            template: movie_theater_button
+            entity: switch.sony_projector
+            hold_action:
+              action: more-info
+            name: Projector
+            icon: mdi:projector
+            show_icon: true
+            show_name: true
+            show_state: true
+            tap_action:
+              action: toggle
+          # Receiver Control
+          - type: custom:button-card
+            template: movie_theater_button
+            entity: switch.denon_receiver
+            icon: mdi:audio-video
+            name: Receiver
+            show_state: true
+            show_name: true
+            hold_action:
+              action: more-info
+            tap_action:
+              action: toggle
+         # Blank
+          - type: "custom:button-card"
+            template: rc_blank_template
+
+      # SIXTH ROW
+      - entity: media_player.denon_avr_x8500h
+        type: custom:mini-media-player
+

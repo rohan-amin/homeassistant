@@ -1,0 +1,48 @@
+title: Music
+icon: mdi:music-box-outline
+path: music
+panel: true
+
+cards:
+
+  # A container layout card for all of the cards on this page
+  - type: custom:layout-card
+    layout: auto
+    #column_num: 1 # the whole remote is one card
+    #column_width: 350px # width of the whole remote/column
+    justify_content: left #left align the entire column
+    #flex_grow: 1
+    cards:
+      # Media Player
+      - type: custom:mini-media-player
+        entity: media_player.denon_avr_s750h
+
+      - type: custom:mini-media-player
+        entity: media_player.monoprice_kitchen
+
+      - type: custom:mini-media-player
+        entity: media_player.monoprice_deck
+
+      - type: custom:mini-media-player
+        entity: media_player.monoprice_dining_room
+
+      - type: custom:mini-media-player
+        entity: media_player.monoprice_living_room
+
+      - type: custom:mini-media-player
+        entity: media_player.sonos_family_room
+        artwork: full-cover-fit
+        info: short
+        hide:
+          source: true
+        speaker_group:
+          platform: sonos
+          show_group_count: true
+          entities:
+            - entity_id: media_player.sonos_master_bedroom
+              name: Sonos Master Bedroom
+            - entity_id: media_player.sonos_game_room
+              name: Sonos Game Room
+            - entity_id: media_player.sonos_portable
+              name: Sonos Portable
+

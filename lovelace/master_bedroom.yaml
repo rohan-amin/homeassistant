@@ -1,0 +1,117 @@
+title: Master Bedroom
+icon: mdi:bed-empty
+path: master_bedroom
+panel: true
+cards:
+
+  # A container layout card for all of the cards on this page
+  - type: custom:layout-card
+    layout: auto
+    #column_num: 1 # the whole remote is one card
+    #column_width: 350px # width of the whole remote/column
+    justify_content: left #left align the entire column
+    #flex_grow: 1
+    cards:
+
+      # LIGHTS
+      - type: entities
+        title: Master Bedroom Lights
+        state_color: true
+        style: |
+          .card-header {
+            font-size: 16px;
+            padding: 10px 0px 0px 10px;
+          }
+        entities:
+          # Master Bedroom and Closet Lights
+          - type: custom:fold-entity-row
+            head:
+              type: custom:slider-entity-row
+              entity: light.master_bedroom_master_recessed
+              name: Bedroom
+            entities:
+              - entity: light.master_bedroom_sitting_area_sitting_area
+                name: Sitting Area
+              - entity: light.master_bedroom_master_bedroom_entrance
+                name: Entrance
+              - entity: light.master_bedroom_master_closet_hers
+                name: Her Closet
+              - entity: switch.master_bedroom_master_closet_his
+                name: His Closet
+          # Master Bathroom
+          - type: custom:fold-entity-row
+            head:
+              type: custom:slider-entity-row
+              entity: light.master_bedroom_bathroom_master_bathroom_main
+              name: Bathroom
+            entities:
+              - entity: light.master_bedroom_bathroom_master_bath_chandelier
+                name: Chandelier
+              - entity: light.master_bedroom_bathroom_master_bath_tub
+                name: Tub
+              - entity: light.master_bedroom_bathroom_master_shower
+                name: Shower
+              - entity: light.master_bedroom_bathroom_master_sink_hers
+                name: Her Sink
+              - entity: light.master_bedroom_bathroom_master_sink_his
+                name: His Sink
+              - entity: light.master_bedroom_bathroom_water_closet
+                name: Water Closet
+          # Scene Switches
+          - type: divider
+          - entity: switch.master_bedroom_master_bedroom_all_off_led
+            name: House All Off
+          - entity: switch.master_bedroom_master_bedroom_suite_off_led
+            name: MB Suite Off
+
+      # FAN
+      # A horizontal stack-in-card (one card) with all of the buttons
+      - type: "custom:stack-in-card"
+        title: Master Bedroom Fan
+        mode: horizontal
+        style: |
+          .card-header {
+            font-size: 16px;
+            padding: 10px 0px 0px 10px;
+          }
+    
+        keep:
+          background: true
+          box_shadow: true
+          margin: true
+          outer_padding: 8px
+          border_radius: true
+        cards:
+    
+          # Off Button
+          - type: "custom:button-card"
+            template: fan_off_template
+            entity: fan.master_bedroom_fan
+            variables:
+              name_id: "off"
+    
+          # Low
+          - type: "custom:button-card"
+            template: fan_speed_template
+            entity: fan.master_bedroom_fan
+            variables:
+              name_id: "low"
+              speed_id: low
+    
+          # Medium
+          - type: "custom:button-card"
+            template: fan_speed_template
+            entity: fan.master_bedroom_fan
+            variables:
+              name_id: "med"
+              speed_id: medium
+    
+          # High
+          - type: "custom:button-card"
+            template: fan_speed_template
+            entity: fan.master_bedroom_fan
+            variables:
+              name_id: "high"
+              speed_id: high
+    
+

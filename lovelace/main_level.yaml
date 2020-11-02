@@ -1,0 +1,129 @@
+title: Main Level
+icon: mdi:numeric-1-box-outline
+path: main_level
+panel: true
+cards:
+
+  # A container layout card for all of the cards on this page
+  - type: custom:layout-card
+    layout: auto
+    #column_num: 1 # the whole remote is one card
+    #column_width: 350px # width of the whole remote/column
+    justify_content: left #left align the entire column
+    #flex_grow: 1
+    cards:
+
+      # LIGHTS
+      - type: entities
+        title: Main Level Lights
+        state_color: true
+        style: |
+          .card-header {
+            font-size: 16px;
+            padding: 10px 0px 0px 10px;
+          }
+        entities:
+          # Kitchen Lights
+          - type: custom:fold-entity-row
+            head:
+              type: custom:slider-entity-row
+              entity: light.kitchen_kitchen_recessed
+              name: Kitchen
+            entities:
+              - entity: light.kitchen_kitchen_island_recessed
+                name: Island
+              - entity: light.kitchen_kitchen_pendant
+                name: Pendants
+              - entity: light.kitchen_kitchen_table
+                name: Table
+              - entity: switch.kitchen_under_cabinet
+                name: Under Cabinet
+          # Family Room
+          - type: custom:fold-entity-row
+            head:
+              type: custom:slider-entity-row
+              entity: light.main_stairs_family_room_recessed
+              name: Family Room
+            entities:
+              - entity: light.main_stairs_family_room_walkway
+                name: Walkway
+          # Living Room
+          - type: custom:fold-entity-row
+            head:
+              type: custom:slider-entity-row
+              entity: light.living_room_living_room_recessed
+              name: Living Room
+            entities:
+              - entity: light.living_room_fire_place_spot
+                name: Fireplace Spot
+              - entity: light.living_room_fire_place_sconce
+                name: Wall Sconces
+          # Dining Room
+          - type: custom:fold-entity-row
+            head:
+              type: custom:slider-entity-row
+              entity: light.dining_room_recessed
+              name: Dining Room
+            entities:
+              - entity: light.dining_room_chandelier
+                name: Dining Chandelier
+          # Other Lights
+          - entity: light.mudroom_mudroom
+            name: Mudroom
+          - entity: light.family_room_front_entrance_chandelier
+            name: Foyer
+          - entity: switch.powder_room_powder_room
+            name: Powder Room
+
+      # FAN
+      # A horizontal stack-in-card (one card) with all of the buttons
+      - type: "custom:stack-in-card"
+        title: Family Room Fan
+        mode: horizontal
+        style: |
+          .card-header {
+            font-size: 16px;
+            padding: 10px 0px 0px 10px;
+          }
+
+        keep:
+          background: true
+          box_shadow: true
+          margin: true
+          outer_padding: 8px
+          border_radius: true
+        cards:
+
+          # Off Button
+          - type: "custom:button-card"
+            template: fan_off_template
+            entity: fan.family_room_fan
+            variables:
+              name_id: "off"
+
+          # Low
+          - type: "custom:button-card"
+            template: fan_speed_template
+            entity: fan.family_room_fan
+            variables:
+              name_id: "low"
+              speed_id: low
+
+          # Medium
+          - type: "custom:button-card"
+            template: fan_speed_template
+            entity: fan.family_room_fan
+            variables:
+              name_id: "med"
+              speed_id: medium
+
+          # High
+          - type: "custom:button-card"
+            template: fan_speed_template
+            entity: fan.family_room_fan
+            variables:
+              name_id: "high"
+              speed_id: high
+
+
+

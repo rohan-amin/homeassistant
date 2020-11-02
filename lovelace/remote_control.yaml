@@ -1,0 +1,548 @@
+title: Remote Control
+icon: mdi:remote
+path: remote_control
+panel: true
+cards:
+  - type: custom:layout-card
+    layout: vertical
+    column_num: 1 # the whole remote is one card
+    column_width: 350px # width of the whole remote/column
+    justify_content: left #left align the entire column
+    flex_grow: 1 
+    cards:
+      # TOP ROW TV SELECTOR
+      - type: "custom:button-card"
+        entity: input_select.which_tv
+        show_name: false
+        color_type: label-card
+        show_icon: false
+        show_state: true
+        styles:
+          card:
+            - height: 40px
+            - width:  120px
+            - font-size: 10pt
+        tap_action:
+          action: call-service
+          service: input_select.select_next
+          service_data:
+            entity_id: input_select.which_tv
+        # Display a Friendly Version of the Input Select State (e.g. Which TV)
+        state_display: >
+          [[[
+            var which_tv_friendly = '';
+
+            switch(states['input_select.which_tv'].state) {
+              case "media_player.family_room_ump":
+                which_tv_friendly = "Family Room";
+                break;
+              case "media_player.master_bedroom_ump":
+                which_tv_friendly = "Master Bedroom";
+                break;
+              case "media_player.game_room_tv":
+                which_tv_friendly = "Game Room";
+                break;
+              case "media_player.home_theater_ump":
+                which_tv_friendly = "Home Theater";
+                break;
+              default:
+                which_tv_friendly = "Error";
+            }
+
+            return which_tv_friendly;
+
+          ]]]
+      # FIRST ROW OF REMOTE
+      - type: horizontal-stack 
+        cards:
+          # MUTE
+          - type: "custom:button-card"
+            color_type: icon
+            name: "Mute"
+            size: 60% #size of the icon
+            triggers_update:
+              - input_select.which_tv
+              - media_player.master_bedroom_ump
+              - media_player.family_room_ump
+              - media_player.home_theater_ump
+            styles:
+              card:
+                - height: 70px
+                - width:  110px
+            # Change the icon if muted or not muted
+            icon: >
+              [[[
+                var which_tv_mute = states['input_select.which_tv'].state;
+                var mute_status = states[which_tv_mute].attributes.is_volume_muted;
+                return (mute_status ? "mdi:volume-off" : "mdi:volume-mute");
+              ]]]
+            tap_action:
+              action: call-service
+              service: media_player.volume_mute
+              service_data:
+                entity_id: >
+                  [[[ 
+                    return states['input_select.which_tv'].state; 
+                  ]]]
+                is_volume_muted: >
+                  [[[
+                    var which_tv_mute = states['input_select.which_tv'].state;
+                    var mute_status = states[which_tv_mute].attributes.is_volume_muted;
+                    return (mute_status ? false : true);
+                  ]]]
+
+          # SHOW VOLUME LEVEL
+          - type: "custom:button-card"
+            name: "Volume"
+            show_name: true
+            triggers_update:
+              - input_select.which_tv
+              - media_player.master_bedroom_ump
+              - media_player.family_room_ump
+              - media_player.home_theater_ump
+            color_type: card
+            show_icon: false
+            styles:
+              card:
+                - height: 70px
+                - width: 110px
+                - font-size: 10pt
+            show_label: true
+            label: >
+              [[[
+                // Get the entity_id from the input_select
+                var which_tv_volume_level = states['input_select.which_tv'].state;
+                // Get the volume for the selected entity_id
+                var volume_level = states[which_tv_volume_level].attributes.volume_level;
+
+                return (volume_level ? parseFloat(volume_level*100).toFixed(0)+"%" : "off");
+               ]]]
+
+          # POWER
+          - type: "custom:button-card"
+            template: rc_media_player_template
+            name: "Power"
+            variables:
+              icon_id: mdi:power
+              svc_id: media_player.toggle
+              ent_id: > 
+                [[[
+                  return states['input_select.which_tv'].state;  
+                ]]]
+
+      # SECOND ROW
+      - type: horizontal-stack
+        cards:
+
+          # CHANNEL UP
+          # Channel Up Not Shown for Home Theater
+          - type: conditional
+            conditions:
+              - entity: input_select.which_tv
+                state_not: "media_player.home_theater_ump"
+            card:
+              # CHANNEL UP
+              type: "custom:button-card"
+              template: rc_command_id_template
+              name: "Channel"
+              variables:
+                icon_id: mdi:arrow-up-bold
+                cmd_id: ChannelUp
+                ent_id: >
+                  [[[
+                    return states['input_select.which_tv'].state;
+                  ]]]
+          # Blank Shown if Home Theater
+          - type: conditional
+            conditions:   
+              - entity: input_select.which_tv
+                state: "media_player.home_theater_ump"
+            card:
+              type: "custom:button-card"
+              template: rc_blank_template
+
+          # BLANK
+          - type: "custom:button-card"
+            template: rc_blank_template
+          # VOLUME UP
+          - type: "custom:button-card"
+            template: rc_media_player_volume_template
+            name: "Volume"
+            variables:
+              icon_id: mdi:volume-plus
+              svc_id: media_player.volume_up
+              ent_id: >
+                [[[
+                  return states['input_select.which_tv'].state;
+                ]]]
+
+      # THIRD ROW
+      - type: horizontal-stack
+        cards:
+         # CHANNEL DOWN
+          # Channel Down Not Shown for Home Theater
+          - type: conditional
+            conditions:
+              - entity: input_select.which_tv
+                state_not: "media_player.home_theater_ump"
+            card:
+              # CHANNEL DOWN
+              type: "custom:button-card"
+              template: rc_command_id_template
+              name: "Channel"
+              variables:
+                icon_id: mdi:arrow-down-bold
+                cmd_id: ChannelDown
+                ent_id: >
+                  [[[
+                    return states['input_select.which_tv'].state;
+                  ]]]
+          # Blank Shown if Home Theater
+          - type: conditional
+            conditions:
+              - entity: input_select.which_tv
+                state: "media_player.home_theater_ump"
+            card:
+              type: "custom:button-card"
+              template: rc_blank_template
+
+          # ARROW UP
+          - type: "custom:button-card"
+            template: rc_command_id_template
+            name: "Up"
+            variables:
+              icon_id: mdi:arrow-up
+              cmd_id: >
+                [[[
+                  // Change the Command based on Media Player Type
+                  switch(states['input_select.which_tv'].state) {
+                    case "media_player.home_theater_ump":
+                      return "up";
+                      break;
+                    default:
+                      return "CursorUp";
+                  }
+                ]]]
+              ent_id: >
+                [[[
+                  return states['input_select.which_tv'].state;
+                ]]]
+          # VOLUME DOWN
+          - type: "custom:button-card"
+            template: rc_media_player_volume_template
+            name: "Volume"
+            variables:
+              icon_id: mdi:volume-minus
+              svc_id: media_player.volume_down
+              ent_id: >
+                [[[
+                  return states['input_select.which_tv'].state;
+                ]]]
+
+      # FOURTH ROW
+      - type: horizontal-stack
+        cards:
+          # ARROW LEFT
+          - type: "custom:button-card"
+            template: rc_command_id_template
+            name: "Left"
+            variables:
+              icon_id: mdi:arrow-left
+              cmd_id: >
+                [[[
+                  // Change the Command based on Media Player Type
+                  switch(states['input_select.which_tv'].state) {
+                    case "media_player.home_theater_ump":
+                      return "left";
+                      break;
+                    default:
+                      return "CursorLeft";
+                  }
+                ]]]
+              ent_id: >
+                [[[
+                  return states['input_select.which_tv'].state;
+                ]]]
+          # ENTER/OK
+          - type: "custom:button-card"
+            template: rc_command_id_template
+            name: "OK"
+            variables:
+              icon_id: mdi:check
+              cmd_id: >
+                [[[
+                  // Change the Command based on Media Player Type
+                  switch(states['input_select.which_tv'].state) {
+                    case "media_player.home_theater_ump":
+                      return "select";
+                      break;
+                    default:
+                      return "DpadCenter";
+                  }
+                ]]]
+              ent_id: >
+                [[[
+                  return states['input_select.which_tv'].state;
+                ]]]
+          # ARROW RIGHT
+          - type: "custom:button-card"
+            template: rc_command_id_template
+            name: "Right"
+            variables:
+              icon_id: mdi:arrow-right
+              cmd_id: >
+                [[[
+                  // Change the Command based on Media Player Type
+                  switch(states['input_select.which_tv'].state) {
+                    case "media_player.home_theater_ump":
+                      return "right";
+                      break;
+                    default:
+                      return "CursorRight";
+                  }
+                ]]]
+              ent_id: >
+                [[[
+                  return states['input_select.which_tv'].state;
+                ]]]
+
+      # FIFTH ROW
+      - type: horizontal-stack
+        cards:
+          # BACK/EXIT/MENU
+          - type: "custom:button-card"
+            template: rc_command_id_template
+            name: >
+              [[[
+                // Change the name based on media player type
+                switch(states['input_select.which_tv'].state) {
+                  case "media_player.home_theater_ump":
+                    return "Menu";
+                    break;
+                  default:
+                    return "Exit";
+                }
+              ]]]
+            variables:
+              icon_id: >
+                [[[
+                  // Change the icon based on the media player type
+                  switch(states['input_select.which_tv'].state) {
+                    case "media_player.home_theater_ump":
+                      return "mdi:menu";
+                      break;
+                    default:
+                      return "mdi:subdirectory-arrow-left";
+                  }
+                ]]]
+              cmd_id: >
+                [[[
+                  // Change the Command based on Media Player Type
+                  switch(states['input_select.which_tv'].state) {
+                    case "media_player.home_theater_ump":
+                      return "menu";
+                      break;
+                    default:
+                      return "Exit";
+                  }
+                ]]]
+              ent_id: >
+                [[[
+                  return states['input_select.which_tv'].state;
+                ]]]
+          # ARROW DOWN
+          - type: "custom:button-card"
+            template: rc_command_id_template
+            name: "Down"
+            variables:
+              icon_id: mdi:arrow-down
+              cmd_id: >
+                [[[
+                  // Change the Command based on Media Player Type
+                  switch(states['input_select.which_tv'].state) {
+                    case "media_player.home_theater_ump":
+                      return "down";
+                      break;
+                    default:
+                      return "CursorDown";
+                  }
+                ]]]
+              ent_id: >
+                [[[
+                  return states['input_select.which_tv'].state;
+                ]]]
+          # HOME
+          - type: "custom:button-card"
+            template: rc_command_id_template
+            name: "Home"
+            variables:
+              icon_id: mdi:home
+              cmd_id: >
+                [[[
+                  // Change the Command based on Media Player Type
+                  switch(states['input_select.which_tv'].state) {
+                    case "media_player.home_theater_ump":
+                      return "top_menu";
+                      break;
+                    default:
+                      return "Home";
+                  }
+                ]]]
+              ent_id: >
+                [[[
+                  return states['input_select.which_tv'].state;
+                ]]]
+
+      # SIXTH ROW
+      - type: horizontal-stack
+        cards:
+          # NETFLIX
+          - type: "custom:button-card"
+            template: rc_openapp_template
+            name: "Netflix"
+            variables:
+              icon_id: mdi:netflix
+              app_uri: 'com.sony.dtv.com.netflix.ninja.com.netflix.ninja.MainActivity'
+              ent_id: >
+                [[[
+                  return states['input_select.which_tv'].state;
+                ]]]
+          # YOUTUBE TV
+          - type: "custom:button-card"
+            template: rc_openapp_template
+            name: "YouTubeTV"
+            variables:
+              icon_id: mdi:youtube-tv
+              app_uri: 'com.sony.dtv.com.google.android.youtube.tvunplugged.com.google.android.apps.youtube.tvunplugged.activity.MainActivity'
+              ent_id: >
+                [[[
+                  return states['input_select.which_tv'].state;
+                ]]]
+          # AMAZON PRIME
+          - type: "custom:button-card"
+            template: rc_openapp_template
+            name: "Amazon"
+            variables:
+              icon_id: mdi:amazon
+              app_uri: 'com.sony.dtv.com.amazon.amazonvideo.livingroom.com.amazon.ignition.IgnitionActivity'
+              ent_id: >
+                [[[
+                  return states['input_select.which_tv'].state;
+                ]]]
+
+      # SEVENTH ROW
+      - type: horizontal-stack
+        cards:
+          # DISNEY PLUS
+          - type: "custom:button-card"
+            template: rc_openapp_template
+            name: "Disney+"
+            variables:
+              icon_id: mdi:alpha-d-box
+              app_uri: 'com.sony.dtv.com.disney.disneyplus.com.bamtechmedia.dominguez.main.MainActivity'
+              ent_id: >
+                [[[
+                  return states['input_select.which_tv'].state;
+                ]]]
+          # PAUSE
+          - type: "custom:button-card"
+            template: rc_command_id_template
+            name: "Pause"
+            variables:
+              icon_id: mdi:pause
+              cmd_id: Pause
+              ent_id: >
+                [[[
+                  return states['input_select.which_tv'].state;
+                ]]]
+          # PLAY
+          - type: "custom:button-card"
+            template: rc_command_id_template
+            name: "Play"
+            variables:
+              icon_id: mdi:play
+              cmd_id: Play
+              ent_id: >
+                [[[
+                  return states['input_select.which_tv'].state;
+                ]]]
+
+      # EIGHTH ROW
+      - type: horizontal-stack
+        cards:
+          # STOP
+          - type: "custom:button-card"
+            template: rc_command_id_template
+            name: "Stop"
+            variables:
+              icon_id: mdi:stop
+              cmd_id: Stop
+              ent_id: >
+                [[[
+                  return states['input_select.which_tv'].state;
+                ]]]
+          # REWIND
+          - type: "custom:button-card"
+            template: rc_command_id_template
+            name: "Rewind"
+            variables:
+              icon_id: mdi:rewind
+              cmd_id: Rewind
+              ent_id: >
+                [[[
+                  return states['input_select.which_tv'].state;
+                ]]]
+          # FAST FORWARD
+          - type: "custom:button-card"
+            template: rc_command_id_template
+            name: "Fast Fwd"
+            variables:
+              icon_id: mdi:fast-forward
+              cmd_id: Forward
+              ent_id: >
+                [[[
+                  return states['input_select.which_tv'].state;
+                ]]]
+
+
+      # OPTIONAL ROWS DEPENDING ON WHICH_TV
+      # FOR FAMILY ROOM
+      - type: conditional
+        conditions:
+          - entity: input_select.which_tv
+            state: "media_player.family_room_ump"
+        card:
+          type: horizontal-stack
+          cards:
+            # Kitchen TV Audio On/Off
+            - type: custom:button-card
+              template: rc_media_player_template
+              triggers_update:
+                - switch.kitchen_tv_audio 
+              name: "Kitchen TV"
+              variables:
+                # Change the icon if the kitchen tv audio is on or off
+                icon_id: >
+                  [[[
+                    var switch_status = states['switch.kitchen_tv_audio'].state;
+                    return (switch_status=="on" ? "mdi:volume-high" : "mdi:volume-off");  
+                  ]]]
+                svc_id: switch.toggle
+                ent_id: switch.kitchen_tv_audio
+            # Kitchen TV Audio Volume Up
+            - type: custom:button-card
+              template: rc_media_player_volume_template
+              name: Kitchen TV
+              variables:
+                icon_id: mdi:volume-plus
+                svc_id: media_player.volume_up
+                ent_id: media_player.monoprice_kitchen
+            # Kitchen TV Audio Volume Down
+            - type: custom:button-card
+              template: rc_media_player_volume_template
+              name: Kitchen TV
+              variables:
+                icon_id: mdi:volume-minus
+                svc_id: media_player.volume_down
+                ent_id: media_player.monoprice_kitchen
+

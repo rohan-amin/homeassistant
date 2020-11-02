@@ -1,0 +1,56 @@
+# Turn on Projector, Sound and Apple TV
+theater_audio_video_on:
+  alias: Home Theater On
+  sequence:
+    # Log
+    - service: logbook.log
+      data_template:
+        name: TheaterOn
+        message: "Theater On: Projector, Receiver and Apple TV are turning on"
+    # Turn on Projector
+    - service: switch.turn_on
+      data:
+        entity_id: switch.sony_projector
+    # Turn on Sound
+    - service: media_player.turn_on
+      data:
+        entity_id: media_player.denon_avr_x8500h
+    # Switch Source to Apple TV
+    - service: media_player.select_source
+      data:
+        entity_id: media_player.denon_avr_x8500h
+        source: 'Apple TV'
+    # Set Volume
+    - service: media_player.volume_set
+      data:
+        entity_id: media_player.denon_avr_x8500h
+        volume_level: 0.5
+    # Press the MENU button for Apple TV to turn it on
+    - service: remote.send_command
+      data:
+        entity_id: remote.apple_tv
+        command: menu
+
+# Turn off Projector, Sound and Apple TV
+theater_audio_video_off:
+  alias: Home Theater Off
+  sequence:
+    # Log
+    - service: logbook.log
+      data_template:
+        name: TheaterOff
+        message: "Theater Off: Projector, Receiver and Apple TV are turning off"
+    # Turn off Projector
+    - service: switch.turn_off
+      data:
+        entity_id: switch.sony_projector
+    # Turn off Sound
+    - service: media_player.turn_off
+      data:
+        entity_id: media_player.denon_avr_x8500h
+    # Turn off Apple TV
+    - service: remote.send_command
+      data:
+        entity: remote.apple_tv
+        command: suspend
+

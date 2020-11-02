@@ -1,0 +1,59 @@
+title: Upstairs 
+icon: mdi:numeric-2-box-outline
+path: upstairs
+panel: true
+cards:
+
+  # A container layout card for all of the cards on this page
+  - type: custom:layout-card
+    layout: auto
+    #column_num: 1 # the whole remote is one card
+    #column_width: 350px # width of the whole remote/column
+    justify_content: left #left align the entire column
+    #flex_grow: 1
+    cards:
+
+      # LIGHTS
+      - type: entities
+        title: Upstairs Lights
+        state_color: true
+        style: |
+          .card-header {
+            font-size: 16px;
+            padding: 10px 0px 0px 10px;
+          }
+        entities:
+          # Upstairs
+          - entity: light.upstairs_hallway_upstairs_hallway
+            name: Upstairs Hallway
+          # Kids Room
+          - type: custom:fold-entity-row
+            head:
+              type: section
+              label: Kids Room
+            entities:
+              - entity: light.bedroom_front_recessed
+                name: Samit's Room
+              - entity: light.bedroom_back_recessed
+                name: Rishi's Room
+              - type: custom:fold-entity-row
+                head:
+                  entity: light.bathroom_shared_recessed
+                  name: Kids Bathroom
+                entities:
+                  - entity: light.bathroom_shared_mirror
+                    name: Kids Mirror
+                  - entity: light.bathroom_shared_mirror
+                    name: Kids Shower
+          # Guest Room
+          - type: custom:fold-entity-row
+            head:
+              entity: light.bathroom_shared_mirror
+              name: Guest Bedroom
+            entities:
+              - entity: light.guest_room_bathroom_recessed
+                name: Guest Bathroom
+              - entity: light.guest_room_bathroom_shower
+                name: Guest Shower
+
+

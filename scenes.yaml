@@ -1,0 +1,124 @@
+# Turn On Theater Lights
+- name: movie_lights
+  entities:
+    light.basement_media_room_floor_strip:
+      state: "on"
+      brightness: 10
+    light.basement_media_room_recessed: "off"
+    light.basement_media_room_wall_sconces: "off"
+
+# Turn on Movie Over Lights
+- name: movie_over_lights
+  entities:
+    light.basement_media_room_floor_strip: "off"
+    light.basement_media_room_recessed: "off"
+    light.basement_media_room_wall_sconces:
+      state: "on"
+      brightness: 100
+      transition: 2
+
+# Home Theater A/V On
+- name: theater_audio_video_on
+  entities:
+    switch.sony_projector: "on"
+    media_player.denon_avr_x8500h:
+      state: "on"
+      source: "Denon AVR-X8500H - Apple TV"
+    media_player.apple_tv:
+      state: "playing"
+
+# Home Theater A/V Off
+- name: theater_audio_video_off
+  entities:
+    switch.sony_projector: "off"
+    # use switch.denon_x8500h_receiver instead of media_player
+    # because this works via telnet, defined in configuration.yaml
+    switch.denon_x8500h_receiver: 
+      state: "off"
+
+# Family Room A/V On
+- name: family_room_audio_video_on
+  entities:
+    media_player.family_room_tv: 
+      state: "on"
+      volume_level: 0
+    media_player.denon_avr_s750h:
+      state: "on"
+      source: "TV Audio"
+      volume_level: 0.55
+
+# Family Room A/V Off
+- name: family_room_kitchen_audio_video_off
+  entities:
+    media_player.family_room_tv: "off"
+    # use switch.denon_s750h_receiver instead of media_player
+    # because this works via telnet, defined in configuration.yaml
+    switch.denon_s750h_receiver:
+      state: "off"
+    media_player.monoprice_kitchen: "off"
+
+# Family Room and Kitchen All Audio Mute
+- name: family_room_kitchen_audio_mute
+  entities:
+    media_player.family_room_tv:
+      state: "on" 
+      is_volume_muted: true
+    media_player.denon_avr_s750h:
+      state: "on"
+      is_volume_muted: true
+    media_player.monoprice_kitchen:
+      state: "on"
+      is_volume_muted: true
+
+# Family Room and Kitchen All Audio Unmute
+- name: family_room_kitchen_audio_unmute
+  entities:
+    media_player.family_room_tv:
+      state: "on" 
+      is_volume_muted: false
+    media_player.denon_avr_s750h:
+      state: "on"
+      is_volume_muted: false
+    media_player.monoprice_kitchen:
+      state: "on"
+      is_volume_muted: false
+
+# Family Room Audio Unmute
+- name: family_room_audio_unmute
+  entities:
+    media_player.family_room_tv:
+      state: "on"
+      is_volume_muted: false
+    media_player.denon_avr_s750h:
+      state: "on"
+      is_volume_muted: false
+
+# Kitchen TV Audio On
+- name: kitchen_tv_audio_on
+  entities:
+    media_player.monoprice_kitchen:
+      state: "on"
+      volume_level: 0.3
+      source: "TV Audio"
+
+# Kitchen TV Audio Off
+- name: kitchen_tv_audio_off
+  entities:
+    media_player.monoprice_kitchen:
+      state: "off"
+
+# Kitchen TV Audio Mute
+- name: kitchen_tv_audio_mute
+  entities:
+    media_player.monoprice_kitchen:
+      state: "on"
+      is_volume_muted: true
+
+# Kitchen TV Audio Unmute
+- name: kitchen_tv_audio_unmute
+  entities:
+    media_player.monoprice_kitchen:
+      state: "on"
+      is_volume_muted: false
+
+
