@@ -3,9 +3,6 @@ icon: mdi:home
 path: home
 panel: true
 
-badges:
-  - entity: person.rohan
-
 cards:
 
   # A container layout card for all of the cards on this page
@@ -46,6 +43,21 @@ cards:
         entity: weather.openweathermap
         name: Home
         show_forecast: true
+
+      # FAMILY PEOPLE TRACKING
+      - type: entities
+        title: Family
+        style: |
+            .card-header {
+              font-size: 22px;
+              font-weight: bold;
+              padding: 5px 0px 0px 10px;
+            }
+        entities:
+          - entity: person.rohan_amin
+            name: Rohan
+          - entity: person.sejal_amin
+            name: Sejal
 
       # LEAVE HOME
       - type: horizontal-stack
@@ -174,4 +186,40 @@ cards:
             name: Charge
           - entity: binary_sensor.aminx_charger_sensor
             name: Status
+
+      # NOTIFICATIONS
+      - type: entities
+        title: Notifications
+        state_color: true
+        style: |
+          .card-header {
+            font-size: 22px;
+            font-weight: bold;
+            padding: 5px 0px 0px 10px;
+          }
+        entities:
+          - entity: input_boolean.camera_notify
+            name: Cameras
+
+#          # Zoneminder Camera Notifications
+#          - type: custom:fold-entity-row
+#            head:
+#              entity: input_boolean.camera_1_notify
+#              name: !secret camera_1_name
+#            entities:
+#              - entity: input_boolean.camera_2_notify
+#                name: !secret camera_2_name
+#              - entity: input_boolean.camera_3_notify
+#                name: !secret camera_3_name
+#              - entity: input_boolean.camera_4_notify
+#                name: !secret camera_4_name
+#              - entity: input_boolean.camera_5_notify
+#                name: !secret camera_5_name
+#              - entity: input_boolean.camera_6_notify
+#                name: !secret camera_6_name
+#              - entity: input_boolean.camera_7_notify
+#                name: !secret camera_7_name
+#              - entity: input_boolean.camera_8_notify
+#                name: !secret camera_8_name
+
 
