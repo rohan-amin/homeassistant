@@ -1,3 +1,7 @@
+################
+## EMULATED ROKU
+################
+
 # Process Emulated ROKU from Harmony Remote
 # UP = Toggle Kitchen Speakers
 - id: monoprice_kitchen_toggle
@@ -55,4 +59,27 @@
   - service: media_player.volume_down
     entity_id: media_player.monoprice_kitchen
 
+################
+## NOTIFICATIONS
+################
 
+#- id: alert_camera_1
+#  alias: Alert Camera 1
+#  trigger:
+#    platform: mqtt
+#    topic: zoneminder/1
+#    #state: "alarm"
+#  #  - platform: state
+#  #    entity_id: sensor.driveway_alerts
+#  #    state: 'alarm'
+#  action:
+#    - service: notify.mobile_app_rma
+#      data_template:
+#        title: "Camera 1"
+#        #message: '{{ trigger.payload_json.eventid }}'
+#        message: "Test"
+#        #data:
+#          #push:
+#            #category: "camera_motion_snooze"
+  
+      
