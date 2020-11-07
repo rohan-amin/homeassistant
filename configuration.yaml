@@ -27,6 +27,10 @@ homeassistant:
 logger:
   default: info
 
+# RECORDER - home-assistant_v2.db
+recorder:
+  purge_keep_days: 2
+
 # Text to speech
 tts:
   - platform: google_translate
