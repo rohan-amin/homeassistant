@@ -1,4 +1,8 @@
 
+################
+## MAIN SETUP
+################
+
 # Configure a default setup of Home Assistant (frontend, api, etc)
 default_config:
 
@@ -33,7 +37,6 @@ lovelace:
 
 # Frontend and Themes
 frontend:
-  #javascript_version: latest
   themes: !include_dir_merge_named themes/
 
 # Enable Browser Mod
@@ -43,6 +46,11 @@ browser_mod:
 ffmpeg:
 
 stream:
+
+# MQTT
+mqtt:
+  broker: !secret mqtt_host
+
 
 ################
 ## INPUT SELECT
@@ -66,15 +74,35 @@ input_select:
 #    name: Status of Home Theater AV
 #    initial: false
 
+input_boolean:
+  camera_notify:
+    name: Camera Notifications
+    initial: true
+    icon: mdi:camera-outline
+  camera_1_notify:
+    name: !secret camera_1_name
+  camera_2_notify:
+    name: !secret camera_2_name
+  camera_3_notify:
+    name: !secret camera_3_name
+  camera_4_notify:
+    name: !secret camera_4_name
+  camera_5_notify:
+    name: !secret camera_5_name
+  camera_6_notify:
+    name: !secret camera_6_name
+  camera_7_notify:
+    name: !secret camera_7_name
+  camera_8_notify:
+    name: !secret camera_8_name
+
 ##########
 ## PERSON 
 ##########
 
-person:
-  - name: Rohan
-    id: ra
-    device_trackers:
-      - device_tracker.rma_unifi
+# Integration done in 'People' in the UI
+# RMA - device_tracker.rma, device_tracker.rma_unifi
+# SPA - device_tracker.spa, 
   
 
 
@@ -184,6 +212,34 @@ camera:
 #    password: !secret camera_password
 #    verify_ssl: false
 
+# iOS notifications
+# ref: https://companion.home-assistant.io/docs/notifications/actionable-notifications/
+# ref: https://companion.home-assistant.io/docs/notifications/notifications-basic/
+ios:
+  push:
+    categories:
+      - name: Camera Motion Snooze
+        identifier: 'camera_motion_snooze'
+        actions:
+          - identifier: 'snooze_15'
+            title: 'Snooze for 15 mins'
+            activationMode: 'background'
+            authenticationRequired: 'true'
+            destructive: 'false'
+            behavior: 'default'
+          - identifier: 'snooze_60'
+            title: 'Snooze for 60 mins'
+            activationMode: 'background'
+            authenticationRequired: 'true'
+            destructive: 'false'
+            behavior: 'default'
+
+notify:
+  - name: all_family_mobile
+    platform: group
+    services:
+      - service: mobile_app_rma
+
 ###########
 ## SWITCHES
 ###########
@@ -291,7 +347,32 @@ sensor:
       simple_time:
         friendly_name: "Simple Time"
         value_template: "{{ as_timestamp(now()) | timestamp_custom('%I:%M %p') }}"
-
+  # MQTT Sensors from Zoneminder Cameras
+  - platform: mqtt
+    state_topic: "zoneminder/1"
+    name: !secret camera_1_alert_name
+    value_template: '{{ value_json.state }}'
+  - platform: mqtt
+    state_topic: "zoneminder/2"
+    name: !secret camera_2_alert_name
+  - platform: mqtt
+    state_topic: "zoneminder/3"
+    name: !secret camera_3_alert_name
+  - platform: mqtt
+    state_topic: "zoneminder/4"
+    name: !secret camera_4_alert_name
+  - platform: mqtt
+    state_topic: "zoneminder/5"
+    name: !secret camera_5_alert_name
+  - platform: mqtt
+    state_topic: "zoneminder/6"
+    name: !secret camera_6_alert_name
+  - platform: mqtt
+    state_topic: "zoneminder/7"
+    name: !secret camera_7_alert_name
+  - platform: mqtt
+    state_topic: "zoneminder/8"
+    name: !secret camera_8_alert_name
 
 #################
 ## MEDIA PLAYERS
