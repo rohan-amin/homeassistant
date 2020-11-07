@@ -1,0 +1,12 @@
+{
+    "name": "node-red-project",
+    "description": "A Node-RED Project",
+    "version": "0.0.1",
+    "private": true,
+    "dependencies": {
+        "node-red-contrib-bool-gate": "~1.0.2",
+        "node-red-contrib-credentials": "~0.2.1",
+        "node-red-contrib-simple-gate": "~0.3.1",
+        "node-red-contrib-throttle": "~0.1.6"
+    }
+}
