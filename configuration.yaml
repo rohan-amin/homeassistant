@@ -243,6 +243,7 @@ notify:
     platform: group
     services:
       - service: mobile_app_rma
+      - service: mobile_app_spa
 
 ###########
 ## SWITCHES
