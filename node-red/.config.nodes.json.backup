@@ -1500,5 +1500,32 @@
                 "file": "/config/node-red/node_modules/node-red-contrib-simple-gate/gate.js"
             }
         }
+    },
+    "node-red-contrib-bool-gate": {
+        "name": "node-red-contrib-bool-gate",
+        "version": "1.0.2",
+        "local": false,
+        "nodes": {
+            "and": {
+                "name": "and",
+                "types": [
+                    "and-gate"
+                ],
+                "enabled": true,
+                "local": true,
+                "module": "node-red-contrib-bool-gate",
+                "file": "/config/node-red/node_modules/node-red-contrib-bool-gate/nodes/and.js"
+            },
+            "or": {
+                "name": "or",
+                "types": [
+                    "or-gate"
+                ],
+                "enabled": true,
+                "local": true,
+                "module": "node-red-contrib-bool-gate",
+                "file": "/config/node-red/node_modules/node-red-contrib-bool-gate/nodes/or.js"
+            }
+        }
     }
 }
