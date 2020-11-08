@@ -574,7 +574,7 @@ cloud:
         description: Family Room TV and Sound
           
 
-#group: !include groups.yaml
+group: !include groups.yaml
 automation: !include automations.yaml
 script: !include scripts.yaml
 scene: !include scenes.yaml
