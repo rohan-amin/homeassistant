@@ -58,6 +58,9 @@ cards:
             name: Rohan
           - entity: person.sejal_amin
             name: Sejal
+          - entity: group.family
+            name: Family
+            icon: mdi:heart
 
       # LEAVE HOME
       - type: horizontal-stack
