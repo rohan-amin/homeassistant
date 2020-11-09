@@ -105,8 +105,8 @@ input_boolean:
 ##########
 
 # Integration done in 'People' in the UI
-# RMA - device_tracker.rma, device_tracker.rma_unifi
-# SPA - device_tracker.spa, 
+# RMA - device_tracker.rma_mobile
+# SPA - device_tracker.spa_mobile 
   
 
 
@@ -239,11 +239,25 @@ ios:
             behavior: 'default'
 
 notify:
-  - name: all_family_mobile
+  - name: family_all_mobile
     platform: group
     services:
       - service: mobile_app_rma
       - service: mobile_app_spa
+
+# Apple Homekit Bridge
+homekit:
+  filter:
+    include_entity_globs:
+      - cover.garage*
+  entity_config:
+    cover.garage_door_1_left:
+      name: Left Garage Door
+    cover.garage_door_2_center:
+      name: Middle Garage Door
+    cover.garage_door_3_right:
+      name: Right Garage Door
+      
 
 ###########
 ## SWITCHES
