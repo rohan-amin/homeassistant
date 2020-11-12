@@ -45,6 +45,20 @@ frontend:
 
 # Enable Browser Mod
 browser_mod:
+  prefix: "browser_"
+  devices:
+    e8d3cfa0-8db071c0:
+      name: macbookpro
+    88ef8de8-b87af4b7:
+      name: kitchen_tablet
+    21b43dc6-acf7e307:
+      name: master_bedroom_tablet
+    48d9ed59-91881c63:
+      name: front_door_tablet  
+  # disable all entities for all devices which don't have an alias
+  disable:
+    - all
+
 
 # Enable ffmpeg and streams for video streams
 ffmpeg:
@@ -360,7 +374,7 @@ sensor:
     sensors:
       simple_date:
         friendly_name: "Simple Date"
-        value_template: "{{ as_timestamp(now()) | timestamp_custom('%a %b%e') }}"
+        value_template: "{{ as_timestamp(now()) | timestamp_custom('%a %b %e') }}"
   - platform: template
     sensors:
       simple_time:
