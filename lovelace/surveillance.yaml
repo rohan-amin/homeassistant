@@ -1,0 +1,30 @@
+title: Surveillance
+icon: mdi:cctv
+path: surveillance
+panel: true
+
+cards:
+
+  # A container layout card for all of the cards on this page
+  - type: custom:layout-card
+    layout: auto
+    #column_num: 1 # the whole remote is one card
+    #column_width: 350px # width of the whole remote/column
+    justify_content: left #left align the entire column
+    #flex_grow: 1
+    cards:
+      # Surveillance Card for Cameras
+      - type: custom:surveillance-card
+        thumb_interval: 15
+        update_interval: 2
+        show_capture_buttons: false
+        recording_duration: 10
+        focus_motion: false
+        cameras:
+          - entity: camera.driveway
+          - entity: camera.front_door_2
+          - entity: camera.deck
+          - entity: camera.pool
+          - entity: camera.back_path
+          - entity: camera.back_patio
+

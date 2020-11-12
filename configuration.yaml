@@ -360,7 +360,7 @@ sensor:
     sensors:
       simple_date:
         friendly_name: "Simple Date"
-        value_template: "{{ as_timestamp(now()) | timestamp_custom('%A %b%e') }}"
+        value_template: "{{ as_timestamp(now()) | timestamp_custom('%a %b%e') }}"
   - platform: template
     sensors:
       simple_time:

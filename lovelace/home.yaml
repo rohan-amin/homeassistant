@@ -79,6 +79,13 @@ cards:
             #  haptic: success
             #  service: script.leaving
 
+      # HOME ALARM
+      - type: alarm-panel
+        name: House Alarm
+        entity: alarm_control_panel.amin_residence
+        states:
+          - arm_home
+          - arm_away
 
       # OUTDOOR LIGHTS
       - type: entities

@@ -36,7 +36,9 @@ resources:
   #Simple Thermostate
   - url: /local/simple-thermostat.js?v=0.36
     type: module
-
+  #Surveillance Card
+  - url: /local/surveillance-card.js?v=0
+    type: module
 
 #Custom Header
 #This removes the large header at the top of the lovelace ui
@@ -271,6 +273,7 @@ views:
 
   - !include /config/lovelace/home.yaml
   - !include /config/lovelace/climate.yaml
+  - !include /config/lovelace/surveillance.yaml
   - !include /config/lovelace/main_level.yaml
   - !include /config/lovelace/upstairs.yaml
   - !include /config/lovelace/master_bedroom.yaml
