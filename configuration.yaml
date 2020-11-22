@@ -337,6 +337,27 @@ switch:
               {% else %}
                 scene.family_room_audio_unmute
               {% endif %}
+  # Tablet Switches
+  - platform: command_line
+    switches:
+      master_bedroom_tablet_screen:
+        command_on: !secret master_bedroom_tablet_screen_on
+        command_off: !secret master_bedroom_tablet_screen_off
+        command_state: !secret master_bedroom_tablet_screen_state
+        value_template: '{{ value == "on" }}'
+        friendly_name: Master Bedroom Tablet Screen
+      kitchen_tablet_screen:
+        command_on: !secret kitchen_tablet_screen_on
+        command_off: !secret kitchen_tablet_screen_off
+        command_state: !secret kitchen_tablet_screen_state
+        value_template: '{{ value == "on" }}'
+        friendly_name: Kitchen Tablet Screen
+      front_door_tablet_screen:
+        command_on: !secret front_door_tablet_screen_on
+        command_off: !secret front_door_tablet_screen_off
+        command_state: !secret front_door_tablet_screen_state
+        value_template: '{{ value == "on" }}'
+        friendly_name: Front Door Tablet Screen
 
 
 ##########
