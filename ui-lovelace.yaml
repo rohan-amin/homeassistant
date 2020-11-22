@@ -12,9 +12,6 @@ resources:
   #Button Card
   - url: /local/button-card.js?v=3.3.6
     type: module
-  #Custom Header
-#  - url: /local/custom-header.js?v=1.7.3
-#    type: module
   #Slider Entity Row
   - url: /local/slider-entity-row.js?v=1
     type: module
