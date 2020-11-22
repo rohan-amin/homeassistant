@@ -208,8 +208,10 @@ cards:
             padding: 5px 0px 0px 10px;
           }
         entities:
-          - entity: input_boolean.camera_notify
-            name: Cameras
+          - entity: input_boolean.camera_notify_mobile
+            name: Camera Mobile
+          - entity: input_boolean.camera_notify_voice
+            name: Camera Voice
 
 #          # Zoneminder Camera Notifications
 #          - type: custom:fold-entity-row

@@ -93,26 +93,15 @@ input_select:
 #    initial: false
 
 input_boolean:
-  camera_notify:
-    name: Camera Notifications
+  camera_notify_mobile:
+    name: Camera Mobile Notifications
     initial: true
-    icon: mdi:camera-outline
-  camera_1_notify:
-    name: !secret camera_1_name
-  camera_2_notify:
-    name: !secret camera_2_name
-  camera_3_notify:
-    name: !secret camera_3_name
-  camera_4_notify:
-    name: !secret camera_4_name
-  camera_5_notify:
-    name: !secret camera_5_name
-  camera_6_notify:
-    name: !secret camera_6_name
-  camera_7_notify:
-    name: !secret camera_7_name
-  camera_8_notify:
-    name: !secret camera_8_name
+    icon: mdi:cellphone-wireless
+  camera_notify_voice:
+    name: Camera Voice Notifications
+    initial: true
+    icon: mdi:account-voice
+
 
 ##########
 ## PERSON 
