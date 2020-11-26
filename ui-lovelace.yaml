@@ -34,16 +34,17 @@ resources:
   - url: /local/simple-thermostat.js?v=0.36
     type: module
   #Surveillance Card
-  - url: /local/surveillance-card.js?v=0
+  - url: /local/surveillance-card/surveillance-card.js?v=0
+    type: module
+  #Kiosk Mode
+  - url: /local/community/kiosk-mode/kiosk-mode.js?v=1
     type: module
 
-#Custom Header
-#This removes the large header at the top of the lovelace ui
-#custom_header:
-#  compact_mode: true
-#  options_hide: true
-#  button_text:
-#    options: '{{ hours12 }}:{{ minutesLZ }}'
+#Kiosk Mode (HA, not FKB)
+# ref: https://github.com/maykar/kiosk-mode
+kiosk_mode:
+  non_admin_settings:
+    hide_sidebar: true
 
 #Theme
 #theme: midnight
@@ -263,11 +264,6 @@ button_card_templates:
 
 
 views:
-#  - badges: []
-#      - entity: binary_sensor.updater
-#      - entity: person.rohan_amin
-#      - entity: sun.sun
-
   - !include /config/lovelace/home.yaml
   - !include /config/lovelace/climate.yaml
   - !include /config/lovelace/surveillance.yaml

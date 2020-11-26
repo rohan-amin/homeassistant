@@ -14,7 +14,7 @@ cards:
     #flex_grow: 1
     cards:
       # Surveillance Card for Cameras
-      - type: custom:surveillance-card
+      - type: "custom:surveillance-card"
         thumb_interval: 15
         update_interval: 2
         show_capture_buttons: false
