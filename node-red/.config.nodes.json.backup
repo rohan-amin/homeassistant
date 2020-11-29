@@ -1527,5 +1527,92 @@
                 "file": "/config/node-red/node_modules/node-red-contrib-bool-gate/nodes/or.js"
             }
         }
+    },
+    "node-red-contrib-alexa-remote2": {
+        "name": "node-red-contrib-alexa-remote2",
+        "version": "3.10.4",
+        "local": false,
+        "nodes": {
+            "alexa-remote-account": {
+                "name": "alexa-remote-account",
+                "types": [
+                    "alexa-remote-account"
+                ],
+                "enabled": true,
+                "local": true,
+                "module": "node-red-contrib-alexa-remote2",
+                "file": "/config/node-red/node_modules/node-red-contrib-alexa-remote2/nodes/alexa-remote-account.js"
+            },
+            "alexa-remote-init": {
+                "name": "alexa-remote-init",
+                "types": [
+                    "alexa-remote-init"
+                ],
+                "enabled": true,
+                "local": true,
+                "module": "node-red-contrib-alexa-remote2",
+                "file": "/config/node-red/node_modules/node-red-contrib-alexa-remote2/nodes/alexa-remote-init.js"
+            },
+            "alexa-remote-event": {
+                "name": "alexa-remote-event",
+                "types": [
+                    "alexa-remote-event"
+                ],
+                "enabled": true,
+                "local": true,
+                "module": "node-red-contrib-alexa-remote2",
+                "file": "/config/node-red/node_modules/node-red-contrib-alexa-remote2/nodes/alexa-remote-event.js"
+            },
+            "alexa-remote-smarthome": {
+                "name": "alexa-remote-smarthome",
+                "types": [
+                    "alexa-remote-smarthome"
+                ],
+                "enabled": true,
+                "local": true,
+                "module": "node-red-contrib-alexa-remote2",
+                "file": "/config/node-red/node_modules/node-red-contrib-alexa-remote2/nodes/alexa-remote-smarthome.js"
+            },
+            "alexa-remote-routine": {
+                "name": "alexa-remote-routine",
+                "types": [
+                    "alexa-remote-routine"
+                ],
+                "enabled": true,
+                "local": true,
+                "module": "node-red-contrib-alexa-remote2",
+                "file": "/config/node-red/node_modules/node-red-contrib-alexa-remote2/nodes/alexa-remote-routine.js"
+            },
+            "alexa-remote-echo": {
+                "name": "alexa-remote-echo",
+                "types": [
+                    "alexa-remote-echo"
+                ],
+                "enabled": true,
+                "local": true,
+                "module": "node-red-contrib-alexa-remote2",
+                "file": "/config/node-red/node_modules/node-red-contrib-alexa-remote2/nodes/alexa-remote-echo.js"
+            },
+            "alexa-remote-other": {
+                "name": "alexa-remote-other",
+                "types": [
+                    "alexa-remote-other"
+                ],
+                "enabled": true,
+                "local": true,
+                "module": "node-red-contrib-alexa-remote2",
+                "file": "/config/node-red/node_modules/node-red-contrib-alexa-remote2/nodes/alexa-remote-other.js"
+            },
+            "alexa-remote-list": {
+                "name": "alexa-remote-list",
+                "types": [
+                    "alexa-remote-list"
+                ],
+                "enabled": true,
+                "local": true,
+                "module": "node-red-contrib-alexa-remote2",
+                "file": "/config/node-red/node_modules/node-red-contrib-alexa-remote2/nodes/alexa-remote-list.js"
+            }
+        }
     }
 }

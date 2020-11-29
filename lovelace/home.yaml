@@ -63,21 +63,21 @@ cards:
             icon: mdi:heart
 
       # LEAVE HOME
-      - type: horizontal-stack
-        cards:
-          - type: custom:button-card
-            color: auto
-            icon: mdi:home-export-outline
-            name: Leave Home
-            styles:
-              card:
-                - font-size: 12px
-                - font-weight: bold
-                - height: 70px
-            #tap_action:
-            #  action:
-            #  haptic: success
-            #  service: script.leaving
+      #- type: horizontal-stack
+      #  cards:
+      #    - type: custom:button-card
+      #      color: auto
+      #      icon: mdi:home-export-outline
+      #      name: Leave Home
+      #      styles:
+      #        card:
+      #          - font-size: 12px
+      #          - font-weight: bold
+      #          - height: 70px
+      #      #tap_action:
+      #      #  action:
+      #      #  haptic: success
+      #      #  service: script.leaving
 
       # HOME ALARM
       - type: alarm-panel
@@ -212,6 +212,8 @@ cards:
             name: Camera Mobile
           - entity: input_boolean.camera_notify_voice
             name: Camera Voice
+          - entity: input_boolean.camera_notify_tablet
+            name: Camera Tablet
 
 #          # Zoneminder Camera Notifications
 #          - type: custom:fold-entity-row

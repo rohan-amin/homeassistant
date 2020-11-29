@@ -10,7 +10,7 @@
                 "view-show-tips": true
             },
             "context": {
-                "flowRefresh": false
+                "flowRefresh": true
             }
         }
     }

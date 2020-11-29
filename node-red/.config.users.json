@@ -12,6 +12,7 @@
             "context": {
                 "flowRefresh": true
             }
-        }
+        },
+        "menu-menu-item-sidebar": false
     }
 }
