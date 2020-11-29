@@ -101,7 +101,10 @@ input_boolean:
     name: Camera Voice Notifications
     initial: true
     icon: mdi:account-voice
-
+  camera_notify_tablet:
+    name: Camera Tablet Notifications
+    initial: true
+    icon: mdi:tablet-dashboard
 
 ##########
 ## PERSON 
@@ -236,6 +239,15 @@ ios:
             behavior: 'default'
           - identifier: 'snooze_60'
             title: 'Snooze for 60 mins'
+            activationMode: 'background'
+            authenticationRequired: 'true'
+            destructive: 'false'
+            behavior: 'default'
+      - name: House Alarm Activate
+        identifier: 'house_alarm_activate'
+        actions:
+          - identifier: 'arm_home'
+            title: 'Arm Home'
             activationMode: 'background'
             authenticationRequired: 'true'
             destructive: 'false'
