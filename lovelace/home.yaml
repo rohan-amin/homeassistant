@@ -56,8 +56,10 @@ cards:
         entities:
           - entity: person.rohan_amin
             name: Rohan
+            secondary_info: last-changed
           - entity: person.sejal_amin
             name: Sejal
+            secondary_info: last-changed
           - entity: group.family
             name: Family
             icon: mdi:heart

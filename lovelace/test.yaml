@@ -13,24 +13,67 @@ cards:
     justify_content: left #left align the entire column
     #flex_grow: 1
     cards:
-      # Media Player
-      - type: custom:mini-media-player
-        entity: media_player.denon_avr_s750h
+      # SHOW ALL LIGHTS TURNED ON
+#      - type: entities
+#        title: Lights On
+#        style: |
+#          .card-header {
+#            font-size: 22px;
+#            font-weight: bold;
+#            padding: 5px 0px 0px 10px;
+#          }
+#        filter:
+#          include:
+#            - domain: light
+#              state: "on"
+#              options:
+#                type: custom:fold-entity-row
 
-      - type: custom:mini-media-player
-        entity: media_player.monoprice_kitchen
+      # OUTDOOR LIGHTS
+      - type: entities
+        title: Lights On
+        state_color: true
+        style: |
+          .card-header {
+            font-size: 22px;
+            font-weight: bold;
+            padding: 5px 0px 0px 10px;
+          }
+        entities:
+          # Garage
+          - type: entity-filter
+            entities:
+              - entity: light.garage_garage_interior
+                name: Garage Interior
+            state_filter:
+              - "on"
+          # Landscape Lights
+          - type: custom:fold-entity-row
+            head:
+              entity: light.outdoor_landscape_and_deck_front_yard
+              name: Front Yard Landscape
+            entities:
+              - entity: light.outdoor_landscape_and_deck_back_yard
+                name: Back Yard
+              - entity: light.outdoor_landscape_and_deck_pool
+                name: Pool
+              - entity: light.outdoor_landscape_and_deck_deck
+                name: Deck
+          # Outside Lights
+          - type: custom:fold-entity-row
+            head:
+              entity: light.front_door_front_door_outside
+              name: Front Door Outside
+            entities:
+              - entity: light.kitchen_kitchen_outside_door
+                name: Outside Kitchen
+              - entity: light.family_room_deck_floodlight
+                name: Deck Flood
+              - entity: light.garage_dual_driveway
+                name: Driveway Dual
+              - entity: light.garage_dual_driveway
+                name: Driveway Flood
+              - entity: light.basement_outside_door_basement_outside_door
+                name: Basement Outside
 
-      - type: custom:mini-media-player
-        entity: media_player.monoprice_deck
 
-      - type: custom:mini-media-player
-        entity: media_player.monoprice_dining_room
-
-      - type: custom:mini-media-player
-        entity: media_player.monoprice_living_room
-
-      - type: picture-entity
-        entity: camera.driveway
-        camera_view: live
-        show_name: false
-        show_state: false

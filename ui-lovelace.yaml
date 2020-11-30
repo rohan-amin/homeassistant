@@ -10,7 +10,7 @@ resources:
   - url: /local/mini-media-player-bundle.js?v=1.9.1
     type: module
   #Button Card
-  - url: /local/button-card.js?v=3.3.6
+  - url: /local/community/button-card/button-card.js?v=3.3.6
     type: module
   #Slider Entity Row
   - url: /local/slider-entity-row.js?v=1
@@ -38,6 +38,9 @@ resources:
     type: module
   #Kiosk Mode
   - url: /local/community/kiosk-mode/kiosk-mode.js?v=1
+    type: module
+  #Auto Entities
+  - url: /local/community/lovelace-auto-entities/auto-entities.js?v=0
     type: module
 
 #Kiosk Mode (HA, not FKB)
