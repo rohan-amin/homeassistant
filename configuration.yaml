@@ -252,6 +252,15 @@ ios:
             authenticationRequired: 'true'
             destructive: 'false'
             behavior: 'default'
+      - name: Kids Room Lights
+        identifier: 'kids_room_lights'
+        actions:
+          - identifier: 'turn_off_lights'
+            title: 'Turn Off Lights'
+            activationMode: 'background'
+            authenticationRequired: 'true'
+            destructive: 'false'
+            behavior: 'default'
 
 notify:
   - name: family_all_mobile
@@ -622,7 +631,19 @@ cloud:
       media_player.family_room_ump:
         name: Family Room TV
         description: Family Room TV and Sound
-          
+
+#################
+## LIGHT GROUP
+#################
+light:
+  - platform: group
+    name: Kids Room Lights
+    entities:
+      - light.bedroom_front_recessed
+      - light.bedroom_back_recessed
+      - light.bathroom_shared_mirror
+      - light.bathroom_shared_recessed
+      - light.bathroom_shared_shower
 
 group: !include groups.yaml
 automation: !include automations.yaml
