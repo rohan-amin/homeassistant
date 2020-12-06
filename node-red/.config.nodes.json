@@ -1618,7 +1618,7 @@
     "node-red-contrib-sonos-plus": {
         "name": "node-red-contrib-sonos-plus",
         "version": "4.5.2",
-        "local": false,
+        "local": true,
         "nodes": {
             "sonos-config": {
                 "name": "sonos-config",
@@ -1655,7 +1655,7 @@
     "node-red-contrib-sonospollytts": {
         "name": "node-red-contrib-sonospollytts",
         "version": "1.1.36",
-        "local": false,
+        "local": true,
         "nodes": {
             "sonospollytts": {
                 "name": "sonospollytts",

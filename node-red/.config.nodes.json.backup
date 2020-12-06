@@ -1651,5 +1651,42 @@
                 "file": "/config/node-red/node_modules/node-red-contrib-sonos-plus/src/sonos-universal.js"
             }
         }
+    },
+    "node-red-contrib-sonospollytts": {
+        "name": "node-red-contrib-sonospollytts",
+        "version": "1.1.36",
+        "local": false,
+        "nodes": {
+            "sonospollytts": {
+                "name": "sonospollytts",
+                "types": [
+                    "sonospollytts"
+                ],
+                "enabled": true,
+                "local": true,
+                "module": "node-red-contrib-sonospollytts",
+                "file": "/config/node-red/node_modules/node-red-contrib-sonospollytts/sonospollytts/sonospollytts.js"
+            },
+            "sonospollytts-config": {
+                "name": "sonospollytts-config",
+                "types": [
+                    "sonospollytts-config"
+                ],
+                "enabled": true,
+                "local": true,
+                "module": "node-red-contrib-sonospollytts",
+                "file": "/config/node-red/node_modules/node-red-contrib-sonospollytts/sonospollytts/sonospollytts-config.js"
+            },
+            "ownfile": {
+                "name": "ownfile",
+                "types": [
+                    "ownfile"
+                ],
+                "enabled": true,
+                "local": true,
+                "module": "node-red-contrib-sonospollytts",
+                "file": "/config/node-red/node_modules/node-red-contrib-sonospollytts/sonospollytts/ownfile.js"
+            }
+        }
     }
 }
