@@ -247,23 +247,23 @@ button_card_templates:
 
   # Movie Theater Buttons
   movie_theater_button:
-    color_type: card
+    #color_type: card
     styles:
       card:
         - height: 70px
-        - width: 110px
+        - width: 120px
         - font-size: 12pt
         - padding: 0px 0px
-        - background-color: rgb(59,102,76)
-        - color: white
-    state:
+        #- background-color: rgb(59,102,76)
+        #- color: white
+    #state:
       # If the button is on, make it light green
-      - value: 'on'
-        styles:
-          card:
-            - background-color: 'rgb(64,191,128)'
-            - color: black
-            - filter: opacity(100%)
+      #- value: 'on'
+        #styles:
+          #card:
+            #- background-color: rgb(64,191,128)
+            #- color: black
+            #- filter: opacity(100%)
 
 
 views:
