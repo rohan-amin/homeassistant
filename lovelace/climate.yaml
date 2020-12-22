@@ -45,3 +45,107 @@ cards:
         #icon: false
         control: false
         style: "ha-card {\n  --st-font-size-xl: 30px;\n}\n"
+
+      # MASTER BEDROOM FAN
+      # A horizontal stack-in-card (one card) with all of the buttons
+      - type: "custom:stack-in-card"
+        title: Master Bedroom Fan
+        mode: horizontal
+        style: |
+          .card-header {
+            font-size: 22px;
+            font-weight: bold;
+            padding: 5px 0px 0px 10px;
+          }
+
+        keep:
+          background: true
+          box_shadow: true
+          margin: true
+          outer_padding: 8px
+          border_radius: true
+        cards:
+
+          # Off Button
+          - type: "custom:button-card"
+            template: fan_off_template
+            entity: fan.master_bedroom_fan
+            variables:
+              name_id: "off"
+
+          # Low
+          - type: "custom:button-card"
+            template: fan_speed_template
+            entity: fan.master_bedroom_fan
+            variables:
+              name_id: "low"
+              speed_id: low
+
+          # Medium
+          - type: "custom:button-card"
+            template: fan_speed_template
+            entity: fan.master_bedroom_fan
+            variables:
+              name_id: "med"
+              speed_id: medium
+
+          # High
+          - type: "custom:button-card"
+            template: fan_speed_template
+            entity: fan.master_bedroom_fan
+            variables:
+              name_id: "high"
+              speed_id: high
+
+      # FAMILY ROOM FAN
+      # A horizontal stack-in-card (one card) with all of the buttons
+      - type: "custom:stack-in-card"
+        title: Family Room Fan
+        mode: horizontal
+        style: |
+          .card-header {
+            font-size: 22px;
+            font-weight: bold;
+            padding: 5px 0px 0px 10px;
+          }
+
+        keep:
+          background: true
+          box_shadow: true
+          margin: true
+          outer_padding: 8px
+          border_radius: true
+        cards:
+
+          # Off Button
+          - type: "custom:button-card"
+            template: fan_off_template
+            entity: fan.family_room_fan
+            variables:
+              name_id: "off"
+
+          # Low
+          - type: "custom:button-card"
+            template: fan_speed_template
+            entity: fan.family_room_fan
+            variables:
+              name_id: "low"
+              speed_id: low
+
+          # Medium
+          - type: "custom:button-card"
+            template: fan_speed_template
+            entity: fan.family_room_fan
+            variables:
+              name_id: "med"
+              speed_id: medium
+
+          # High
+          - type: "custom:button-card"
+            template: fan_speed_template
+            entity: fan.family_room_fan
+            variables:
+              name_id: "high"
+              speed_id: high
+
+
