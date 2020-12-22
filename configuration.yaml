@@ -141,14 +141,20 @@ bond:
   token: !secret bond_token
 
 # Nest
-badnest:
-  user_id: !secret nest_user_id
-  access_token: !secret nest_access_token 
-  region: us
+nest:
+  client_id: !secret nest_google_client_id
+  client_secret: !secret nest_google_client_secret
+  project_id: !secret nest_google_project_id
+  subscriber_id: !secret nest_google_subscriber_id
 
-climate:
-  - platform: badnest
-    scan_interval: 10
+#badnest:
+#  user_id: !secret nest_user_id
+#  access_token: !secret nest_access_token 
+#  region: us
+
+#climate:
+#  - platform: badnest
+#    scan_interval: 10
 
 
 #OpenWeatherMap configured via UI
@@ -386,7 +392,7 @@ switch:
 ##########
 sensor:
   # Badnest for NEST Thermostat Integration
-  - platform: badnest
+  #- platform: badnest
   # Flume Water Sensor
   - platform: flume
     username: !secret flume_username 

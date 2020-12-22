@@ -1,5 +1,5 @@
 title: Climate
-icon: mdi:temperature-fahrenheit
+icon: mdi:thermostat
 path: climate
 panel: true
 cards:
@@ -12,7 +12,7 @@ cards:
 
       # Family Room Thermostat
       - type: custom:simple-thermostat
-        entity: climate.family_room_thermostat
+        entity: climate.family_room
         step_layout: row
         step_size: 1
         #icon: false
@@ -21,7 +21,7 @@ cards:
 
       # Master Bedroom Thermostat
       - type: custom:simple-thermostat
-        entity: climate.master_bedroom_thermostat
+        entity: climate.master_bedroom
         step_layout: row
         step_size: 1
         #icon: false
@@ -30,7 +30,7 @@ cards:
 
       # Kids Bedroom Thermostat
       - type: custom:simple-thermostat
-        entity: climate.kids_room_thermostat
+        entity: climate.kids_room
         step_layout: row
         step_size: 1
         #icon: false
@@ -39,7 +39,7 @@ cards:
 
       # Basement Thermostat
       - type: custom:simple-thermostat
-        entity: climate.basement_thermostat
+        entity: climate.basement
         step_layout: row
         step_size: 1
         #icon: false
