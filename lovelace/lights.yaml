@@ -1,0 +1,176 @@
+title: Lights
+icon: mdi:lightbulb-on
+path: lights
+panel: true
+cards:
+
+  # A container layout card for all of the cards on this page
+  - type: custom:layout-card
+    layout: auto
+    #column_num: 1 # the whole remote is one card
+    #column_width: 350px # width of the whole remote/column
+    justify_content: left #left align the entire column
+    #flex_grow: 1
+    cards:
+
+      # MAIN LEVEL LIGHTS
+      - type: entities
+        title: Main Level Lights
+        state_color: true
+        style: |
+          .card-header {
+            font-size: 22px;
+            font-weight: bold;
+            padding: 5px 0px 0px 10px;
+          }
+        entities:
+          # Kitchen Lights
+          - type: custom:fold-entity-row
+            head:
+              type: custom:slider-entity-row
+              entity: light.kitchen_kitchen_recessed
+              name: Kitchen
+            entities:
+              - entity: light.kitchen_kitchen_island_recessed
+                name: Island
+              - entity: light.kitchen_kitchen_pendant
+                name: Pendants
+              - entity: light.kitchen_kitchen_table
+                name: Table
+              - entity: switch.kitchen_under_cabinet
+                name: Under Cabinet
+          # Family Room
+          - type: custom:fold-entity-row
+            head:
+              type: custom:slider-entity-row
+              entity: light.main_stairs_family_room_recessed
+              name: Family Room
+            entities:
+              - entity: light.main_stairs_family_room_walkway
+                name: Walkway
+          # Living Room
+          - type: custom:fold-entity-row
+            head:
+              type: custom:slider-entity-row
+              entity: light.living_room_living_room_recessed
+              name: Living Room
+            entities:
+              - entity: light.living_room_fire_place_spot
+                name: Fireplace Spot
+              - entity: light.living_room_fire_place_sconce
+                name: Wall Sconces
+          # Dining Room
+          - type: custom:fold-entity-row
+            head:
+              type: custom:slider-entity-row
+              entity: light.dining_room_recessed
+              name: Dining Room
+            entities:
+              - entity: light.dining_room_chandelier
+                name: Dining Chandelier
+          # Other Lights
+          - entity: light.mudroom_mudroom
+            name: Mudroom
+          - entity: light.family_room_front_entrance_chandelier
+            name: Foyer
+          - entity: switch.powder_room_powder_room
+            name: Powder Room
+
+      # UPSTAIRS LIGHTS
+      - type: entities
+        title: Upstairs Lights
+        state_color: true
+        style: |
+          .card-header {
+            font-size: 22px;
+            font-weight: bold;
+            padding: 5px 0px 0px 10px;
+          }
+        entities:
+          # Upstairs
+          - entity: light.upstairs_hallway_upstairs_hallway
+            name: Upstairs Hallway
+          # Kids Room
+          - type: custom:fold-entity-row
+            head:
+              type: section
+              label: Kids Room
+            entities:
+              - entity: light.bedroom_front_recessed
+                name: Samit's Room
+              - entity: light.bedroom_back_recessed
+                name: Rishi's Room
+              - type: custom:fold-entity-row
+                head:
+                  entity: light.bathroom_shared_recessed
+                  name: Kids Bathroom
+                entities:
+                  - entity: light.bathroom_shared_mirror
+                    name: Kids Mirror
+                  - entity: light.bathroom_shared_mirror
+                    name: Kids Shower
+          # Guest Room
+          - type: custom:fold-entity-row
+            head:
+              entity: light.bathroom_shared_mirror
+              name: Guest Bedroom
+            entities:
+              - entity: light.guest_room_bathroom_recessed
+                name: Guest Bathroom
+              - entity: light.guest_room_bathroom_shower
+                name: Guest Shower
+
+      # BASEMENT LIGHTS
+      - type: entities
+        title: Basement Lights
+        state_color: true
+        style: |
+          .card-header {
+            font-size: 22px;
+            font-weight: bold;
+            padding: 5px 0px 0px 10px;
+          }
+        entities:
+          # Stairs
+          - entity: light.basement_main_stairs
+            name: Stairs
+          # Game Room
+          - type: custom:fold-entity-row
+            head:
+              type: custom:slider-entity-row
+              entity: light.basement_main_game_room
+              name: Game Room
+            entities:
+              - entity: light.basement_main_hallway
+                name: Hallway
+              - entity: switch.basement_main_av_rack_main_av_rack
+                name: AV Rack
+              - entity: light.basement_main_gym_outside
+                name: Outside Gym
+              - entity: light.basement_main_wet_bar
+                name: Wetbar
+          # Bedroom
+          - type: custom:fold-entity-row
+            head:
+              type: custom:slider-entity-row
+              entity: light.basement_bedroom_recessed
+              name: Bedroom
+            entities:
+              - entity: switch.basement_bedroom_window_left
+                name: Left Window
+              - entity: switch.basement_bedroom_window_right
+                name: Right Window
+              - entity: switch.basement_bedroom_closet
+                name: Closet
+          # Bathroom
+          - type: custom:fold-entity-row
+            head:
+              type: custom:slider-entity-row
+              entity: light.basement_bathroom_recessed
+              name: Bathroom
+            entities:
+              - entity: switch.basement_bathroom_wall_sconces
+                name: Wall Sconces
+              - entity: light.basement_bathroom_single
+                name: Spot
+
