@@ -268,12 +268,9 @@ button_card_templates:
 
 views:
   - !include /config/lovelace/home.yaml
+  - !include /config/lovelace/lights.yaml
   - !include /config/lovelace/climate.yaml
   - !include /config/lovelace/surveillance.yaml
-  - !include /config/lovelace/main_level.yaml
-  - !include /config/lovelace/upstairs.yaml
-  - !include /config/lovelace/master_bedroom.yaml
-  - !include /config/lovelace/basement.yaml
   - !include /config/lovelace/theater.yaml
   - !include /config/lovelace/remote_control.yaml
   - !include /config/lovelace/music.yaml
