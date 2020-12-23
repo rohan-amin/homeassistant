@@ -76,6 +76,59 @@ cards:
           - entity: switch.powder_room_powder_room
             name: Powder Room
 
+      # MASTER BEDROOM LIGHTS
+      - type: entities
+        title: Master Bedroom Lights
+        state_color: true
+        style: |
+          .card-header {
+            font-size: 22px;
+            font-weight: bold;
+            padding: 5px 0px 0px 10px;
+          }
+        entities:
+          # Master Bedroom and Closet Lights
+          - type: custom:fold-entity-row
+            head:
+              type: custom:slider-entity-row
+              entity: light.master_bedroom_master_recessed
+              name: Bedroom
+            entities:
+              - entity: light.master_bedroom_sitting_area_sitting_area
+                name: Sitting Area
+              - entity: light.master_bedroom_master_bedroom_entrance
+                name: Entrance
+              - entity: light.master_bedroom_master_closet_hers
+                name: Her Closet
+              - entity: switch.master_bedroom_master_closet_his
+                name: His Closet
+          # Master Bathroom
+          - type: custom:fold-entity-row
+            head:
+              type: custom:slider-entity-row
+              entity: light.master_bedroom_bathroom_master_bathroom_main
+              name: Bathroom
+            entities:
+              - entity: light.master_bedroom_bathroom_master_bath_chandelier
+                name: Chandelier
+              - entity: light.master_bedroom_bathroom_master_bath_tub
+                name: Tub
+              - entity: light.master_bedroom_bathroom_master_shower
+                name: Shower
+              - entity: light.master_bedroom_bathroom_master_sink_hers
+                name: Her Sink
+              - entity: light.master_bedroom_bathroom_master_sink_his
+                name: His Sink
+              - entity: light.master_bedroom_bathroom_water_closet
+                name: Water Closet
+          # Scene Switches
+          - type: divider
+          - entity: switch.master_bedroom_master_bedroom_all_off_led
+            name: House All Off
+          - entity: switch.master_bedroom_master_bedroom_suite_off_led
+            name: MB Suite Off
+
+
       # UPSTAIRS LIGHTS
       - type: entities
         title: Upstairs Lights
@@ -107,7 +160,7 @@ cards:
                 entities:
                   - entity: light.bathroom_shared_mirror
                     name: Kids Mirror
-                  - entity: light.bathroom_shared_mirror
+                  - entity: light.bathroom_shared_shower
                     name: Kids Shower
           # Guest Room
           - type: custom:fold-entity-row
@@ -173,4 +226,48 @@ cards:
                 name: Wall Sconces
               - entity: light.basement_bathroom_single
                 name: Spot
+
+      # OUTDOOR LIGHTS
+      - type: entities
+        title: Outdoor Lights
+        state_color: true
+        style: |
+          .card-header {
+            font-size: 22px;
+            font-weight: bold;
+            padding: 5px 0px 0px 10px;
+          }
+        entities:
+          # Garage
+          - entity: light.garage_garage_interior
+            name: Garage Interior
+          # Landscape Lights
+          - type: custom:fold-entity-row
+            head:
+              entity: light.outdoor_landscape_and_deck_front_yard
+              name: Front Yard Landscape
+            entities:
+              - entity: light.outdoor_landscape_and_deck_back_yard
+                name: Back Yard
+              - entity: light.outdoor_landscape_and_deck_pool
+                name: Pool
+              - entity: light.outdoor_landscape_and_deck_deck
+                name: Deck
+          # Outside Lights
+          - type: custom:fold-entity-row
+            head:
+              entity: light.front_door_front_door_outside
+              name: Front Door Outside
+            entities:
+              - entity: light.kitchen_kitchen_outside_door
+                name: Outside Kitchen
+              - entity: light.family_room_deck_floodlight
+                name: Deck Flood
+              - entity: light.garage_dual_driveway
+                name: Driveway Dual
+              - entity: light.garage_dual_driveway
+                name: Driveway Flood
+              - entity: light.basement_outside_door_basement_outside_door
+                name: Basement Outside
+
 
