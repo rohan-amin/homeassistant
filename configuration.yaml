@@ -97,14 +97,18 @@ input_boolean:
     name: Camera Mobile Notifications
     initial: true
     icon: mdi:cellphone-wireless
-  camera_notify_voice:
-    name: Camera Voice Notifications
-    initial: true
-    icon: mdi:account-voice
   camera_notify_tablet:
     name: Camera Tablet Notifications
     initial: true
     icon: mdi:tablet-dashboard
+  notify_voice:
+    name: Voice Notifications
+    initial: true
+    icon: mdi:account-voice
+  dinner_announcement:
+    name: Dinner Announcement
+    initial: false
+    icon: mdi:account-voice
 
 ##########
 ## PERSON 

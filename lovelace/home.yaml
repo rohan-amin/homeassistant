@@ -195,30 +195,22 @@ cards:
         entities:
           - entity: input_boolean.camera_notify_mobile
             name: Camera Mobile
-          - entity: input_boolean.camera_notify_voice
-            name: Camera Voice
           - entity: input_boolean.camera_notify_tablet
             name: Camera Tablet
+          - entity: input_boolean.notify_voice
+            name: In House Voice
 
-#          # Zoneminder Camera Notifications
-#          - type: custom:fold-entity-row
-#            head:
-#              entity: input_boolean.camera_1_notify
-#              name: !secret camera_1_name
-#            entities:
-#              - entity: input_boolean.camera_2_notify
-#                name: !secret camera_2_name
-#              - entity: input_boolean.camera_3_notify
-#                name: !secret camera_3_name
-#              - entity: input_boolean.camera_4_notify
-#                name: !secret camera_4_name
-#              - entity: input_boolean.camera_5_notify
-#                name: !secret camera_5_name
-#              - entity: input_boolean.camera_6_notify
-#                name: !secret camera_6_name
-#              - entity: input_boolean.camera_7_notify
-#                name: !secret camera_7_name
-#              - entity: input_boolean.camera_8_notify
-#                name: !secret camera_8_name
-
+      # ANNOUNCEMENTS
+      - type: entities
+        title: Announcements
+        state_color: true
+        style: |
+          .card-header {
+            font-size: 22px;
+            font-weight: bold;
+            padding: 5px 0px 0px 10px;
+          }
+        entities:
+          - entity: input_boolean.dinner_announcement
+            name: Dinner
 
