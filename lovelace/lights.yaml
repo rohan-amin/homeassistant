@@ -143,25 +143,24 @@ cards:
           # Upstairs
           - entity: light.upstairs_hallway_upstairs_hallway
             name: Upstairs Hallway
+          # Divider
+          - type: divider
           # Kids Room
+          - entity: light.bedroom_front_recessed
+            name: Samit's Room
+          - entity: light.bedroom_back_recessed
+            name: Rishi's Room
           - type: custom:fold-entity-row
             head:
-              type: section
-              label: Kids Room
+              entity: light.bathroom_shared_recessed
+              name: Kids Bathroom
             entities:
-              - entity: light.bedroom_front_recessed
-                name: Samit's Room
-              - entity: light.bedroom_back_recessed
-                name: Rishi's Room
-              - type: custom:fold-entity-row
-                head:
-                  entity: light.bathroom_shared_recessed
-                  name: Kids Bathroom
-                entities:
-                  - entity: light.bathroom_shared_mirror
-                    name: Kids Mirror
-                  - entity: light.bathroom_shared_shower
-                    name: Kids Shower
+              - entity: light.bathroom_shared_mirror
+                name: Kids Mirror
+              - entity: light.bathroom_shared_shower
+                name: Kids Shower
+          # Divider
+          - type: divider
           # Guest Room
           - type: custom:fold-entity-row
             head:
