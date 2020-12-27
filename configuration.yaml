@@ -416,6 +416,25 @@ switch:
 sensor:
   # Badnest for NEST Thermostat Integration
   #- platform: badnest
+  # Sensors to Produce rounded temperature (vs. long decimal) for NEST thermostat
+  - platform: template
+    sensors:
+      family_room_temperature_round:
+        friendly_name: "Family Room Temperature Round"
+        unit_of_measurement: '°F'
+        value_template: "{{ states('sensor.family_room_temperature') | round|int }}"
+      master_bedroom_temperature_round:
+        friendly_name: "Master Bedroom Temperature Round"           
+        unit_of_measurement: '°F'         
+        value_template: "{{ states('sensor.master_bedroom_temperature') | round|int }}"
+      kids_room_temperature_round:
+        friendly_name: "Kids Room Temperature Round"           
+        unit_of_measurement: '°F'         
+        value_template: "{{ states('sensor.kids_room_temperature') | round|int }}"  
+      basement_temperature_round:
+        friendly_name: "Basement Temperature Round"           
+        unit_of_measurement: '°F'         
+        value_template: "{{ states('sensor.basement_temperature') | round|int }}"  
   # Flume Water Sensor
   - platform: flume
     username: !secret flume_username 
@@ -656,14 +675,28 @@ cloud:
     filter:
       include_entities:
         - media_player.family_room_ump
+        - media_player.monoprice_kitchen
         - scene.kitchen_tv_audio_on
         - scene.kitchen_tv_audio_off
-        - scene.kitchen_music_on
-        - scene.kitchen_music_off
+        - scene.kitchen_sonos_on
+        - scene.kitchen_sonos_off
     entity_config:
       media_player.family_room_ump:
         name: Family Room TV
         description: Family Room TV and Sound
+      media_player.monoprice_kitchen:
+        name: Kitchen Speakers
+        description: Kitchen Monoprice Speakers
+      scene.kitchen_tv_audio_on:
+        name: Kitchen TV Audio On
+      scene.kitchen_tv_audio_off:
+        name: Kitchen TV Audio Off
+      scene.kitchen_sonos_on:
+        name: Kitchen Sonos On
+        description: Kitchen Sonos Speakers On
+      scene.kitchen_sonos_off:
+        name: Kitchen Sonos Off
+        description: Kitchen Sonos Speakers Off
 
 #################
 ## LIGHT GROUP

@@ -126,13 +126,13 @@ cards:
             padding: 5px 0px 0px 10px;
           }
         entities:
-          - entity: sensor.family_room_temperature
+          - entity: sensor.family_room_temperature_round
             name: Family
-          - entity: sensor.master_bedroom_temperature
+          - entity: sensor.master_bedroom_temperature_round
             name: Master
-          - entity: sensor.kids_room_temperature
+          - entity: sensor.kids_room_temperature_round
             name: Kids
-          - entity: sensor.basement_temperature
+          - entity: sensor.basement_temperature_round
             name: Basement
 
       # FLUME WATER SENSOR

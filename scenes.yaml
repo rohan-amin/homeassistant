@@ -122,7 +122,7 @@
       is_volume_muted: false
 
 # Kitchen Sonos Music On
-- name: kitchen_music_on
+- name: kitchen_sonos_on
   entities:
     media_player.monoprice_kitchen:
       state: "on"
@@ -130,7 +130,7 @@
       source: "Sonos"
 
 # Kitchen Sonos Music Off
-- name: kitchen_music_off
+- name: kitchen_sonos_off
   entities:
     media_player.monoprice_kitchen:
       state: "off"
