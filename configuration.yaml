@@ -101,6 +101,10 @@ input_boolean:
     name: Camera Tablet Notifications
     initial: true
     icon: mdi:tablet-dashboard
+  camera_all_notifications:
+    name: Camera All Notifications
+    initial: true
+    icon: mdi:notification-clear-all
   notify_voice:
     name: Voice Notifications
     initial: true
@@ -312,6 +316,21 @@ switch:
         command_state: "ZM?"
         value_template: '{{ value == "ZMON" }}'
         timeout: 0.9
+  # Apple TV in Home Theater
+  - platform: template
+    switches:
+      apple_tv:
+        value_template: "{{ is_state('media_player.apple_tv','playing') }}"
+        turn_on:
+          service: remote.send_command
+          data:
+            entity_id: remote.apple_tv
+            command: menu
+        turn_off:
+          service: remote.send_command
+          data:
+            entity_id: remote.apple_tv
+            command: suspend
   # Denon Receiver in Family Room
   - platform: telnet
     switches:
@@ -475,7 +494,7 @@ media_player:
     user_labels: True
     name: Family Room TV
 
-  # MASTER BEDROOM Universal Media Player
+  # MASTER BEDROOM Universal Media Player (ump)
   - platform: universal
     name: Master Bedroom UMP
     children:
@@ -592,13 +611,13 @@ media_player:
       {% endif %}
     commands:
       turn_on:
-        service: scene.turn_on
+        service: script.turn_on
         data:
-          entity_id: scene.theater_audio_video_on
+          entity_id: script.theater_audio_video_on
       turn_off:
-        service: scene.turn_on
+        service: script.turn_on
         data:
-          entity_id: scene.theater_audio_video_off
+          entity_id: script.theater_audio_video_off
       volume_up:
         service: media_player.volume_up
         data:
@@ -637,6 +656,10 @@ cloud:
     filter:
       include_entities:
         - media_player.family_room_ump
+        - scene.kitchen_tv_audio_on
+        - scene.kitchen_tv_audio_off
+        - scene.kitchen_music_on
+        - scene.kitchen_music_off
     entity_config:
       media_player.family_room_ump:
         name: Family Room TV

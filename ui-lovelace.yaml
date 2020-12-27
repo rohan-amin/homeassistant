@@ -245,17 +245,37 @@ button_card_templates:
         speed: '[[[ return variables.speed_id ]]]'
 
 
-  # Movie Theater Buttons
-  movie_theater_button:
-    #color_type: card
+  ## Home Theater Buttons
+  # Blank Remote Control Buttons
+  home_theater_blank:
+    color_type: blank-card
+    styles:
+      card:
+        - height: 70px
+        - width: 120px
+        - padding: 0px 0px
+  home_theater_button:
+    color_type: icon
+    variables:
+      icon_id: mdi:cloud-question
+      svc_id: media_player.toggle
+      ent_id: media_player.home_theater_ump
     styles:
       card:
         - height: 70px
         - width: 120px
         - font-size: 12pt
         - padding: 0px 0px
+        - --mdc-ripple-color: blue
+        - --mdc-ripple-press-opacity: 0.5
         #- background-color: rgb(59,102,76)
         #- color: white
+    icon: '[[[ return variables.icon_id ]]]'
+    tap_action:
+      action: call-service
+      service: '[[[ return variables.svc_id ]]]'
+      service_data:
+        entity_id: '[[[ return variables.ent_id ]]]'
     #state:
       # If the button is on, make it light green
       #- value: 'on'
@@ -264,7 +284,14 @@ button_card_templates:
             #- background-color: rgb(64,191,128)
             #- color: black
             #- filter: opacity(100%)
-
+  home_theater_command_button:
+    template: home_theater_button
+    tap_action:
+      action: call-service
+      service: '[[[ return variables.svc_id ]]]'
+      service_data:
+        entity_id: '[[[ return variables.ent_id ]]]'
+        command: '[[[ return variables.cmd_id ]]]'    
 
 views:
   - !include /config/lovelace/home.yaml

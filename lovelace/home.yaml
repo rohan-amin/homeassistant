@@ -197,6 +197,8 @@ cards:
             name: Camera Mobile
           - entity: input_boolean.camera_notify_tablet
             name: Camera Tablet
+          - entity: input_boolean.camera_all_notifications
+            name: Camera All Notifications
           - entity: input_boolean.notify_voice
             name: In House Voice
 

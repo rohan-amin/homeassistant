@@ -8,73 +8,229 @@ cards:
   # A container layout card for all of the cards on this page
   - type: custom:layout-card
     layout: auto
-    #column_num: 1 # the whole remote is one card
-    #column_width: 350px # width of the whole remote/column
+    column_num: 1
+    column_width: 376px # width of the whole remote/column
     justify_content: left #left align the entire column
     #flex_grow: 1
     cards:
-      # FIRST ROW - LIGHTS
-      - type: entities
-        title: Home Theater Lights
+      # ROW: LIGHTS
+      - type: custom:stack-in-card
+        #title: Home Theater Lights
         state_color: true
+        show_header_toggle: false
         style: |
           .card-header {
-            font-size: 16px;
-            padding: 10px 0px 0px 10px;
+            font-size: 22px;
+            font-weight: bold;
+            padding: 5px 0px 0px 10px;
           }
-        entities:
-          # Recessed Lights
-          - type: custom:fold-entity-row
-            open: true
-            head:
-              type: custom:slider-entity-row
-              entity: light.basement_media_room_recessed
-              name: Recessed
+        cards:
+          - type: horizontal-stack
+            cards:
+              # BLANK
+              - type: "custom:button-card"
+                template: home_theater_blank
+                styles:
+                  card:
+                    - width: 60px
+              # Movie Time Lights Scene
+              - type: custom:button-card
+                template: home_theater_button
+                entity: scene.movie_lights
+                icon: mdi:lightbulb-outline
+                name: Movie Time
+                tap_action:
+                  action: call-service
+                  service: scene.turn_on
+                  service_data:
+                    entity_id: scene.movie_lights
+              # Movie Over Lights Scene
+              - type: custom:button-card
+                template: home_theater_button
+                entity: scene.movie_over_lights
+                icon: mdi:lightbulb-on-outline
+                name: Movie Over
+                tap_action:
+                  action: call-service
+                  service: scene.turn_on
+                  service_data:
+                    entity_id: scene.movie_over_lights
+          # Individual Theater Lights
+          - type: entities
             entities:
-              # Wall Sconces
+              - type: custom:slider-entity-row
+                entity: light.basement_media_room_recessed
+                name: Recessed
               - type: custom:slider-entity-row
                 entity: light.basement_media_room_wall_sconces
                 name: Wall
-              # Floor Strip
               - type: custom:slider-entity-row
                 entity: light.basement_media_room_floor_strip
                 name: Floor
 
-      # SECOND ROW
+      # NEXT ROW: MUTE, VOLUME UP, VOLUME DOWN
       - type: horizontal-stack
         cards:
-          # Movie Time Lights Scene
-          - type: custom:button-card
-            template: movie_theater_button
-            entity: scene.movie_lights
-            icon: mdi:lightbulb-outline
-            name: Movie Time
-            tap_action:
-              action: call-service
-              service: scene.turn_on
-              service_data:
-                entity_id: scene.movie_lights 
-          # Movie Over Lights Scene
-          - type: custom:button-card
-            template: movie_theater_button
-            entity: scene.movie_over_lights
-            icon: mdi:lightbulb-on-outline
-            name: Movie Over
-            tap_action:
-              action: call-service
-              service: scene.turn_on
-              service_data:
-                entity_id: scene.movie_over_lights
-          # Blank
+          # MUTE
           - type: "custom:button-card"
-            template: rc_blank_template
+            template: home_theater_button
+            #color_type: icon
+            name: "Mute"
+            #size: 60% #size of the icon
+            triggers_update:
+              - media_player.home_theater_ump
+            # Change the icon if muted or not muted
+            icon: >
+              [[[
+                var mute_status = states['media_player.home_theater_ump'].attributes.is_volume_muted;
+                return (mute_status ? "mdi:volume-off" : "mdi:volume-mute");
+              ]]]
+            tap_action:
+              action: call-service
+              service: media_player.volume_mute
+              service_data:
+                entity_id: media_player.home_theater_ump
+                is_volume_muted: >
+                  [[[
+                    var mute_status = states['media_player.home_theater_ump'].attributes.is_volume_muted;
+                    return (mute_status ? false : true);
+                  ]]]
+          # VOLUME UP
+          - type: "custom:button-card"
+            template: home_theater_button
+            name: "Volume"
+            variables:
+              icon_id: mdi:volume-plus
+              svc_id: media_player.volume_up
+              ent_id: media_player.home_theater_ump
+            hold_action:
+              action: call-service
+              repeat: 500
+              service: media_player.volume_up
+              service_data:
+                entity_id: media_player.home_theater_ump
+          # VOLUME DOWN
+          - type: "custom:button-card"
+            template: home_theater_button
+            name: "Volume"
+            variables:
+              icon_id: mdi:volume-minus
+              svc_id: media_player.volume_down
+              ent_id: media_player.home_theater_ump
+            hold_action:
+              action: call-service
+              repeat: 500
+              service: media_player.volume_down
+              service_data:
+                entity_id: media_player.home_theater_ump 
 
-      # THIRD ROW
+      ## ROW: MENU, UP ARROW, HOME
+      - type: horizontal-stack
+        cards:
+          # MENU
+          - type: "custom:button-card"
+            template: home_theater_command_button
+            name: Menu
+            variables:
+              icon_id: mdi:menu
+              svc_id: remote.send_command
+              ent_id: remote.apple_tv
+              cmd_id: menu
+          # UP
+          - type: "custom:button-card"
+            template: home_theater_command_button
+            name: Up
+            variables:
+              icon_id: mdi:arrow-up-bold
+              svc_id: remote.send_command
+              ent_id: remote.apple_tv
+              cmd_id: up      
+          # HOME
+          - type: "custom:button-card"
+            template: home_theater_command_button
+            name: Home
+            variables:
+              icon_id: mdi:home
+              svc_id: remote.send_command
+              ent_id: remote.apple_tv
+              cmd_id: top_menu  
+
+      ## ROW: LEFT, SELECT, RIGHT
+      - type: horizontal-stack
+        cards:
+          # LEFT
+          - type: "custom:button-card"
+            template: home_theater_command_button
+            name: Left
+            variables:
+              icon_id: mdi:arrow-left-bold
+              svc_id: remote.send_command
+              ent_id: remote.apple_tv
+              cmd_id: left
+          # SELECT
+          - type: "custom:button-card"
+            template: home_theater_command_button
+            name: Select
+            variables:
+              icon_id: mdi:check
+              svc_id: remote.send_command
+              ent_id: remote.apple_tv
+              cmd_id: select
+          # RIGHT
+          - type: "custom:button-card"
+            template: home_theater_command_button
+            name: Right
+            variables:
+              icon_id: mdi:arrow-right-bold
+              svc_id: remote.send_command
+              ent_id: remote.apple_tv
+              cmd_id: right
+
+      ## ROW: BLANK, DOWN, BLANK
+      - type: horizontal-stack
+        cards:
+          # BLANK
+          - type: "custom:button-card"
+            template: home_theater_blank
+          # DOWN
+          - type: "custom:button-card"
+            template: home_theater_command_button
+            name: Down
+            variables:
+              icon_id: mdi:arrow-down-bold
+              svc_id: remote.send_command
+              ent_id: remote.apple_tv
+              cmd_id: down
+          # BLANK
+          - type: "custom:button-card" 
+            template: home_theater_blank
+
+      ## ROW: PLAY/PAUSE
+      - type: horizontal-stack
+        cards:
+          # PLAY/PAUSE
+          - type: "custom:button-card"
+            template: home_theater_command_button
+            name: Play/Pause
+            variables:
+              icon_id: mdi:play-pause
+              svc_id: remote.send_command
+              ent_id: remote.apple_tv
+              cmd_id: play_pause
+          # BLANK
+          - type: "custom:button-card"
+            template: home_theater_blank
+          # BLANK
+          - type: "custom:button-card"
+            template: home_theater_blank
+
+
+      # ROW: TURN THEATER ON/OFF
       - type: horizontal-stack
         cards:
          # Turn on A/V + Apple TV
           - type: custom:button-card
-            template: movie_theater_button
+            template: home_theater_button
             entity: script.theater_audio_video_on
             icon: mdi:audio-video
             name: Turn on Theater
@@ -85,7 +241,7 @@ cards:
                 entity_id: script.theater_audio_video_on
          # Turn off A/V + Apple TV
           - type: custom:button-card
-            template: movie_theater_button
+            template: home_theater_button
             entity: script.theater_audio_video_off
             icon: mdi:audio-video
             name: Turn off Theater
@@ -98,72 +254,12 @@ cards:
           - type: "custom:button-card"
             template: rc_blank_template
 
-      # FOURTH ROW
-      - type: horizontal-stack
-        cards:
-         # Turn on A/V
-          - type: custom:button-card
-            template: movie_theater_button
-            entity: scene.theater_audio_video_on
-            icon: mdi:audio-video
-            name: Turn on A/V
-            tap_action:
-              action: call-service
-              service: scene.turn_on
-              service_data:
-                entity_id: scene.theater_audio_video_on
-         # Turn off A/V
-          - type: custom:button-card
-            template: movie_theater_button
-            entity: scene.theater_audio_video_on
-            icon: mdi:audio-video
-            name: Turn off A/V
-            tap_action:
-              action: call-service
-              service: scene.turn_on
-              service_data:
-                entity_id: scene.theater_audio_video_off
-          # Blank
-          - type: "custom:button-card"
-            template: rc_blank_template
-
-
-      # FIFTH ROW
-      - type: horizontal-stack
-        cards:
-          # Turn on Apple TV
-          - type: custom:button-card
-            template: movie_theater_button
-            icon: mdi:apple
-            name: Turn on ATV
-            tap_action:
-              action: call-service
-              service: remote.send_command
-              service_data:
-                entity_id: remote.apple_tv
-                command: menu
-         # Turn off Apple TV
-          - type: custom:button-card
-            template: movie_theater_button
-            icon: mdi:apple
-            name: Turn off ATV
-            tap_action:
-              action: call-service
-              service: remote.send_command
-              service_data:
-                entity_id: remote.apple_tv
-                command: suspend
-         # Blank
-          - type: "custom:button-card"
-            template: rc_blank_template
-
-
-      # SIXTH ROW
+      # ROW: COMPONENTS
       - type: horizontal-stack
         cards:
           # Projector
           - type: custom:button-card
-            template: movie_theater_button
+            template: home_theater_button
             entity: switch.sony_projector
             hold_action:
               action: more-info
@@ -176,22 +272,33 @@ cards:
               action: toggle
           # Receiver Control
           - type: custom:button-card
-            template: movie_theater_button
-            entity: switch.denon_receiver
+            template: home_theater_button
+            entity: switch.denon_x8500h_receiver
             icon: mdi:audio-video
             name: Receiver
             show_icon: true
-            show_state: true
             show_name: true
+            show_state: true
             hold_action:
               action: more-info
             tap_action:
               action: toggle
-         # Blank
-          - type: "custom:button-card"
-            template: rc_blank_template
+          # Apple TV Control
+          - type: custom:button-card
+            template: home_theater_button
+            entity: switch.apple_tv
+            icon: mdi:apple
+            name: Apple TV
+            show_icon: true
+            show_name: true
+            show_state: true
+            hold_action:
+              action: more-info
+            tap_action:
+              action: toggle
 
-      # SEVENTH ROW
+
+      # ROW: MEDIA PLAYER CONTROL
       - entity: media_player.denon_avr_x8500h
         type: custom:mini-media-player
 

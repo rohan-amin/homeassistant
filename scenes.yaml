@@ -18,23 +18,23 @@
       transition: 2
 
 # Home Theater A/V On
-- name: theater_audio_video_on
-  entities:
-    switch.sony_projector: "on"
-    media_player.denon_avr_x8500h:
-      state: "on"
-      source: "Denon AVR-X8500H - Apple TV"
-    media_player.apple_tv:
-      state: "playing"
+#- name: theater_audio_video_on
+#  entities:
+#    switch.sony_projector: "on"
+#    media_player.denon_avr_x8500h:
+#      state: "on"
+#      source: "Denon AVR-X8500H - Apple TV"
+#    media_player.apple_tv:
+#      state: "playing"
 
 # Home Theater A/V Off
-- name: theater_audio_video_off
-  entities:
-    switch.sony_projector: "off"
-    # use switch.denon_x8500h_receiver instead of media_player
-    # because this works via telnet, defined in configuration.yaml
-    switch.denon_x8500h_receiver: 
-      state: "off"
+#- name: theater_audio_video_off
+#  entities:
+#    switch.sony_projector: "off"
+#    # use switch.denon_x8500h_receiver instead of media_player
+#    # because this works via telnet, defined in configuration.yaml
+#    switch.denon_x8500h_receiver: 
+#      state: "off"
 
 # Family Room A/V On
 - name: family_room_audio_video_on
@@ -120,5 +120,19 @@
     media_player.monoprice_kitchen:
       state: "on"
       is_volume_muted: false
+
+# Kitchen Sonos Music On
+- name: kitchen_music_on
+  entities:
+    media_player.monoprice_kitchen:
+      state: "on"
+      volume_level: 0.3
+      source: "Sonos"
+
+# Kitchen Sonos Music Off
+- name: kitchen_music_off
+  entities:
+    media_player.monoprice_kitchen:
+      state: "off"
 
 
