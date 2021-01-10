@@ -54,3 +54,17 @@ theater_audio_video_off:
         entity: remote.apple_tv
         command: suspend
 
+# Denon x8500h Receiver
+denon_x8500h_volume_up:
+  alias: Denon x8500h Volume Up
+  sequence:
+    - service: shell_command.denon_x8500h_volume_up
+denon_x8500h_volume_down:
+  alias: Denon x8500h Volume Down
+  sequence:
+    - service: shell_command.denon_x8500h_volume_down
+denon_x8500h_volume_set:
+  alias: Denon x8500h Volume Set
+  sequence:
+    - service: shell_command.denon_x8500h_volume_set
+
