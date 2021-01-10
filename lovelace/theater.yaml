@@ -68,6 +68,14 @@ cards:
                 entity: light.basement_media_room_floor_strip
                 name: Floor
 
+      # NEXT ROW: VOLUME SLIDER
+      #- type: horizontal-stack
+      #  cards:
+      #    - type: custom:slider-entity-row
+      #      name: Volume
+      #      entity: input_number.denon_x8500h_volume
+        
+
       # NEXT ROW: MUTE, VOLUME UP, VOLUME DOWN
       - type: horizontal-stack
         cards:
@@ -79,50 +87,69 @@ cards:
             #size: 60% #size of the icon
             triggers_update:
               - media_player.home_theater_ump
+              - switch.denon_x8500h_receiver_mute
             # Change the icon if muted or not muted
             icon: >
               [[[
-                var mute_status = states['media_player.home_theater_ump'].attributes.is_volume_muted;
+                var mute_status = states['switch.denon_x8500h_receiver_mute'].attributes.is_volume_muted;
+                // var mute_status = states['media_player.home_theater_ump'].attributes.is_volume_muted;
                 return (mute_status ? "mdi:volume-off" : "mdi:volume-mute");
               ]]]
+            #tap_action:
+              #action: call-service
+              #service: media_player.volume_mute
+              #service_data:
+                #entity_id: media_player.home_theater_ump
+                #is_volume_muted: >
+                  #[[[
+                    #var mute_status = states['media_player.home_theater_ump'].attributes.is_volume_muted;
+                    #return (mute_status ? false : true);
+                  #]]]
             tap_action:
               action: call-service
-              service: media_player.volume_mute
+              service: switch.toggle
               service_data:
-                entity_id: media_player.home_theater_ump
-                is_volume_muted: >
-                  [[[
-                    var mute_status = states['media_player.home_theater_ump'].attributes.is_volume_muted;
-                    return (mute_status ? false : true);
-                  ]]]
+                entity_id: switch.denon_x8500h_receiver_mute
           # VOLUME UP
           - type: "custom:button-card"
             template: home_theater_button
             name: "Volume"
             variables:
               icon_id: mdi:volume-plus
-              svc_id: media_player.volume_up
-              ent_id: media_player.home_theater_ump
+              svc_id: script.turn_on
+              ent_id: script.denon_x8500h_volume_up
+              #svc_id: media_player.volume_up
+              #ent_id: media_player.home_theater_ump
             hold_action:
               action: call-service
-              repeat: 500
-              service: media_player.volume_up
+              repeat: 1000
+              service: script.turn_on
               service_data:
-                entity_id: media_player.home_theater_ump
+                entity_id: script.denon_x8500h_volume_up
+              #repeat: 500
+              #service: media_player.volume_up
+              #service_data:
+                #entity_id: media_player.home_theater_ump
           # VOLUME DOWN
           - type: "custom:button-card"
             template: home_theater_button
             name: "Volume"
             variables:
               icon_id: mdi:volume-minus
-              svc_id: media_player.volume_down
-              ent_id: media_player.home_theater_ump
+              svc_id: script.turn_on
+              ent_id: script.denon_x8500h_volume_down
+              #svc_id: media_player.volume_down
+              #ent_id: media_player.home_theater_ump
             hold_action:
               action: call-service
-              repeat: 500
-              service: media_player.volume_down
+              repeat: 1000
+              service: script.turn_on
               service_data:
-                entity_id: media_player.home_theater_ump 
+                entity_id: script.denon_x8500h_volume_down
+              #repeat: 500
+              #service: media_player.volume_down
+              #service_data:
+                #entity_id: media_player.home_theater_ump 
 
       ## ROW: MENU, UP ARROW, HOME
       - type: horizontal-stack

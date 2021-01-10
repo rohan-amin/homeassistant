@@ -15,7 +15,7 @@ cards:
     cards:
       # Media Player
       - type: custom:mini-media-player
-        entity: media_player.denon_avr_s750h
+        entity: media_player.denon_avr_x8500h
 
       - type: custom:mini-media-player
         entity: media_player.monoprice_kitchen

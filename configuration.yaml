@@ -316,6 +316,14 @@ switch:
         command_state: "ZM?"
         value_template: '{{ value == "ZMON" }}'
         timeout: 0.9
+      denon_x8500h_receiver_mute:
+        resource: !secret denon_x8500h_host
+        port: 23
+        command_on: "MUON"
+        command_off: "MUOFF"
+        command_state: "MU?"
+        value_template: '{{ value == "MUON" }}'
+        timeout: 0.9
   # Apple TV in Home Theater
   - platform: template
     switches:
@@ -409,6 +417,19 @@ switch:
         value_template: '{{ value == "on" }}'
         friendly_name: Front Door Tablet Screen
 
+###############
+## INPUT NUMBER
+###############
+input_number:
+  # Denon x8500h Volume for Home Theater
+  denon_x8500h_volume:
+    name: Denon x8500h Volume
+    initial: 65
+    min: 10
+    max: 80
+    step: 1
+    mode: slider
+    icon: mdi:volume-low
 
 ##########
 ## SENSORS
@@ -715,5 +736,5 @@ group: !include groups.yaml
 automation: !include automations.yaml
 script: !include scripts.yaml
 scene: !include scenes.yaml
-#shell_command: !include shell_commands.yaml
+shell_command: !include shell_commands.yaml
 #sensor: !include sensors.yaml
