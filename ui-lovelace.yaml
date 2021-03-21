@@ -42,6 +42,9 @@ resources:
   #Auto Entities
   - url: /local/community/lovelace-auto-entities/auto-entities.js?v=0
     type: module
+  #Mini Graph Card
+  - url: /local/community/mini-graph-card/mini-graph-card-bundle.js?v=0
+    type: module
 
 #Kiosk Mode (HA, not FKB)
 # ref: https://github.com/maykar/kiosk-mode
@@ -299,7 +302,7 @@ views:
   - !include /config/lovelace/climate.yaml
   - !include /config/lovelace/surveillance.yaml
   - !include /config/lovelace/theater.yaml
-  - !include /config/lovelace/remote_control.yaml
   - !include /config/lovelace/music.yaml
+  - !include /config/lovelace/remote_control.yaml
   - !include /config/lovelace/test.yaml
 

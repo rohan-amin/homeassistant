@@ -101,12 +101,6 @@
       volume_level: 0.3
       source: "TV Audio"
 
-# Kitchen TV Audio Off
-- name: kitchen_tv_audio_off
-  entities:
-    media_player.monoprice_kitchen:
-      state: "off"
-
 # Kitchen TV Audio Mute
 - name: kitchen_tv_audio_mute
   entities:
@@ -129,10 +123,30 @@
       volume_level: 0.3
       source: "Sonos"
 
-# Kitchen Sonos Music Off
-- name: kitchen_sonos_off
+# Kitchen Speakers Off
+- name: kitchen_speakers_off
   entities:
     media_player.monoprice_kitchen:
       state: "off"
 
+# Deck TV Audio On
+- name: deck_tv_audio_on
+  entities:
+    media_player.monoprice_deck:
+      state: "on"
+      volume_level: 0.3
+      source: "TV Audio"
 
+# Deck Sonos Music On
+- name: deck_sonos_on
+  entities:
+    media_player.monoprice_deck:
+      state: "on"
+      volume_level: 0.3
+      source: "Sonos"
+
+# Deck Speakers Off
+- name: deck_speakers_off
+  entities:
+    media_player.monoprice_deck:
+      state: "off"

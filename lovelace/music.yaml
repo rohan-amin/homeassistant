@@ -15,22 +15,28 @@ cards:
     cards:
       # Media Player
       - type: custom:mini-media-player
-        entity: media_player.denon_avr_x8500h
+        entity: media_player.denon_avr_s750h
+        name: Family Room Receiver
 
       - type: custom:mini-media-player
         entity: media_player.monoprice_kitchen
+        name: Kitchen Speakers
 
       - type: custom:mini-media-player
         entity: media_player.monoprice_deck
+        name: Deck Speakers
 
       - type: custom:mini-media-player
         entity: media_player.monoprice_dining_room
+        name: Dining Room Speakers
 
       - type: custom:mini-media-player
         entity: media_player.monoprice_living_room
+        name: Living Room Speakers
 
       - type: custom:mini-media-player
         entity: media_player.sonos_family_room
+        name: Sonos Family Room
         artwork: full-cover-fit
         info: short
         hide:

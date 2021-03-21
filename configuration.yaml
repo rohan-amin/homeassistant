@@ -113,6 +113,11 @@ input_boolean:
     name: Dinner Announcement
     initial: false
     icon: mdi:account-voice
+  breakfast_announcement:
+    name: Breakfast Announcement
+    initial: false
+    icon: mdi:account-voice
+
 
 ##########
 ## PERSON 
@@ -362,7 +367,46 @@ switch:
         turn_off:
           service: scene.turn_on
           data:
-            entity_id: scene.kitchen_tv_audio_off
+            entity_id: scene.kitchen_speakers_off
+  # Kitchen Monoprice Sonos On and Off
+  - platform: template
+    switches:
+      kitchen_sonos:
+        value_template: "{{ is_state('media_player.monoprice_kitchen','on') }}"
+        turn_on:
+          service: scene.turn_on
+          data:
+            entity_id: scene.kitchen_sonos_on
+        turn_off:
+          service: scene.turn_on
+          data:
+            entity_id: scene.kitchen_speakers_off
+  # Deck Monoprice TV Audio On and Off
+  - platform: template
+    switches:
+      deck_tv_audio:
+        value_template: "{{ is_state('media_player.monoprice_kitchen','on') }}"
+        turn_on:
+          service: scene.turn_on
+          data:
+            entity_id: scene.deck_tv_audio_on
+        turn_off:
+          service: scene.turn_on
+          data:
+            entity_id: scene.deck_speakers_off
+  # Deck Monoprice Sonos On and Off
+  - platform: template
+    switches:
+      deck_sonos:
+        value_template: "{{ is_state('media_player.monoprice_kitchen','on') }}"
+        turn_on:
+          service: scene.turn_on
+          data:
+            entity_id: scene.deck_sonos_on
+        turn_off:
+          service: scene.turn_on
+          data:
+            entity_id: scene.deck_speakers_off
   # Kitchen Monoprice TV Audio Mute and Unmute
   - platform: template
     switches:
@@ -697,10 +741,10 @@ cloud:
       include_entities:
         - media_player.family_room_ump
         - media_player.monoprice_kitchen
-        - scene.kitchen_tv_audio_on
-        - scene.kitchen_tv_audio_off
-        - scene.kitchen_sonos_on
-        - scene.kitchen_sonos_off
+        - switch.kitchen_tv_audio
+        - switch.kitchen_sonos
+        - switch.deck_tv_audio
+        - switch.deck_sonos
     entity_config:
       media_player.family_room_ump:
         name: Family Room TV
@@ -708,16 +752,16 @@ cloud:
       media_player.monoprice_kitchen:
         name: Kitchen Speakers
         description: Kitchen Monoprice Speakers
-      scene.kitchen_tv_audio_on:
-        name: Kitchen TV Audio On
-      scene.kitchen_tv_audio_off:
-        name: Kitchen TV Audio Off
-      scene.kitchen_sonos_on:
-        name: Kitchen Sonos On
-        description: Kitchen Sonos Speakers On
-      scene.kitchen_sonos_off:
-        name: Kitchen Sonos Off
-        description: Kitchen Sonos Speakers Off
+      switch.kitchen_tv_audio:
+        name: Kitchen TV Audio
+      switch.kitchen_sonos:
+        name: Kitchen Sonos
+        description: Kitchen Sonos
+      switch.deck_tv_audio:
+        name: Deck TV Audio
+      switch.deck_sonos:
+        name: Deck Sonos
+        description: Deck Sonos
 
 #################
 ## LIGHT GROUP

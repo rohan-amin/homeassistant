@@ -146,6 +146,24 @@ cards:
             font-weight: bold;
             padding: 5px 0px 0px 10px;
           }
+
+      # FLUME WATER SENSOR - MINI GRAPH
+      - type: custom:mini-graph-card
+        name: "Water This Week"
+        style: |
+          .card-header {
+            font-size: 22px;
+            font-weight: bold;
+            padding: 5px 0px 0px 10px;
+          }
+        entities:
+          - entity: sensor.flume_sensor_home_current_week
+        hours_to_show: 168
+        points_per_hour: 1.0
+        aggregate_func: max
+        group_by: date
+        show:
+          graph: bar
  
       # Garage
       - type: glance
@@ -206,6 +224,7 @@ cards:
       - type: entities
         title: Announcements
         state_color: true
+        show_header_toggle: false
         style: |
           .card-header {
             font-size: 22px;
@@ -213,6 +232,8 @@ cards:
             padding: 5px 0px 0px 10px;
           }
         entities:
+          - entity: input_boolean.breakfast_announcement
+            name: Breakfast
           - entity: input_boolean.dinner_announcement
             name: Dinner
 
