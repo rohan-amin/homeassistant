@@ -183,10 +183,10 @@ cover:
     password: !secret myq_password
 
 #Tesla
-tesla:
-  username: !secret tesla_username
-  password: !secret tesla_password
-  scan_interval: 3600
+#tesla:
+#  username: !secret tesla_username
+#  password: !secret tesla_password
+#  scan_interval: 3600
 
 #Emulated Roku
 emulated_roku:

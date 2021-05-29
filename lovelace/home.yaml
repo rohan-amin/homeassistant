@@ -137,7 +137,7 @@ cards:
 
       # FLUME WATER SENSOR
       - type: sensor
-        entity: sensor.flume_sensor_home_current_day
+        entity: sensor.flume_sensor_current_day
         name: "Water Today"
         graph: line
         style: |
@@ -157,7 +157,7 @@ cards:
             padding: 5px 0px 0px 10px;
           }
         entities:
-          - entity: sensor.flume_sensor_home_current_week
+          - entity: sensor.flume_sensor_current_week
         hours_to_show: 168
         points_per_hour: 1.0
         aggregate_func: max
