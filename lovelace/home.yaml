@@ -135,10 +135,11 @@ cards:
           - entity: sensor.basement_temperature_round
             name: Basement
 
+
       # FLUME WATER SENSOR
       - type: sensor
+        name: Water Today
         entity: sensor.flume_sensor_current_day
-        name: "Water Today"
         graph: line
         style: |
           .card-header {
@@ -149,7 +150,7 @@ cards:
 
       # FLUME WATER SENSOR - MINI GRAPH
       - type: custom:mini-graph-card
-        name: "Water This Week"
+        name: Water This Week
         style: |
           .card-header {
             font-size: 22px;
@@ -183,22 +184,22 @@ cards:
           - entity: cover.garage_door_3_right
             name: Right Door
 
-      # Tesla
-      - type: glance
-        title: Tesla
-        style: |
-          .card-header {
-            font-size: 22px;
-            font-weight: bold;
-            padding: 5px 0px 0px 10px;
-          }
-        entities:
-          - entity: sensor.aminx_mileage_sensor
-            name: Odometer
-          - entity: sensor.aminx_range_sensor
-            name: Charge
-          - entity: binary_sensor.aminx_charger_sensor
-            name: Status
+#      # Tesla
+#      - type: glance
+#        title: Tesla
+#        style: |
+#          .card-header {
+#            font-size: 22px;
+#            font-weight: bold;
+#            padding: 5px 0px 0px 10px;
+#          }
+#        entities:
+#          - entity: sensor.aminx_mileage_sensor
+#            name: Odometer
+#          - entity: sensor.aminx_range_sensor
+#            name: Charge
+#          - entity: binary_sensor.aminx_charger_sensor
+#            name: Status
 
       # NOTIFICATIONS
       - type: entities
