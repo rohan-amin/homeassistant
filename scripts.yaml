@@ -15,16 +15,22 @@ theater_audio_video_on:
     - service: switch.turn_on
       data:
         entity_id: switch.denon_x8500h_receiver
+    # Delay
+    - delay: 2
     # Switch Source to Apple TV
     - service: media_player.select_source
       data:
         entity_id: media_player.denon_avr_x8500h
         source: 'Apple TV'
+    # Delay 
+    - delay: 3
     # Set Volume
     - service: media_player.volume_set
       data:
         entity_id: media_player.denon_avr_x8500h
         volume_level: 0.5
+    # Delay
+    - delay: 3
     # Press the MENU button for Apple TV to turn it on
     - service: remote.send_command
       data:
