@@ -29,7 +29,10 @@ logger:
 
 # RECORDER - home-assistant_v2.db
 recorder:
-  purge_keep_days: 2
+  purge_keep_days: 8
+  include:
+    entity_globs:
+      - sensor.flume_*
 
 # Text to speech
 tts:
@@ -109,13 +112,14 @@ input_boolean:
     name: Voice Notifications
     initial: true
     icon: mdi:account-voice
+
+#input_button:
+input_button:
   dinner_announcement:
     name: Dinner Announcement
-    initial: false
     icon: mdi:account-voice
   breakfast_announcement:
     name: Breakfast Announcement
-    initial: false
     icon: mdi:account-voice
 
 
@@ -213,9 +217,6 @@ emulated_roku:
 # media_player.family_room_tv_cast
 # media_player.master_bedroom_tv_cast
 # media_player.game_room_tv_cast
-cast:
-  media_player:
-    - host: !secret sony_family_room_tv_host
  
 
 # Zoneminder
@@ -232,14 +233,24 @@ camera:
   - platform: zoneminder
 
 # Cameras
-#camera:
-#  - platform: generic
-#    stream_source: !secret camera_1_rtsp
-#    still_image_url: !secret camera_1_still
-#    name: !secret camera_1_name
-#    username: !secret camera_username
-#    password: !secret camera_password
-#    verify_ssl: false
+camera:
+  - platform: generic
+    stream_source: !secret camera_1_substream
+    still_image_url: !secret camera_1_still
+    name: !secret camera_1_name
+    username: !secret camera_username
+    password: !secret camera_password
+    authentication: digest
+    verify_ssl: false
+  - platform: generic
+    stream_source: !secret camera_4_substream
+    still_image_url: !secret camera_4_still
+    name: !secret camera_4_name
+    username: !secret camera_username
+    password: !secret camera_password
+    authentication: digest
+    verify_ssl: false
+
 
 # iOS notifications
 # ref: https://companion.home-assistant.io/docs/notifications/actionable-notifications/
@@ -556,27 +567,14 @@ sensor:
 #################
 
 media_player:
-  # Master Bedroom TV
-  - platform: braviatv_psk
-    host: !secret sony_master_bedroom_tv_host
-    psk: !secret sony_master_bedroom_tv_psk
-    mac: !secret sony_master_bedroom_tv_mac
-    amp: True
-    android: True
-    time_format: 12H
-    user_labels: True
-    name: Master Bedroom TV
 
-  # Family Room TV
-  - platform: braviatv_psk
-    host: !secret sony_family_room_tv_host
-    psk: !secret sony_family_room_tv_psk
-    mac: !secret sony_family_room_tv_mac
-    amp: True
-    android: True
-    time_format: 12H
-    user_labels: True
-    name: Family Room TV
+# Master Bedroom TV now configured via UI
+# media_player.master_bedroom_tv
+# remote.master_bedroom_tv
+
+# Family Room TV now configured via UI
+# media_player.family_room_tv
+# remote.family_room_tv
 
   # MASTER BEDROOM Universal Media Player (ump)
   - platform: universal
@@ -635,7 +633,7 @@ media_player:
       - media_player.denon_avr_s750h
     # Report the state of the UMP based on a template
     state_template: >
-      {% if is_state('media_player.family_room_tv','on') and is_state('media_player.denon_avr_s750h','on') %}
+      {% if is_state('media_player.family_room_tv','playing') and is_state('media_player.denon_avr_s750h','on') %}
       on
       {% else %}
       off
@@ -740,6 +738,7 @@ cloud:
     filter:
       include_entities:
         - media_player.family_room_ump
+        - media_player.master_bedroom_ump
         - media_player.monoprice_kitchen
         - switch.kitchen_tv_audio
         - switch.kitchen_sonos
@@ -749,6 +748,9 @@ cloud:
       media_player.family_room_ump:
         name: Family Room TV
         description: Family Room TV and Sound
+      media_player.family_room_ump:
+        name: Master Bedroom TV
+        description: Master Bedroom TV and Sound
       media_player.monoprice_kitchen:
         name: Kitchen Speakers
         description: Kitchen Monoprice Speakers

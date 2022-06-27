@@ -7,24 +7,38 @@ cards:
 
   # A container layout card for all of the cards on this page
   - type: custom:layout-card
-    layout: auto
-    #column_num: 1 # the whole remote is one card
-    #column_width: 350px # width of the whole remote/column
-    justify_content: left #left align the entire column
-    #flex_grow: 1
+    layout_type: horizontal-layout
+    max_cols: 2
+    max_width: 250
     cards:
-      # Surveillance Card for Cameras
-      - type: "custom:surveillance-card"
-        thumb_interval: 15
-        update_interval: 2
-        show_capture_buttons: false
-        recording_duration: 10
-        focus_motion: false
-        cameras:
-          - entity: camera.driveway
-          - entity: camera.front_door_2
-          - entity: camera.deck
-          - entity: camera.pool
-          - entity: camera.back_path
-          - entity: camera.back_patio
 
+      # Driveway Camera
+      - type: picture-entity
+        entity: camera.driveway
+        camera_view: live
+        show_name: false
+        show_state: false
+
+      # Front Door Camera
+      - type: picture-entity
+        entity: camera.front_door_4
+        camera_view: live
+        show_name: false
+        show_state: false
+
+
+#      # Surveillance Card for Cameras
+#      - type: custom:surveillance-card
+#        thumb_interval: 15
+#        update_interval: 2
+#        show_capture_buttons: false
+#        recording_duration: 10
+#        focus_motion: false
+#        cameras:
+#          - entity: camera.driveway
+
+
+
+#      # Surveillance Card for Cameras
+#      - type: custom:webrtc-camera
+#        entity: camera.driveway

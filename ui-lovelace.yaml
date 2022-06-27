@@ -7,7 +7,7 @@
 #loading external library files
 resources:
   #Mini Media Player Bundle
-  - url: /local/mini-media-player-bundle.js?v=1.9.1
+  - url: /local/community/mini-media-player/mini-media-player-bundle.js
     type: module
   #Button Card
   - url: /local/community/button-card/button-card.js?v=3.3.6
@@ -19,7 +19,7 @@ resources:
   - url: /local/stack-in-card.js?v=1
     type: module
   #Layout Card
-  - url: /local/layout-card.js?v=16
+  - url: /local/community/lovelace-layout-card/layout-card.js?v=0
     type: module
   #Card Mod
   - url: /local/card-mod.js?v=2.0
@@ -34,7 +34,7 @@ resources:
   - url: /local/simple-thermostat.js?v=0.36
     type: module
   #Surveillance Card
-  - url: /local/surveillance-card/surveillance-card.js?v=0
+  - url: /local/community/surveillance-card/surveillance-card.js?v=0
     type: module
   #Kiosk Mode
   - url: /local/community/kiosk-mode/kiosk-mode.js?v=1
@@ -44,6 +44,9 @@ resources:
     type: module
   #Mini Graph Card
   - url: /local/community/mini-graph-card/mini-graph-card-bundle.js?v=0
+    type: module
+  #Frigate Card
+  - url: /local/community/frigate-hass-card/frigate-hass-card.js?v=0
     type: module
 
 #Kiosk Mode (HA, not FKB)
@@ -225,15 +228,15 @@ button_card_templates:
   fan_speed_template:
     template: fan_off_template
     variables:
-      svc_id: fan.set_speed
-      speed_id: low
+      svc_id: fan.set_percentage
+      speed_id: "33"
     show_icon: true
     layout: icon_name
     state:
       # if fan is on and the current speed matches the button being draw
       - value: >
           [[[
-            return ((entity.state == 'on') && (entity.attributes.speed == variables.speed_id));
+            return ((entity.state == 'on') && (entity.attributes.percentage == variables.speed_id));
           ]]]
         operator: template
         spin: true
@@ -245,7 +248,7 @@ button_card_templates:
             - filter: opacity(100%)
     tap_action:
       service_data:
-        speed: '[[[ return variables.speed_id ]]]'
+        percentage: '[[[ return variables.speed_id ]]]'
 
 
   ## Home Theater Buttons

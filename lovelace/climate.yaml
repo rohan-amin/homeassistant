@@ -79,7 +79,7 @@ cards:
             entity: fan.master_bedroom_fan
             variables:
               name_id: "low"
-              speed_id: low
+              speed_id: "33"
 
           # Medium
           - type: "custom:button-card"
@@ -87,7 +87,7 @@ cards:
             entity: fan.master_bedroom_fan
             variables:
               name_id: "med"
-              speed_id: medium
+              speed_id: "66"
 
           # High
           - type: "custom:button-card"
@@ -95,7 +95,7 @@ cards:
             entity: fan.master_bedroom_fan
             variables:
               name_id: "high"
-              speed_id: high
+              speed_id: "100"
 
       # FAMILY ROOM FAN
       # A horizontal stack-in-card (one card) with all of the buttons
@@ -130,7 +130,7 @@ cards:
             entity: fan.family_room_fan
             variables:
               name_id: "low"
-              speed_id: low
+              speed_id: "33"
 
           # Medium
           - type: "custom:button-card"
@@ -138,7 +138,7 @@ cards:
             entity: fan.family_room_fan
             variables:
               name_id: "med"
-              speed_id: medium
+              speed_id: "66"
 
           # High
           - type: "custom:button-card"
@@ -146,6 +146,6 @@ cards:
             entity: fan.family_room_fan
             variables:
               name_id: "high"
-              speed_id: high
+              speed_id: "100"
 
 

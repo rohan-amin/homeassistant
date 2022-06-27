@@ -29,6 +29,48 @@ cards:
 #              options:
 #                type: custom:fold-entity-row
 
+      # FLUME WATER SENSOR
+      - type: sensor
+        name: Water Today
+        entity: sensor.flume_sensor_current
+        graph: line
+        style: |
+          .card-header {
+            font-size: 22px;
+            font-weight: bold;
+            padding: 5px 0px 0px 10px;
+          }
+
+      # FLUME WATER SENSOR - MINI GRAPH
+      - type: custom:mini-graph-card
+        name: Water This Week
+        style: |
+          .card-header {
+            font-size: 22px;
+            font-weight: bold;
+            padding: 5px 0px 0px 10px;
+          }
+        entities:
+          - entity: sensor.flume_sensor_current_week
+        hours_to_show: 168
+        points_per_hour: 1.0
+        aggregate_func: max
+        group_by: date
+        show:
+          graph: bar
+
+
+      # Statistics Graph
+      - type: statistics-graph
+        title: 'My Graph'
+        entities:
+          - sensor.flume_sensor_current
+        days_to_show: 7
+        chart_type: bar
+        stat_types:
+          - sum
+
+
       # OUTDOOR LIGHTS
       - type: entities
         title: Lights On
