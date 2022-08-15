@@ -157,22 +157,7 @@ bond:
   host: !secret bond_host
   token: !secret bond_token
 
-# Nest
-nest:
-  client_id: !secret nest_google_client_id
-  client_secret: !secret nest_google_client_secret
-  project_id: !secret nest_google_project_id
-  subscriber_id: !secret nest_google_subscriber_id
-
-#badnest:
-#  user_id: !secret nest_user_id
-#  access_token: !secret nest_access_token 
-#  region: us
-
-#climate:
-#  - platform: badnest
-#    scan_interval: 10
-
+# Nest - From UI now
 
 #OpenWeatherMap configured via UI
 #weather:

@@ -149,22 +149,22 @@ cards:
       #    }
 
       # FLUME WATER SENSOR - MINI GRAPH
-      - type: custom:mini-graph-card
-        name: Water Today
-        style: |
-          .card-header {
-            font-size: 22px;
-            font-weight: bold;
-            padding: 5px 0px 0px 10px;
-          }
-        entities:
-          - entity: sensor.flume_sensor_current_day
-        hours_to_show: 24
-        points_per_hour: 1.0
-        aggregate_func: max
-        group_by: hour
-        show:
-          graph: bar
+      #- type: custom:mini-graph-card
+      #  name: Water Today
+      #  style: |
+      #    .card-header {
+      #      font-size: 22px;
+      #      font-weight: bold;
+      #      padding: 5px 0px 0px 10px;
+      #    }
+      #  entities:
+      #    - entity: sensor.flume_sensor_current_day
+      #  hours_to_show: 24
+      #  points_per_hour: 1.0
+      #  aggregate_func: max
+      #  group_by: hour
+      #  show:
+      #    graph: bar
 
 
       # FLUME WATER SENSOR - MINI GRAPH
@@ -177,7 +177,7 @@ cards:
             padding: 5px 0px 0px 10px;
           }
         entities:
-          - entity: sensor.flume_sensor_current_week
+          - entity: sensor.flume_sensor_current_day
         hours_to_show: 168
         points_per_hour: 1.0
         aggregate_func: max
