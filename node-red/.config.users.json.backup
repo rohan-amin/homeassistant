@@ -16,9 +16,13 @@
                 "flowRefresh": true
             },
             "tours": {
-                "welcome": "2.1.4"
+                "welcome": "3.0.2"
             }
         },
-        "menu-menu-item-sidebar": true
+        "menu-menu-item-sidebar": false,
+        "debug": {
+            "filter": "filterAll"
+        },
+        "menu-menu-item-palette": true
     }
 }

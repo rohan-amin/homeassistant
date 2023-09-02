@@ -260,6 +260,8 @@ cards:
             entities:
               - entity: light.kitchen_kitchen_outside_door
                 name: Outside Kitchen
+              - entity: switch.kitchen_kitchen_outside_flood
+                name: Back Patio Flood Light
               - entity: light.family_room_deck_floodlight
                 name: Deck Flood
               - entity: light.garage_dual_driveway

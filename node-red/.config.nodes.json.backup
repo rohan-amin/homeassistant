@@ -1,10 +1,21 @@
 {
     "node-red": {
         "name": "node-red",
-        "version": "2.2.2",
+        "version": "3.0.2",
         "local": false,
         "user": false,
         "nodes": {
+            "junction": {
+                "name": "junction",
+                "types": [
+                    "junction"
+                ],
+                "enabled": true,
+                "local": false,
+                "user": false,
+                "module": "node-red",
+                "file": "/opt/node_modules/@node-red/nodes/core/common/05-junction.js"
+            },
             "inject": {
                 "name": "inject",
                 "types": [
@@ -407,7 +418,7 @@
     },
     "node-red-contrib-bigtimer": {
         "name": "node-red-contrib-bigtimer",
-        "version": "2.8.1",
+        "version": "2.8.5",
         "local": false,
         "user": false,
         "nodes": {
@@ -464,7 +475,7 @@
     },
     "node-red-contrib-home-assistant-websocket": {
         "name": "node-red-contrib-home-assistant-websocket",
-        "version": "0.43.1",
+        "version": "0.48.1",
         "local": false,
         "user": false,
         "nodes": {
@@ -473,11 +484,13 @@
                 "types": [
                     "ha_entity_filter",
                     "ha-api",
+                    "ha-binary-sensor",
                     "ha-button",
                     "api-call-service",
                     "server",
                     "api-current-state",
                     "ha-device",
+                    "ha-device-config",
                     "ha-entity",
                     "ha-entity-config",
                     "server-events",
@@ -487,9 +500,12 @@
                     "api-get-history",
                     "poll-state",
                     "api-render-template",
+                    "ha-sensor",
+                    "ha-switch",
                     "ha-tag",
                     "ha-time",
                     "trigger-state",
+                    "ha-update-config",
                     "ha-wait-until",
                     "ha-webhook",
                     "ha-zone"
@@ -545,7 +561,7 @@
     },
     "node-red-contrib-modbus": {
         "name": "node-red-contrib-modbus",
-        "version": "5.21.2",
+        "version": "5.25.0",
         "local": false,
         "user": false,
         "nodes": {
@@ -737,7 +753,7 @@
     },
     "node-red-contrib-sunevents": {
         "name": "node-red-contrib-sunevents",
-        "version": "3.0.3",
+        "version": "3.1.1",
         "local": false,
         "user": false,
         "nodes": {
@@ -756,7 +772,7 @@
     },
     "node-red-contrib-time-range-switch": {
         "name": "node-red-contrib-time-range-switch",
-        "version": "1.1.3",
+        "version": "1.2.0",
         "local": false,
         "user": false,
         "nodes": {
@@ -775,7 +791,7 @@
     },
     "node-red-dashboard": {
         "name": "node-red-dashboard",
-        "version": "3.1.7",
+        "version": "3.3.1",
         "local": false,
         "user": false,
         "nodes": {
@@ -1033,7 +1049,7 @@
     },
     "node-red-node-email": {
         "name": "node-red-node-email",
-        "version": "1.15.1",
+        "version": "1.18.4",
         "local": false,
         "user": false,
         "nodes": {
@@ -1073,7 +1089,7 @@
     },
     "node-red-node-ping": {
         "name": "node-red-node-ping",
-        "version": "0.3.1",
+        "version": "0.3.3",
         "local": false,
         "user": false,
         "nodes": {
@@ -1092,7 +1108,7 @@
     },
     "node-red-node-random": {
         "name": "node-red-node-random",
-        "version": "0.4.0",
+        "version": "0.4.1",
         "local": false,
         "user": false,
         "nodes": {
@@ -1111,7 +1127,7 @@
     },
     "node-red-node-serialport": {
         "name": "node-red-node-serialport",
-        "version": "1.0.1",
+        "version": "1.0.3",
         "local": false,
         "user": false,
         "nodes": {
@@ -1457,7 +1473,7 @@
     },
     "node-red-contrib-persistent-fsm": {
         "name": "node-red-contrib-persistent-fsm",
-        "version": "1.2.0",
+        "version": "1.2.1",
         "local": false,
         "user": false,
         "nodes": {
@@ -1490,6 +1506,44 @@
                 "user": false,
                 "module": "node-red-contrib-stoptimer3",
                 "file": "/config/node-red/node_modules/node-red-contrib-stoptimer3/stoptimer3/stoptimer3.js"
+            }
+        }
+    },
+    "node-red-contrib-stoptimer": {
+        "name": "node-red-contrib-stoptimer",
+        "version": "0.0.7",
+        "local": true,
+        "user": true,
+        "nodes": {
+            "stoptimer": {
+                "name": "stoptimer",
+                "types": [
+                    "stoptimer"
+                ],
+                "enabled": true,
+                "local": true,
+                "user": false,
+                "module": "node-red-contrib-stoptimer",
+                "file": "/config/node-red/node_modules/node-red-contrib-stoptimer/stoptimer.js"
+            }
+        }
+    },
+    "node-red-contrib-simple-queue": {
+        "name": "node-red-contrib-simple-queue",
+        "version": "1.0.2",
+        "local": true,
+        "user": true,
+        "nodes": {
+            "simple-queue": {
+                "name": "simple-queue",
+                "types": [
+                    "simple-queue"
+                ],
+                "enabled": true,
+                "local": true,
+                "user": false,
+                "module": "node-red-contrib-simple-queue",
+                "file": "/config/node-red/node_modules/node-red-contrib-simple-queue/simple-queue.js"
             }
         }
     }

@@ -8,8 +8,10 @@
         "node-red-contrib-bool-gate": "~1.0.2",
         "node-red-contrib-credentials": "~0.2.1",
         "node-red-contrib-simple-gate": "~0.3.1",
+        "node-red-contrib-simple-queue": "~1.0.2",
         "node-red-contrib-sonos-plus": "~4.5.2",
         "node-red-contrib-sonospollytts": "~1.1.36",
+        "node-red-contrib-stoptimer": "~0.0.7",
         "node-red-contrib-stoptimer3": "~0.1.2",
         "node-red-contrib-throttle": "~0.1.6"
     }

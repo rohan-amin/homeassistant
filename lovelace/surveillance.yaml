@@ -5,40 +5,149 @@ panel: true
 
 cards:
 
-  # A container layout card for all of the cards on this page
-  - type: custom:layout-card
-    layout_type: horizontal-layout
-    max_cols: 2
-    max_width: 250
-    cards:
 
-      # Driveway Camera
-      - type: picture-entity
-        entity: camera.driveway
-        camera_view: live
-        show_name: false
-        show_state: false
+  - type: custom:frigate-card
+    cameras:
+      - camera_entity: camera.frigate_driveway
+        live_provider: webrtc-card
+        title: Driveway
+        webrtc_card:
+          entity: camera.driveway
+      - camera_entity: camera.frigate_front_door
+        live_provider: webrtc-card
+        title: Front Door
+        webrtc_card:
+          entity: camera.front_door
+      - camera_entity: camera.frigate_pool
+        live_provider: webrtc-card
+        title: Pool
+        webrtc_card:
+          entity: camera.pool
+      - camera_entity: camera.frigate_deck
+        live_provider: webrtc-card
+        title: Deck
+        webrtc_card:
+          entity: camera.deck
+      - camera_entity: camera.frigate_back_path
+        live_provider: webrtc-card
+        title: Back Path
+        webrtc_card:
+          entity: camera.back_path
+      - camera_entity: camera.frigate_back_patio
+        live_provider: webrtc-card
+        title: Back Patio
+        webrtc_card:
+          entity: camera.back_patio
+      - camera_entity: camera.frigate_family_room
+        live_provider: webrtc-card
+        title: Family Room
+        webrtc_card:
+          entity: camera.family_room
+      - camera_entity: camera.frigate_basement
+        live_provider: webrtc-card
+        title: Basement
+        webrtc_card:
+          entity: camera.basement
+    live:
+      webrtc_card:
+        ui: true
+    dimensions:
+      aspect_ratio_mode: static
+      aspect_ratio: '16:9'
+    menu:
+      style: outside
+      position: top
+      button_size: 42
 
-      # Front Door Camera
-      - type: picture-entity
-        entity: camera.front_door_4
-        camera_view: live
-        show_name: false
-        show_state: false
+
+#  - type: custom:frigate-card
+#    cameras:
+#      - camera_entity: camera.frigate_driveway
+#        title: Driveway
+#      - camera_entity: camera.frigate_front_door
+#        title: Front Door
+#      - camera_entity: camera.frigate_pool
+#        title:  Pool
+#      - camera_entity: camera.frigate_deck
+#        title: Deck
+#      - camera_entity: camera.frigate_back_path
+#        title: Back Path
+#      - camera_entity: camera.frigate_back_patio
+#        title: Back Patio
+#      - camera_entity: camera.frigate_family_room
+#        title: Family Room
+#      - camera_entity: camera.frigate_basement
+#        title: Basement
+#    dimensions:
+#      aspect_ratio_mode: dynamic
+#    menu:
+#      style: hover
+#      position: top
+#      button_size: 45
+#
+
+#  # A container layout card for all of the cards on this page
+#  - type: custom:layout-card
+#    layout_type: horizontal-layout
+#    max_cols: 2
+#    max_width: 100
+#    cards:
+#      - type: custom:frigate-card
+##        cameras:
+#          - camera_entity: camera.frigate_driveway
+#            title: Driveway
+#            live_provider: ha
+#          - camera_entity: camera.frigate_front_door
+#            title: Front Door
+#            live_provider: ha
+#        dimensions:
+#          aspect_ratio_mode: unconstrained
 
 
-#      # Surveillance Card for Cameras
-#      - type: custom:surveillance-card
-#        thumb_interval: 15
-#        update_interval: 2
-#        show_capture_buttons: false
-#        recording_duration: 10
-#        focus_motion: false
 #        cameras:
-#          - entity: camera.driveway
-
-
-
-#      # Surveillance Card for Cameras
-#      - type: custom:webrtc-camera
-#        entity: camera.driveway
+#          - webrtc_card:
+#              entity: 'camera.driveway'
+#            live_provider: webrtc_card
+#
+#      - type: custom:frigate-card
+#        cameras:
+#          - camera_entity: camera.frigate_driveway
+#            title: Driveway
+#            live_provider: ha
+#      - type: custom:frigate-card
+#        cameras:
+#          - camera_entity: camera.frigate_front_door
+#            title: Front Door
+#            live_provider: ha
+#      - type: custom:frigate-card
+#        cameras:
+#          - camera_entity: camera.frigate_pool
+#            title: Pool
+#            live_provider: ha
+#      - type: custom:frigate-card
+#        cameras:
+#          - camera_entity: camera.frigate_deck
+#            title: Deck
+#            live_provider: ha
+#      - type: custom:frigate-card
+#        cameras:
+#          - camera_entity: camera.frigate_back_patio
+#            title: Back Patio
+#            live_provider: ha
+#      - type: custom:frigate-card
+#        cameras:
+#          - camera_entity: camera.frigate_back_path
+#            title: Back Path
+#            live_provider: ha
+#      - type: custom:frigate-card
+#        cameras:
+#          - camera_entity: camera.frigate_family_room
+#            title: Family Room
+#            live_provider: ha
+#      - type: custom:frigate-card
+#        cameras:
+#          - camera_entity: camera.frigate_basement
+#            title: Basement
+#            live_provider: ha
+#
+#

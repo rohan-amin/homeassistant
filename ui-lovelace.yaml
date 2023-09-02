@@ -1,5 +1,5 @@
 # Home Assisstant Configuration
-# 1 Castle Walk - Rohan Amin
+# Castle Walk - Rohan Amin
 
 #uncomment for a page title
 #title: Castle Walk
@@ -308,4 +308,6 @@ views:
   - !include /config/lovelace/music.yaml
   - !include /config/lovelace/remote_control.yaml
   - !include /config/lovelace/test.yaml
+  - !include /config/lovelace/camera_driveway.yaml
+  - !include /config/lovelace/camera_front_door.yaml
 

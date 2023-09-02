@@ -60,6 +60,12 @@ cards:
           - entity: person.sejal_amin
             name: Sejal
             secondary_info: last-changed
+          - entity: person.rishi_amin
+            name: Rishi
+            secondary_info: last-changed
+          - entity: person.samit_amin
+            name: Samit
+            secondary_info: last-changed
           - entity: group.family
             name: Family
             icon: mdi:heart
@@ -106,6 +112,8 @@ cards:
             entities:
               - entity: light.kitchen_kitchen_outside_door
                 name: Outside Kitchen
+              - entity: switch.kitchen_kitchen_outside_flood
+                name: Back Patio Flood Light
               - entity: light.family_room_deck_floodlight
                 name: Deck Flood
               - entity: light.garage_dual_driveway
@@ -119,6 +127,7 @@ cards:
       # GLANCE ROOM TEMPERATURES
       - type: glance
         title: Temperatures
+        columns: 3
         style: |
           .card-header {
             font-size: 22px;
@@ -134,6 +143,10 @@ cards:
             name: Kids
           - entity: sensor.basement_temperature_round
             name: Basement
+          - entity: sensor.kitchen_refrigerator_temperature
+            name: Kitchen Fridge
+          - entity: sensor.kitchen_freezer_temperature
+            name: Kitchen Freezer
 
 
       # FLUME WATER SENSOR
@@ -187,7 +200,8 @@ cards:
  
       # Garage
       - type: glance
-        title: Garage
+        title: Garage & Gates
+        columns: 3
         style: |
           .card-header {
             font-size: 22px;
@@ -195,13 +209,18 @@ cards:
             padding: 5px 0px 0px 10px;
           }
         entities:
-          - entity: cover.garage_door_1_left
-            name: Left Door
-            secondary_info: "Test2"
-          - entity: cover.garage_door_2_center
-            name: Middle Door
-          - entity: cover.garage_door_3_right
-            name: Right Door
+          - entity: cover.castle_walk_left
+            name: Left Garage
+          - entity: cover.castle_walk_center
+            name: Middle Garage
+          - entity: cover.castle_walk_right
+            name: Right Garage
+          - entity: binary_sensor.pool_gate_state
+            name: Pool Gate
+          - entity: binary_sensor.back_patio_gate_state
+            name: Back Patio Gate
+          - entity: binary_sensor.back_yard_steps_gate_state
+            name: Steps Gate
 
 #      # Tesla
 #      - type: glance
@@ -233,12 +252,14 @@ cards:
         entities:
           - entity: input_boolean.camera_notify_mobile
             name: Camera Mobile
-          - entity: input_boolean.camera_notify_tablet
-            name: Camera Tablet
+          - entity: input_boolean.camera_notify_screen
+            name: Camera Screens
           - entity: input_boolean.camera_all_notifications
             name: Camera All Notifications
           - entity: input_boolean.notify_voice
             name: In House Voice
+          - entity: input_boolean.notify_outdoor_gates
+            name: Outdoor Gates
 
       # ANNOUNCEMENTS
       - type: entities
@@ -254,6 +275,29 @@ cards:
         entities:
           - entity: input_button.breakfast_announcement
             name: Breakfast
+          - entity: input_button.lunch_announcement
+            name: Lunch
           - entity: input_button.dinner_announcement
             name: Dinner
+
+      # CAMERA ON TV
+      - type: entities
+        title: Live Cameras
+        state_color: true
+        show_header_toggle: false
+        style: |
+          .card-header {
+            font-size: 22px;
+            font-weight: bold;
+            padding: 5px 0px 0px 10px;
+          }
+        entities:
+          - entity: input_button.camera_driveway_family_room_tv
+            name: Driveway in Family Room
+          - entity: input_button.camera_driveway_master_bedroom_tv
+            name: Driveway in Master Bedroom
+          - entity: input_button.camera_front_door_family_room_tv
+            name: Front Door in Family Room
+          - entity: input_button.camera_front_door_master_bedroom_tv
+            name: Front Door in Master Bedroom
 

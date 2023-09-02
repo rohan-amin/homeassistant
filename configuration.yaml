@@ -14,6 +14,7 @@ homeassistant:
   # Time Zone - pick from: http://en.wikipedia.org/wiki/List_of_tz_database_time_zones
   time_zone: America/New_York
   unit_system: imperial
+  country: US
 
   # Location information
   latitude: !secret latitude_home
@@ -46,31 +47,10 @@ lovelace:
 frontend:
   themes: !include_dir_merge_named themes/
 
-# Enable Browser Mod
-browser_mod:
-  prefix: "browser_"
-  devices:
-    e8d3cfa0-8db071c0:
-      name: macbookpro
-    88ef8de8-b87af4b7:
-      name: kitchen_tablet
-    21b43dc6-acf7e307:
-      name: master_bedroom_tablet
-    48d9ed59-91881c63:
-      name: front_door_tablet  
-  # disable all entities for all devices which don't have an alias
-  disable:
-    - all
-
-
 # Enable ffmpeg and streams for video streams
 ffmpeg:
 
 stream:
-
-# MQTT
-mqtt:
-  broker: !secret mqtt_host
 
 
 ################
@@ -100,10 +80,10 @@ input_boolean:
     name: Camera Mobile Notifications
     initial: true
     icon: mdi:cellphone-wireless
-  camera_notify_tablet:
-    name: Camera Tablet Notifications
+  camera_notify_screen:
+    name: Camera Screen Notifications
     initial: true
-    icon: mdi:tablet-dashboard
+    icon: mdi:television
   camera_all_notifications:
     name: Camera All Notifications
     initial: true
@@ -112,25 +92,34 @@ input_boolean:
     name: Voice Notifications
     initial: true
     icon: mdi:account-voice
+  notify_outdoor_gates:
+    name: Outdoor Gates Notifications
+    initial: true
+    icon: mdi:gate-alert
 
 #input_button:
 input_button:
   dinner_announcement:
     name: Dinner Announcement
     icon: mdi:account-voice
+  lunch_announcement:
+    name: Lunch Announcement
+    icon: mdi:account-voice
   breakfast_announcement:
     name: Breakfast Announcement
     icon: mdi:account-voice
-
-
-##########
-## PERSON 
-##########
-
-# Integration done in 'People' in the UI
-# RMA - device_tracker.rma_mobile
-# SPA - device_tracker.spa_mobile 
-  
+  camera_driveway_family_room_tv:
+    name: Driveway Camera on Family Room TV
+    icon: mdi:cctv
+  camera_driveway_master_bedroom_tv:
+    name: Driveway Camera on Master Bedroom TV
+    icon: mdi:cctv
+  camera_front_door_family_room_tv:
+    name: Front Door Camera on Family Room TV
+    icon: mdi:cctv
+  camera_front_door_master_bedroom_tv:
+    name: Front Door Camera on Master Bedroom TV
+    icon: mdi:cctv
 
 
 #####################
@@ -142,40 +131,11 @@ lutron:
   host: !secret lutron_host
   username: !secret lutron_username
   password: !secret lutron_password
-
-# Sonos Speakers            
-sonos:                      
-  media_player:             
-    hosts:
-      - !secret sonos_hub                #Hub - media_player.sonos_family_room
-      - !secret sonos_portable           #Portable - media_player.sonos_portable
-      - !secret sonos_game_room          #Game Room Playbar - media_player.sonos_game_room
-      - !secret sonos_master_bedroom     #Master Bedroom Playbar - media_player.sonos_master_bedroo
                
 # Bond
-bond:
-  host: !secret bond_host
-  token: !secret bond_token
-
-# Nest - From UI now
-
-#OpenWeatherMap configured via UI
-#weather:
-#  - platform: openweathermap
-#    name: Weather
-#    api_key: !secret openweathermap_api_key
-
-#Garage Door Opener
-cover:
-  - platform: myq
-    username: !secret myq_username
-    password: !secret myq_password
-
-#Tesla
-#tesla:
-#  username: !secret tesla_username
-#  password: !secret tesla_password
-#  scan_interval: 3600
+#bond:
+#  host: !secret bond_host
+#  token: !secret bond_token
 
 #Emulated Roku
 emulated_roku:
@@ -184,38 +144,9 @@ emulated_roku:
       listen_port: 8060
       
 
-# Denon Receivers
-# Configured via UI
-
-# Monoprice Multizone Amplifier
-# Configured via the UI
-
 # Apple TV
 # Home Theater Apple TV installed via UI using a custom component due to pin codes required
 # renamed to media_player.apple_tv with remote.apple_tv manually
-
-# RING
-# ring integration must be done in the UI since YAML doesn't support 2-factor authentication
-
-# Google Cast
-# Add Chromecast media_players via the Discovery UI integration
-# media_player.family_room_tv_cast
-# media_player.master_bedroom_tv_cast
-# media_player.game_room_tv_cast
- 
-
-# Zoneminder
-zoneminder:
-  - host: !secret zm_host
-    path: !secret zm_path
-    path_zms: !secret zm_path_zms
-    ssl: true
-    verify_ssl: false
-    username: !secret zm_username
-    password: !secret zm_password
-
-camera:
-  - platform: zoneminder
 
 # Cameras
 camera:
@@ -228,9 +159,57 @@ camera:
     authentication: digest
     verify_ssl: false
   - platform: generic
+    stream_source: !secret camera_2_substream
+    still_image_url: !secret camera_2_still
+    name: !secret camera_2_name
+    username: !secret camera_username
+    password: !secret camera_password
+    authentication: digest
+    verify_ssl: false
+  - platform: generic
+    stream_source: !secret camera_3_substream
+    still_image_url: !secret camera_3_still
+    name: !secret camera_3_name
+    username: !secret camera_username
+    password: !secret camera_password
+    authentication: digest
+    verify_ssl: false
+  - platform: generic
     stream_source: !secret camera_4_substream
     still_image_url: !secret camera_4_still
     name: !secret camera_4_name
+    username: !secret camera_username
+    password: !secret camera_password
+    authentication: digest
+    verify_ssl: false
+  - platform: generic
+    stream_source: !secret camera_5_substream
+    still_image_url: !secret camera_5_still
+    name: !secret camera_5_name
+    username: !secret camera_username
+    password: !secret camera_password
+    authentication: digest
+    verify_ssl: false
+  - platform: generic
+    stream_source: !secret camera_6_substream
+    still_image_url: !secret camera_6_still
+    name: !secret camera_6_name
+    username: !secret camera_username
+    password: !secret camera_password
+    authentication: digest
+    verify_ssl: false
+  - platform: generic
+    stream_source: !secret camera_7_substream
+    still_image_url: !secret camera_7_still
+    name: !secret camera_7_name
+    username: !secret camera_username
+    password: !secret camera_password
+    authentication: digest
+    verify_ssl: false
+  - platform: generic
+    stream_source: !secret camera_8_substream
+    still_image_url: !secret camera_8_still
+    name: !secret camera_8_name
     username: !secret camera_username
     password: !secret camera_password
     authentication: digest
@@ -285,17 +264,17 @@ notify:
       - service: mobile_app_spa
 
 # Apple Homekit Bridge
-homekit:
-  filter:
-    include_entity_globs:
-      - cover.garage*
-  entity_config:
-    cover.garage_door_1_left:
-      name: Left Garage Door
-    cover.garage_door_2_center:
-      name: Middle Garage Door
-    cover.garage_door_3_right:
-      name: Right Garage Door
+#homekit:
+#  filter:
+#    include_entity_globs:
+#      - cover.castle_walk*
+#  entity_config:
+#    cover.castle_walk_left:
+#      name: Left Garage Door
+#    cover.castle_walk_center:
+#      name: Middle Garage Door
+#    cover.castle_walk_right:
+#      name: Right Garage Door
       
 
 ###########
@@ -435,27 +414,27 @@ switch:
               {% else %}
                 scene.family_room_audio_unmute
               {% endif %}
-  # Tablet Switches
-  - platform: command_line
-    switches:
-      master_bedroom_tablet_screen:
-        command_on: !secret master_bedroom_tablet_screen_on
-        command_off: !secret master_bedroom_tablet_screen_off
-        command_state: !secret master_bedroom_tablet_screen_state
-        value_template: '{{ value == "on" }}'
-        friendly_name: Master Bedroom Tablet Screen
-      kitchen_tablet_screen:
-        command_on: !secret kitchen_tablet_screen_on
-        command_off: !secret kitchen_tablet_screen_off
-        command_state: !secret kitchen_tablet_screen_state
-        value_template: '{{ value == "on" }}'
-        friendly_name: Kitchen Tablet Screen
-      front_door_tablet_screen:
-        command_on: !secret front_door_tablet_screen_on
-        command_off: !secret front_door_tablet_screen_off
-        command_state: !secret front_door_tablet_screen_state
-        value_template: '{{ value == "on" }}'
-        friendly_name: Front Door Tablet Screen
+#  # Tablet Switches
+#  - platform: command_line
+#    switches:
+#      master_bedroom_tablet_screen:
+#        command_on: !secret master_bedroom_tablet_screen_on
+#        command_off: !secret master_bedroom_tablet_screen_off
+#        command_state: !secret master_bedroom_tablet_screen_state
+#        value_template: '{{ value == "on" }}'
+#        friendly_name: Master Bedroom Tablet Screen
+#      kitchen_tablet_screen:
+#        command_on: !secret kitchen_tablet_screen_on
+#        command_off: !secret kitchen_tablet_screen_off
+#        command_state: !secret kitchen_tablet_screen_state
+#        value_template: '{{ value == "on" }}'
+#        friendly_name: Kitchen Tablet Screen
+#      front_door_tablet_screen:
+#        command_on: !secret front_door_tablet_screen_on
+#        command_off: !secret front_door_tablet_screen_off
+#        command_state: !secret front_door_tablet_screen_state
+#        value_template: '{{ value == "on" }}'
+#        friendly_name: Front Door Tablet Screen
 
 ###############
 ## INPUT NUMBER
@@ -496,12 +475,6 @@ sensor:
         friendly_name: "Basement Temperature Round"           
         unit_of_measurement: '°F'         
         value_template: "{{ states('sensor.basement_temperature') | round|int }}"  
-  # Flume Water Sensor
-  - platform: flume
-    username: !secret flume_username 
-    password: !secret flume_password
-    client_id: !secret flume_client_id
-    client_secret: !secret flume_client_secret
   # Date/Time
   - platform: time_date
     display_options:
@@ -520,32 +493,6 @@ sensor:
       simple_time:
         friendly_name: "Simple Time"
         value_template: "{{ as_timestamp(now()) | timestamp_custom('%I:%M %p') }}"
-  # MQTT Sensors from Zoneminder Cameras
-  - platform: mqtt
-    state_topic: "zoneminder/1"
-    name: !secret camera_1_alert_name
-    value_template: '{{ value_json.state }}'
-  - platform: mqtt
-    state_topic: "zoneminder/2"
-    name: !secret camera_2_alert_name
-  - platform: mqtt
-    state_topic: "zoneminder/3"
-    name: !secret camera_3_alert_name
-  - platform: mqtt
-    state_topic: "zoneminder/4"
-    name: !secret camera_4_alert_name
-  - platform: mqtt
-    state_topic: "zoneminder/5"
-    name: !secret camera_5_alert_name
-  - platform: mqtt
-    state_topic: "zoneminder/6"
-    name: !secret camera_6_alert_name
-  - platform: mqtt
-    state_topic: "zoneminder/7"
-    name: !secret camera_7_alert_name
-  - platform: mqtt
-    state_topic: "zoneminder/8"
-    name: !secret camera_8_alert_name
 
 #################
 ## MEDIA PLAYERS
@@ -733,7 +680,7 @@ cloud:
       media_player.family_room_ump:
         name: Family Room TV
         description: Family Room TV and Sound
-      media_player.family_room_ump:
+      media_player.master_bedroom_ump:
         name: Master Bedroom TV
         description: Master Bedroom TV and Sound
       media_player.monoprice_kitchen:
