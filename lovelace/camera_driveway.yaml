@@ -1,0 +1,23 @@
+title: Camera Driveway
+path: camera_driveway
+panel: true
+visible: false
+
+cards:
+
+
+  - type: custom:frigate-card
+    cameras:
+      - camera_entity: camera.frigate_driveway
+        live_provider: webrtc-card
+        title: Driveway
+        webrtc_card:
+          entity: camera.driveway
+    live:
+      webrtc_card:
+        ui: true
+    dimensions:
+      aspect_ratio_mode: static
+      aspect_ratio: '16:9'
+    menu:
+      style: none

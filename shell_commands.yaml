@@ -1,0 +1,7 @@
+# Denon X8500H
+# On/Off and Mute are implmented as telnet platform template switches
+denon_x8500h_volume_up: "/config/scripts/denon_x8500h.sh 192.168.1.31 MVUP"
+denon_x8500h_volume_down: "/config/scripts/denon_x8500h.sh 192.168.1.31 MVDOWN"
+#denon_x8500h_volume_set: /bin/bash -c "/config/scripts/denon_x8500h.sh !denon_x8500h_host MVUP"
+#denon_x8500h_volume_set: echo -n "MV{{ states('input_number.denon_x8500h_volume') }}" | nc -q 1 !denon_x8500h_host 23
+

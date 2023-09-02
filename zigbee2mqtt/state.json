@@ -1,0 +1,32 @@
+{
+    "0x84ba20fffecacd10": {
+        "battery": 100,
+        "water_leak": false,
+        "tamper": false,
+        "battery_low": false,
+        "linkquality": 18
+    },
+    "0x84ba20fffeceb427": {
+        "linkquality": 29,
+        "water_leak": false,
+        "tamper": false,
+        "battery_low": false,
+        "battery": 100,
+        "voltage": 3200
+    },
+    "0x84ba20fffec78e8f": {
+        "battery": 100,
+        "voltage": 3200,
+        "linkquality": 80,
+        "water_leak": false,
+        "tamper": false,
+        "battery_low": false
+    },
+    "0x84ba20fffeceb240": {
+        "water_leak": false,
+        "tamper": false,
+        "battery_low": false,
+        "battery": 100,
+        "voltage": 3200
+    }
+}

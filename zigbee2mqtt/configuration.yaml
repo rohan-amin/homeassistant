@@ -1,0 +1,51 @@
+homeassistant: true
+mqtt:
+  server: mqtt://core-mosquitto:1883
+  user: addons
+  password: Iafie4eisahchediefeiquauy7aphee0osher1Eixee6zoo0yaivo8ruThoh1ohl
+serial:
+  port: tcp://192.168.1.10:6638
+frontend:
+  port: 8099
+advanced:
+  homeassistant_legacy_entity_attributes: false
+  legacy_api: false
+  legacy_availability_payload: false
+  log_syslog:
+    app_name: Zigbee2MQTT
+    eol: /n
+    host: localhost
+    localhost: localhost
+    path: /dev/log
+    pid: process.pid
+    port: 514
+    protocol: udp4
+    type: '5424'
+  network_key:
+    - 7
+    - 2
+    - 1
+    - 6
+    - 9
+    - 11
+    - 13
+    - 15
+    - 7
+    - 2
+    - 3
+    - 6
+    - 8
+    - 12
+    - 11
+    - 13
+device_options:
+  legacy: false
+devices:
+  '0x84ba20fffecacd10':
+    friendly_name: linkind_water_sensor/laundry
+  '0x84ba20fffeceb427':
+    friendly_name: linkind_water_sensor/basement_water_tank
+  '0x84ba20fffec78e8f':
+    friendly_name: linkind_water_sensor/kitchen_sink
+  '0x84ba20fffeceb240':
+    friendly_name: linkind_water_sensor/basement_water_main
