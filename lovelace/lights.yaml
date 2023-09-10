@@ -68,6 +68,10 @@ cards:
             entities:
               - entity: light.dining_room_chandelier
                 name: Dining Chandelier
+          # Study
+          - type: custom:slider-entity-row
+            entity: light.study_study_main
+            name: Study
           # Other Lights
           - entity: light.mudroom_mudroom
             name: Mudroom

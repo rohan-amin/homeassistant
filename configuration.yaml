@@ -149,112 +149,112 @@ emulated_roku:
 # renamed to media_player.apple_tv with remote.apple_tv manually
 
 # Cameras
-camera:
-  - platform: generic
-    stream_source: !secret camera_1_substream
-    still_image_url: !secret camera_1_still
-    name: !secret camera_1_name
-    username: !secret camera_username
-    password: !secret camera_password
-    authentication: digest
-    verify_ssl: false
-  - platform: generic
-    stream_source: !secret camera_2_substream
-    still_image_url: !secret camera_2_still
-    name: !secret camera_2_name
-    username: !secret camera_username
-    password: !secret camera_password
-    authentication: digest
-    verify_ssl: false
-  - platform: generic
-    stream_source: !secret camera_3_substream
-    still_image_url: !secret camera_3_still
-    name: !secret camera_3_name
-    username: !secret camera_username
-    password: !secret camera_password
-    authentication: digest
-    verify_ssl: false
-  - platform: generic
-    stream_source: !secret camera_4_substream
-    still_image_url: !secret camera_4_still
-    name: !secret camera_4_name
-    username: !secret camera_username
-    password: !secret camera_password
-    authentication: digest
-    verify_ssl: false
-  - platform: generic
-    stream_source: !secret camera_5_substream
-    still_image_url: !secret camera_5_still
-    name: !secret camera_5_name
-    username: !secret camera_username
-    password: !secret camera_password
-    authentication: digest
-    verify_ssl: false
-  - platform: generic
-    stream_source: !secret camera_6_substream
-    still_image_url: !secret camera_6_still
-    name: !secret camera_6_name
-    username: !secret camera_username
-    password: !secret camera_password
-    authentication: digest
-    verify_ssl: false
-  - platform: generic
-    stream_source: !secret camera_7_substream
-    still_image_url: !secret camera_7_still
-    name: !secret camera_7_name
-    username: !secret camera_username
-    password: !secret camera_password
-    authentication: digest
-    verify_ssl: false
-  - platform: generic
-    stream_source: !secret camera_8_substream
-    still_image_url: !secret camera_8_still
-    name: !secret camera_8_name
-    username: !secret camera_username
-    password: !secret camera_password
-    authentication: digest
-    verify_ssl: false
+#camera:
+#  - platform: generic
+#    stream_source: !secret camera_1_substream
+#    still_image_url: !secret camera_1_still
+#    name: !secret camera_1_name
+#    username: !secret camera_username
+#    password: !secret camera_password
+#    authentication: digest
+#    verify_ssl: false
+#  - platform: generic
+#    stream_source: !secret camera_2_substream
+#    still_image_url: !secret camera_2_still
+#    name: !secret camera_2_name
+#    username: !secret camera_username
+#    password: !secret camera_password
+#    authentication: digest
+#    verify_ssl: false
+#  - platform: generic
+#    stream_source: !secret camera_3_substream
+#    still_image_url: !secret camera_3_still
+#    name: !secret camera_3_name
+#    username: !secret camera_username
+#    password: !secret camera_password
+#    authentication: digest
+#    verify_ssl: false
+#  - platform: generic
+#    stream_source: !secret camera_4_substream
+#    still_image_url: !secret camera_4_still
+#    name: !secret camera_4_name
+#    username: !secret camera_username
+#    password: !secret camera_password
+#    authentication: digest
+#    verify_ssl: false
+#  - platform: generic
+#    stream_source: !secret camera_5_substream
+#    still_image_url: !secret camera_5_still
+#    name: !secret camera_5_name
+#    username: !secret camera_username
+#    password: !secret camera_password
+#    authentication: digest
+#    verify_ssl: false
+#  - platform: generic
+#    stream_source: !secret camera_6_substream
+#    still_image_url: !secret camera_6_still
+#    name: !secret camera_6_name
+#    username: !secret camera_username
+#   password: !secret camera_password
+#   authentication: digest
+#   verify_ssl: false
+#  - platform: generic
+#    stream_source: !secret camera_7_substream
+#    still_image_url: !secret camera_7_still
+#    name: !secret camera_7_name
+#    username: !secret camera_username
+#    password: !secret camera_password
+#    authentication: digest
+#    verify_ssl: false
+#  - platform: generic
+#    stream_source: !secret camera_8_substream
+#    still_image_url: !secret camera_8_still
+#    name: !secret camera_8_name
+#    username: !secret camera_username
+#    password: !secret camera_password
+#    authentication: digest
+#    verify_ssl: false
 
 
 # iOS notifications
 # ref: https://companion.home-assistant.io/docs/notifications/actionable-notifications/
 # ref: https://companion.home-assistant.io/docs/notifications/notifications-basic/
-ios:
-  push:
-    categories:
-      - name: Camera Motion Snooze
-        identifier: 'camera_motion_snooze'
-        actions:
-          - identifier: 'snooze_15'
-            title: 'Snooze for 15 mins'
-            activationMode: 'background'
-            authenticationRequired: 'true'
-            destructive: 'false'
-            behavior: 'default'
-          - identifier: 'snooze_60'
-            title: 'Snooze for 60 mins'
-            activationMode: 'background'
-            authenticationRequired: 'true'
-            destructive: 'false'
-            behavior: 'default'
-      - name: House Alarm Activate
-        identifier: 'house_alarm_activate'
-        actions:
-          - identifier: 'arm_home'
-            title: 'Arm Home'
-            activationMode: 'background'
-            authenticationRequired: 'true'
-            destructive: 'false'
-            behavior: 'default'
-      - name: Kids Room Lights
-        identifier: 'kids_room_lights'
-        actions:
-          - identifier: 'turn_off_lights'
-            title: 'Turn Off Lights'
-            activationMode: 'background'
-            authenticationRequired: 'true'
-            destructive: 'false'
-            behavior: 'default'
+#ios:
+#  push:
+#    categories:
+#      - name: Camera Motion Snooze
+#        identifier: 'camera_motion_snooze'
+#        actions:
+#          - identifier: 'snooze_15'
+#            title: 'Snooze for 15 mins'
+#            activationMode: 'background'
+#            authenticationRequired: 'true'
+#            destructive: 'false'
+#            behavior: 'default'
+#          - identifier: 'snooze_60'
+#            title: 'Snooze for 60 mins'
+#            activationMode: 'background'
+#            authenticationRequired: 'true'
+#            destructive: 'false'
+#            behavior: 'default'
+#      - name: House Alarm Activate
+#        identifier: 'house_alarm_activate'
+#        actions:
+#          - identifier: 'arm_home'
+#            title: 'Arm Home'
+#            activationMode: 'background'
+#            authenticationRequired: 'true'
+#            destructive: 'false'
+#            behavior: 'default'
+#      - name: Kids Room Lights
+#        identifier: 'kids_room_lights'
+#        actions:
+#          - identifier: 'turn_off_lights'
+#            title: 'Turn Off Lights'
+#            activationMode: 'background'
+#            authenticationRequired: 'true'
+#            destructive: 'false'
+#            behavior: 'default'
 
 notify:
   - name: family_all_mobile

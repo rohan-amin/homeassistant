@@ -7,7 +7,7 @@
         "linkquality": 18
     },
     "0x84ba20fffeceb427": {
-        "linkquality": 29,
+        "linkquality": 54,
         "water_leak": false,
         "tamper": false,
         "battery_low": false,
@@ -17,7 +17,7 @@
     "0x84ba20fffec78e8f": {
         "battery": 100,
         "voltage": 3200,
-        "linkquality": 80,
+        "linkquality": 40,
         "water_leak": false,
         "tamper": false,
         "battery_low": false
@@ -27,6 +27,7 @@
         "tamper": false,
         "battery_low": false,
         "battery": 100,
-        "voltage": 3200
+        "voltage": 3200,
+        "linkquality": 58
     }
 }
