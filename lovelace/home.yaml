@@ -209,11 +209,11 @@ cards:
             padding: 5px 0px 0px 10px;
           }
         entities:
-          - entity: cover.castle_walk_left
+          - entity: cover.ratgdo_left_door
             name: Left Garage
-          - entity: cover.castle_walk_center
+          - entity: cover.ratgdo_middle_door
             name: Middle Garage
-          - entity: cover.castle_walk_right
+          - entity: cover.ratgdo_right_door
             name: Right Garage
           - entity: binary_sensor.pool_gate_state
             name: Pool Gate
@@ -300,4 +300,33 @@ cards:
             name: Front Door in Family Room
           - entity: input_button.camera_front_door_master_bedroom_tv
             name: Front Door in Master Bedroom
+
+      # LEAK DETECTORS
+      - type: entities
+        title: Leak Sensors
+        state_color: true
+        show_header_toggle: false
+        style: |
+          .card-header {
+            font-size: 22px;
+            font-weight: bold;
+            padding: 5px 0px 0px 10px;
+          }
+        entities:
+          - entity: binary_sensor.linkind_water_sensor_laundry_water_leak
+            name: Laundry Room
+            secondary_info: last-changed
+          - entity: binary_sensor.laundry_water_sensor_leak
+            name: Laundry Room YoLink
+            secondary_info: last-updated
+          - entity: binary_sensor.linkind_water_sensor_basement_water_main_water_leak
+            name: Basement Water Main
+            secondary_info: last-changed
+          - entity: binary_sensor.linkind_water_sensor_basement_water_tank_water_leak
+            name: Basement Water Tank
+            secondary_info: last-updated
+          - entity: binary_sensor.linkind_water_sensor_kitchen_sink_water_leak
+            name: Kitchen Sink
+            secondary_info: last-updated
+
 

@@ -38,6 +38,7 @@ advanced:
     - 12
     - 11
     - 13
+  log_level: info
 device_options:
   legacy: false
 devices:

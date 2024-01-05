@@ -132,11 +132,6 @@ lutron:
   username: !secret lutron_username
   password: !secret lutron_password
                
-# Bond
-#bond:
-#  host: !secret bond_host
-#  token: !secret bond_token
-
 #Emulated Roku
 emulated_roku:
   servers:
@@ -144,117 +139,9 @@ emulated_roku:
       listen_port: 8060
       
 
-# Apple TV
-# Home Theater Apple TV installed via UI using a custom component due to pin codes required
-# renamed to media_player.apple_tv with remote.apple_tv manually
-
-# Cameras
-#camera:
-#  - platform: generic
-#    stream_source: !secret camera_1_substream
-#    still_image_url: !secret camera_1_still
-#    name: !secret camera_1_name
-#    username: !secret camera_username
-#    password: !secret camera_password
-#    authentication: digest
-#    verify_ssl: false
-#  - platform: generic
-#    stream_source: !secret camera_2_substream
-#    still_image_url: !secret camera_2_still
-#    name: !secret camera_2_name
-#    username: !secret camera_username
-#    password: !secret camera_password
-#    authentication: digest
-#    verify_ssl: false
-#  - platform: generic
-#    stream_source: !secret camera_3_substream
-#    still_image_url: !secret camera_3_still
-#    name: !secret camera_3_name
-#    username: !secret camera_username
-#    password: !secret camera_password
-#    authentication: digest
-#    verify_ssl: false
-#  - platform: generic
-#    stream_source: !secret camera_4_substream
-#    still_image_url: !secret camera_4_still
-#    name: !secret camera_4_name
-#    username: !secret camera_username
-#    password: !secret camera_password
-#    authentication: digest
-#    verify_ssl: false
-#  - platform: generic
-#    stream_source: !secret camera_5_substream
-#    still_image_url: !secret camera_5_still
-#    name: !secret camera_5_name
-#    username: !secret camera_username
-#    password: !secret camera_password
-#    authentication: digest
-#    verify_ssl: false
-#  - platform: generic
-#    stream_source: !secret camera_6_substream
-#    still_image_url: !secret camera_6_still
-#    name: !secret camera_6_name
-#    username: !secret camera_username
-#   password: !secret camera_password
-#   authentication: digest
-#   verify_ssl: false
-#  - platform: generic
-#    stream_source: !secret camera_7_substream
-#    still_image_url: !secret camera_7_still
-#    name: !secret camera_7_name
-#    username: !secret camera_username
-#    password: !secret camera_password
-#    authentication: digest
-#    verify_ssl: false
-#  - platform: generic
-#    stream_source: !secret camera_8_substream
-#    still_image_url: !secret camera_8_still
-#    name: !secret camera_8_name
-#    username: !secret camera_username
-#    password: !secret camera_password
-#    authentication: digest
-#    verify_ssl: false
-
-
-# iOS notifications
-# ref: https://companion.home-assistant.io/docs/notifications/actionable-notifications/
-# ref: https://companion.home-assistant.io/docs/notifications/notifications-basic/
-#ios:
-#  push:
-#    categories:
-#      - name: Camera Motion Snooze
-#        identifier: 'camera_motion_snooze'
-#        actions:
-#          - identifier: 'snooze_15'
-#            title: 'Snooze for 15 mins'
-#            activationMode: 'background'
-#            authenticationRequired: 'true'
-#            destructive: 'false'
-#            behavior: 'default'
-#          - identifier: 'snooze_60'
-#            title: 'Snooze for 60 mins'
-#            activationMode: 'background'
-#            authenticationRequired: 'true'
-#            destructive: 'false'
-#            behavior: 'default'
-#      - name: House Alarm Activate
-#        identifier: 'house_alarm_activate'
-#        actions:
-#          - identifier: 'arm_home'
-#            title: 'Arm Home'
-#            activationMode: 'background'
-#            authenticationRequired: 'true'
-#            destructive: 'false'
-#            behavior: 'default'
-#      - name: Kids Room Lights
-#        identifier: 'kids_room_lights'
-#        actions:
-#          - identifier: 'turn_off_lights'
-#            title: 'Turn Off Lights'
-#            activationMode: 'background'
-#            authenticationRequired: 'true'
-#            destructive: 'false'
-#            behavior: 'default'
+######################
+## NOTIFY GROUPS BELOW
+######################
 
 notify:
   - name: family_all_mobile
@@ -263,19 +150,6 @@ notify:
       - service: mobile_app_rma
       - service: mobile_app_spa
 
-# Apple Homekit Bridge
-#homekit:
-#  filter:
-#    include_entity_globs:
-#      - cover.castle_walk*
-#  entity_config:
-#    cover.castle_walk_left:
-#      name: Left Garage Door
-#    cover.castle_walk_center:
-#      name: Middle Garage Door
-#    cover.castle_walk_right:
-#      name: Right Garage Door
-      
 
 ###########
 ## SWITCHES
@@ -414,27 +288,6 @@ switch:
               {% else %}
                 scene.family_room_audio_unmute
               {% endif %}
-#  # Tablet Switches
-#  - platform: command_line
-#    switches:
-#      master_bedroom_tablet_screen:
-#        command_on: !secret master_bedroom_tablet_screen_on
-#        command_off: !secret master_bedroom_tablet_screen_off
-#        command_state: !secret master_bedroom_tablet_screen_state
-#        value_template: '{{ value == "on" }}'
-#        friendly_name: Master Bedroom Tablet Screen
-#      kitchen_tablet_screen:
-#        command_on: !secret kitchen_tablet_screen_on
-#        command_off: !secret kitchen_tablet_screen_off
-#        command_state: !secret kitchen_tablet_screen_state
-#        value_template: '{{ value == "on" }}'
-#        friendly_name: Kitchen Tablet Screen
-#      front_door_tablet_screen:
-#        command_on: !secret front_door_tablet_screen_on
-#        command_off: !secret front_door_tablet_screen_off
-#        command_state: !secret front_door_tablet_screen_state
-#        value_template: '{{ value == "on" }}'
-#        friendly_name: Front Door Tablet Screen
 
 ###############
 ## INPUT NUMBER
@@ -499,14 +352,6 @@ sensor:
 #################
 
 media_player:
-
-# Master Bedroom TV now configured via UI
-# media_player.master_bedroom_tv
-# remote.master_bedroom_tv
-
-# Family Room TV now configured via UI
-# media_player.family_room_tv
-# remote.family_room_tv
 
   # MASTER BEDROOM Universal Media Player (ump)
   - platform: universal
@@ -668,7 +513,7 @@ media_player:
 cloud:
   alexa:
     filter:
-      include_entities:
+     include_entities:
         - media_player.family_room_ump
         - media_player.master_bedroom_ump
         - media_player.monoprice_kitchen
@@ -676,6 +521,9 @@ cloud:
         - switch.kitchen_sonos
         - switch.deck_tv_audio
         - switch.deck_sonos
+        - light.kids_room_lights
+        - light.living_room_lights
+        - light.basement_lights
     entity_config:
       media_player.family_room_ump:
         name: Family Room TV
@@ -696,19 +544,15 @@ cloud:
       switch.deck_sonos:
         name: Deck Sonos
         description: Deck Sonos
-
-#################
-## LIGHT GROUP
-#################
-light:
-  - platform: group
-    name: Kids Room Lights
-    entities:
-      - light.bedroom_front_recessed
-      - light.bedroom_back_recessed
-      - light.bathroom_shared_mirror
-      - light.bathroom_shared_recessed
-      - light.bathroom_shared_shower
+      light.kids_room_lights:
+        name: Kids Room Lights
+        description: Kids Room Lights
+      light.living_room_lights:
+        name: Living Room Lights
+        description: Living Room Lights
+      light.basement_lights:
+        name: Basement Lights
+        description: Basement Lights
 
 group: !include groups.yaml
 automation: !include automations.yaml
