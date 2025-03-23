@@ -229,7 +229,7 @@ cards:
           name: Current Solar Power
           entity: sensor.envoy_202428002030_current_power_production
           min: 0
-          max: 10  # Adjust max according to your system size
+          max: 20  # Adjust max according to your system size
           severity:
             green: 3
             yellow: 1
