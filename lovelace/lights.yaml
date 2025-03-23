@@ -282,8 +282,8 @@ cards:
                 name: Deck Flood
               - entity: light.garage_dual_driveway
                 name: Driveway Dual
-              - entity: light.garage_dual_driveway
-                name: Driveway Flood
+              - entity: switch.garage_driveway_flood_motion
+                name: Driveway Flood Camera
               - entity: light.basement_outside_door_basement_outside_door
                 name: Basement Outside
 
