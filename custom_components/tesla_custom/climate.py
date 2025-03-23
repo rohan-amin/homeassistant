@@ -1,16 +1,14 @@
 """Support for Tesla climate."""
+
 import logging
 
-from homeassistant.components.climate import ClimateEntity
-from homeassistant.components.climate.const import (
-    DEFAULT_MAX_TEMP,
-    DEFAULT_MIN_TEMP,
-    HVAC_MODE_HEAT_COOL,
-    HVAC_MODE_OFF,
-    SUPPORT_PRESET_MODE,
-    SUPPORT_TARGET_TEMPERATURE,
+from homeassistant.components.climate import (
+    ClimateEntity,
+    ClimateEntityFeature,
+    HVACMode,
 )
-from homeassistant.const import ATTR_TEMPERATURE, TEMP_CELSIUS
+from homeassistant.components.climate.const import DEFAULT_MAX_TEMP, DEFAULT_MIN_TEMP
+from homeassistant.const import ATTR_TEMPERATURE, UnitOfTemperature
 from homeassistant.core import HomeAssistant
 
 from .base import TeslaCarEntity
@@ -18,13 +16,11 @@ from .const import DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 
-SUPPORT_HVAC = [HVAC_MODE_HEAT_COOL, HVAC_MODE_OFF]
-SUPPORT_PRESET = ["Normal", "Defrost", "Keep On", "Dog Mode", "Camp Mode"]
 
 KEEPER_MAP = {
-    "Keep On": 1,
-    "Dog Mode": 2,
-    "Camp Mode": 3,
+    "keep": 1,
+    "dog": 2,
+    "camp": 3,
 }
 
 
@@ -44,30 +40,29 @@ class TeslaCarClimate(TeslaCarEntity, ClimateEntity):
     """Representation of a Tesla car climate."""
 
     type = "HVAC (climate) system"
+    _attr_supported_features = (
+        ClimateEntityFeature.TARGET_TEMPERATURE
+        | ClimateEntityFeature.PRESET_MODE
+        | ClimateEntityFeature.FAN_MODE
+    )
+    _attr_hvac_modes = [HVACMode.HEAT_COOL, HVACMode.OFF]
+    _attr_preset_modes = ["normal", "defrost", "keep", "dog", "camp"]
+    _attr_fan_modes = ["off", "bioweapon"]
 
     @property
-    def supported_features(self):
-        """Return the list of supported features."""
-        return SUPPORT_TARGET_TEMPERATURE | SUPPORT_PRESET_MODE
+    def translation_key(self):
+        return "car_climate"
 
     @property
-    def hvac_mode(self):
+    def hvac_mode(self) -> HVACMode:
         """Return hvac operation ie. heat, cool mode.
 
         Need to be one of HVAC_MODE_*.
         """
         if self._car.is_climate_on:
-            return HVAC_MODE_HEAT_COOL
+            return HVACMode.HEAT_COOL
 
-        return HVAC_MODE_OFF
-
-    @property
-    def hvac_modes(self):
-        """Return list of available hvac operation modes.
-
-        Need to be a subset of HVAC_MODES.
-        """
-        return SUPPORT_HVAC
+        return HVACMode.OFF
 
     @property
     def temperature_unit(self):
@@ -75,7 +70,7 @@ class TeslaCarClimate(TeslaCarEntity, ClimateEntity):
 
         Tesla API always returns in Celsius.
         """
-        return TEMP_CELSIUS
+        return UnitOfTemperature.CELSIUS
 
     @property
     def current_temperature(self):
@@ -116,9 +111,9 @@ class TeslaCarClimate(TeslaCarEntity, ClimateEntity):
     async def async_set_hvac_mode(self, hvac_mode):
         """Set new target hvac mode."""
         _LOGGER.debug("%s: Setting hvac mode to %s", self.name, hvac_mode)
-        if hvac_mode == HVAC_MODE_OFF:
+        if hvac_mode == HVACMode.OFF:
             await self._car.set_hvac_mode("off")
-        elif hvac_mode == HVAC_MODE_HEAT_COOL:
+        elif hvac_mode == HVACMode.HEAT_COOL:
             await self._car.set_hvac_mode("on")
         # set_hvac_mode changes multiple states so refresh all entities
         await self.coordinator.async_refresh()
@@ -130,29 +125,21 @@ class TeslaCarClimate(TeslaCarEntity, ClimateEntity):
         Requires SUPPORT_PRESET_MODE.
         """
         if self._car.defrost_mode == 2:
-            return "Defrost"
+            return "defrost"
         if self._car.climate_keeper_mode == "dog":
-            return "Dog Mode"
+            return "dog"
         if self._car.climate_keeper_mode == "camp":
-            return "Camp Mode"
+            return "camp"
         if self._car.climate_keeper_mode == "on":
-            return "Keep On"
+            return "keep"
 
-        return "Normal"
-
-    @property
-    def preset_modes(self):
-        """Return a list of available preset modes.
-
-        Requires SUPPORT_PRESET_MODE.
-        """
-        return SUPPORT_PRESET
+        return "normal"
 
     async def async_set_preset_mode(self, preset_mode: str) -> None:
         """Set new preset mode."""
         _LOGGER.debug("%s: Setting preset_mode to: %s", self.name, preset_mode)
 
-        if preset_mode == "Normal":
+        if preset_mode == "normal":
             # If setting Normal, we need to check Defrost And Keep modes.
             if self._car.defrost_mode != 0:
                 await self._car.set_max_defrost(0)
@@ -160,10 +147,27 @@ class TeslaCarClimate(TeslaCarEntity, ClimateEntity):
             if self._car.climate_keeper_mode != 0:
                 await self._car.set_climate_keeper_mode(0)
 
-        elif preset_mode == "Defrost":
+        elif preset_mode == "defrost":
             await self._car.set_max_defrost(2)
 
         else:
             await self._car.set_climate_keeper_mode(KEEPER_MAP[preset_mode])
         # max_defrost changes multiple states so refresh all entities
         await self.coordinator.async_refresh()
+
+    @property
+    def fan_mode(self):
+        """Return the bioweapon mode as fan mode.
+
+        Requires SUPPORT_FAN_MODE.
+        """
+        if self._car.bioweapon_mode:
+            return "bioweapon"
+
+        return "off"
+
+    async def async_set_fan_mode(self, fan_mode: str) -> None:
+        """Set new fan mode as bioweapon mode."""
+        _LOGGER.debug("%s: Setting fan_mode to: %s", self.name, fan_mode)
+
+        await self._car.set_bioweapon_mode(fan_mode == "bioweapon")

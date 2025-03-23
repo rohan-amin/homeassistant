@@ -229,6 +229,18 @@ cards:
                 name: Wall Sconces
               - entity: light.basement_bathroom_single
                 name: Spot
+          # Gym
+          - type: custom:fold-entity-row
+            head:
+              type: custom:slider-entity-row
+              entity: light.gym_gym_recessed
+              name: Gym
+            entities:
+              - entity: light.gym_gym_spot
+                name: Gym Spot
+              - entity: switch.gym_gym_closet
+                name: Gym Closet
+
 
       # OUTDOOR LIGHTS
       - type: entities

@@ -1,5 +1,6 @@
 """Support for Tesla cars and energy sites."""
 
+from homeassistant.core import callback
 from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.util import slugify
@@ -29,12 +30,6 @@ class TeslaBaseEntity(CoordinatorEntity[TeslaDataUpdateCoordinator]):
         self._attr_name = self.type.capitalize()
         self._attr_entity_registry_enabled_default = self._enabled_by_default
 
-    async def async_added_to_hass(self) -> None:
-        """Register state update callback."""
-        self.async_on_remove(
-            self.coordinator.async_add_listener(self.async_write_ha_state)
-        )
-
 
 class TeslaCarEntity(TeslaBaseEntity):
     """Representation of a Tesla car device."""
@@ -51,7 +46,9 @@ class TeslaCarEntity(TeslaBaseEntity):
         display_name = car.display_name
         vehicle_name = (
             display_name
-            if display_name is not None and display_name != vin[-6:]
+            if display_name is not None
+            and display_name != vin[-6:]
+            and display_name != ""
             else f"Tesla Model {str(vin[3]).upper()}"
         )
         self._attr_device_info = DeviceInfo(
@@ -61,6 +58,27 @@ class TeslaCarEntity(TeslaBaseEntity):
             model=car.car_type,
             sw_version=car.car_version,
         )
+        self._last_update_success: bool | None = None
+        self.last_update_time: float | None = None
+
+    @callback
+    def _handle_coordinator_update(self) -> None:
+        """Handle updated data from the coordinator."""
+        prev_last_update_success = self._last_update_success
+        prev_last_update_time = self.last_update_time
+        coordinator = self.coordinator
+        current_last_update_success = coordinator.last_update_success
+        current_last_update_time = coordinator.last_update_time
+        self._last_update_success = current_last_update_success
+        self.last_update_time = current_last_update_time
+        if (
+            prev_last_update_success == current_last_update_success
+            and prev_last_update_time == current_last_update_time
+        ):
+            # If there was no change in the last update success or time,
+            # avoid writing state to prevent unnecessary entity updates.
+            return
+        super()._handle_coordinator_update()
 
     async def update_controller(
         self, *, wake_if_asleep: bool = False, force: bool = True, blocking: bool = True
@@ -87,13 +105,7 @@ class TeslaCarEntity(TeslaBaseEntity):
     @property
     def assumed_state(self) -> bool:
         """Return whether the data is from an online vehicle."""
-        vin = self._car.vin
-        controller = self.coordinator.controller
-        return not controller.is_car_online(vin=vin) and (
-            controller.get_last_update_time(vin=vin)
-            - controller.get_last_wake_up_time(vin=vin)
-            > controller.update_interval
-        )
+        return self.coordinator.assumed_state
 
 
 class TeslaEnergyEntity(TeslaBaseEntity):

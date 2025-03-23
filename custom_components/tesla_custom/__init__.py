@@ -1,14 +1,18 @@
 """Support for Tesla cars."""
+
 import asyncio
 from datetime import timedelta
 from functools import partial
 from http import HTTPStatus
 import logging
+import ssl
+from typing import Any
 
 import async_timeout
 from homeassistant.config_entries import SOURCE_IMPORT
 from homeassistant.const import (
     CONF_ACCESS_TOKEN,
+    CONF_CLIENT_ID,
     CONF_DOMAIN,
     CONF_SCAN_INTERVAL,
     CONF_TOKEN,
@@ -28,6 +32,8 @@ from teslajsonpy.exceptions import IncompleteCredentials, TeslaException
 
 from .config_flow import CannotConnect, InvalidAuth, validate_input
 from .const import (
+    CONF_API_PROXY_CERT,
+    CONF_API_PROXY_URL,
     CONF_ENABLE_TESLAMATE,
     CONF_EXPIRATION,
     CONF_INCLUDE_ENERGYSITES,
@@ -130,11 +136,25 @@ async def async_setup(hass, base_config):
 
 async def async_setup_entry(hass, config_entry):
     """Set up Tesla as config entry."""
-    # pylint: disable=too-many-locals,too-many-statements
+    # pylint: disable=too-many-locals,too-many-statements,too-many-branches
     hass.data.setdefault(DOMAIN, {})
     config = config_entry.data
     # Because users can have multiple accounts, we always
     # create a new session so they have separate cookies
+
+    if api_proxy_cert := config.get(CONF_API_PROXY_CERT):
+        try:
+            await hass.async_add_executor_job(
+                SSL_CONTEXT.load_verify_locations, api_proxy_cert
+            )
+            if _LOGGER.isEnabledFor(logging.DEBUG):
+                _LOGGER.debug("Trusting CA: %s", SSL_CONTEXT.get_ca_certs()[-1])
+        except (FileNotFoundError, ssl.SSLError):
+            _LOGGER.warning(
+                "Unable to load custom SSL certificate from %s",
+                api_proxy_cert,
+            )
+
     async_client = httpx.AsyncClient(
         headers={USER_AGENT: SERVER_SOFTWARE}, timeout=60, verify=SSL_CONTEXT
     )
@@ -164,6 +184,8 @@ async def async_setup_entry(hass, config_entry):
             polling_policy=config_entry.options.get(
                 CONF_POLLING_POLICY, DEFAULT_POLLING_POLICY
             ),
+            api_proxy_url=config.get(CONF_API_PROXY_URL),
+            client_id=config.get(CONF_CLIENT_ID),
         )
         result = await controller.connect(
             include_vehicles=config.get(CONF_INCLUDE_VEHICLES),
@@ -280,15 +302,13 @@ async def async_setup_entry(hass, config_entry):
         config_entry=config_entry,
         controller=controller,
         reload_lock=reload_lock,
-        energy_site_ids=set(),
-        vins=set(),
         update_vehicles=False,
     )
     energy_coordinators = {
-        energy_site_id: _partial_coordinator(energy_site_ids={energy_site_id})
+        energy_site_id: _partial_coordinator(energy_site_id=energy_site_id)
         for energy_site_id in energysites
     }
-    car_coordinators = {vin: _partial_coordinator(vins={vin}) for vin in cars}
+    car_coordinators = {vin: _partial_coordinator(vin=vin) for vin in cars}
     coordinators = {**energy_coordinators, **car_coordinators}
 
     if car_coordinators:
@@ -395,19 +415,23 @@ class TeslaDataUpdateCoordinator(DataUpdateCoordinator):
         config_entry,
         controller: TeslaAPI,
         reload_lock: asyncio.Lock,
-        vins: set[str],
-        energy_site_ids: set[str],
-        update_vehicles: bool,
-    ):
+        vin: str | None = None,
+        energy_site_id: str | None = None,
+        update_vehicles: bool = False,
+    ) -> None:
         """Initialize global Tesla data updater."""
         self.controller = controller
         self.config_entry = config_entry
         self.reload_lock = reload_lock
-        self.vins = vins
-        self.energy_site_ids = energy_site_ids
+        self.vin = vin
+        self.vins = {vin} if vin else set()
+        self.energy_site_id = energy_site_id
+        self.energy_site_ids = {energy_site_id} if energy_site_id else set()
         self.update_vehicles = update_vehicles
-        self._debounce_task = None
+        self._cancel_debounce_timer = None
         self._last_update_time = None
+        self.last_update_time: float | None = None
+        self.assumed_state = True
 
         update_interval = timedelta(seconds=MIN_SCAN_INTERVAL)
 
@@ -420,10 +444,11 @@ class TeslaDataUpdateCoordinator(DataUpdateCoordinator):
 
     async def _async_update_data(self):
         """Fetch data from API endpoint."""
-        if self.controller.is_token_refreshed():
+        controller = self.controller
+        if controller.is_token_refreshed():
             # It doesn't matter which coordinator calls this, as long as there
             # are no awaits in the below code, it will be called only once.
-            result = self.controller.get_tokens()
+            result = controller.get_tokens()
             refresh_token = result["refresh_token"]
             access_token = result["access_token"]
             expiration = result["expiration"]
@@ -432,12 +457,13 @@ class TeslaDataUpdateCoordinator(DataUpdateCoordinator):
             )
             _LOGGER.debug("Saving new tokens in config_entry")
 
+        data = None
         try:
             # Note: asyncio.TimeoutError and aiohttp.ClientError are already
             # handled by the data update coordinator.
             async with async_timeout.timeout(30):
                 _LOGGER.debug("Running controller.update()")
-                return await self.controller.update(
+                data = await controller.update(
                     vins=self.vins,
                     energy_site_ids=self.energy_site_ids,
                     update_vehicles=self.update_vehicles,
@@ -453,8 +479,19 @@ class TeslaDataUpdateCoordinator(DataUpdateCoordinator):
                 await self.hass.config_entries.async_reload(self.config_entry.entry_id)
         except TeslaException as err:
             raise UpdateFailed(f"Error communicating with API: {err}") from err
+        else:
+            if vin := self.vin:
+                self.last_update_time = controller.get_last_update_time(vin=vin)
+                self.assumed_state = not controller.is_car_online(vin=vin) and (
+                    self.last_update_time - controller.get_last_wake_up_time(vin=vin)
+                    > controller.update_interval
+                )
+        return data
 
-    def async_update_listeners_debounced(self, delay_since_last=0.1, max_delay=1.0):
+    @callback
+    def async_update_listeners_debounced(
+        self, delay_since_last=0.1, max_delay=1.0
+    ) -> None:
         """
         Debounced version of async_update_listeners.
 
@@ -470,17 +507,18 @@ class TeslaDataUpdateCoordinator(DataUpdateCoordinator):
 
         """
         # If there's an existing debounce task, cancel it
-        if self._debounce_task:
-            self._debounce_task()
+        if self._cancel_debounce_timer:
+            self._cancel_debounce_timer()
             _LOGGER.debug("Previous debounce task cancelled")
 
-        # Schedule the call to _debounced, pass max_delay using partial
-        self._debounce_task = async_call_later(
-            self.hass, delay_since_last, partial(self._debounced, max_delay)
+        # Schedule the call to _async_debounced, pass max_delay using partial
+        self._cancel_debounce_timer = async_call_later(
+            self.hass, delay_since_last, partial(self._async_debounced, max_delay)
         )
         _LOGGER.debug("New debounce task scheduled")
 
-    async def _debounced(self, max_delay, *args):
+    @callback
+    def _async_debounced(self, max_delay: float, *args: Any) -> None:
         """
         Debounce method that waits a certain delay since the last update.
 
@@ -503,10 +541,10 @@ class TeslaDataUpdateCoordinator(DataUpdateCoordinator):
             _LOGGER.debug("Listeners updated")
         else:
             # If it hasn't been max_delay since the last update,
-            # schedule the call to _debounced again after the remaining time
-            self._debounce_task = async_call_later(
+            # schedule the call to _async_debounced again after the remaining time
+            self._cancel_debounce_timer = async_call_later(
                 self.hass,
                 max_delay - (now - self._last_update_time),
-                partial(self._debounced, max_delay),
+                partial(self._async_debounced, max_delay),
             )
             _LOGGER.debug("Max delay not reached, scheduling another debounce task")

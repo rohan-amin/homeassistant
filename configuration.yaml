@@ -13,7 +13,7 @@ homeassistant:
   temperature_unit: F
   # Time Zone - pick from: http://en.wikipedia.org/wiki/List_of_tz_database_time_zones
   time_zone: America/New_York
-  unit_system: imperial
+  unit_system: us_customary
   country: US
 
   # Location information
@@ -23,6 +23,13 @@ homeassistant:
 
   # URL information
   internal_url: !secret internal_url
+
+  # Allow URLs:
+  allowlist_external_urls:
+    - !secret external_url
+
+  allowlist_external_dirs:
+    - /media/frigate-clips
 
 # LOGGING LEVEL
 logger:
@@ -127,10 +134,10 @@ input_button:
 #####################
 
 # Lutron
-lutron:
-  host: !secret lutron_host
-  username: !secret lutron_username
-  password: !secret lutron_password
+#lutron:
+#  host: !secret lutron_host
+#  username: !secret lutron_username
+#  password: !secret lutron_password
                
 #Emulated Roku
 emulated_roku:
@@ -193,6 +200,15 @@ switch:
           data:
             entity_id: remote.apple_tv
             command: suspend
+  # Home Theater System Switch
+  - platform: template
+    switches:
+      home_theater_system:
+        value_template: "{{ is_state('switch.sony_projector','on') }}"
+        turn_on:
+          service: script.theater_audio_video_on
+        turn_off:
+          service: script.theater_audio_video_off
   # Denon Receiver in Family Room
   - platform: telnet
     switches:
@@ -522,8 +538,10 @@ cloud:
         - switch.deck_tv_audio
         - switch.deck_sonos
         - light.kids_room_lights
+        - light.kids_bathroom_lights
         - light.living_room_lights
         - light.basement_lights
+        - switch.home_theater_system
     entity_config:
       media_player.family_room_ump:
         name: Family Room TV
@@ -547,12 +565,18 @@ cloud:
       light.kids_room_lights:
         name: Kids Room Lights
         description: Kids Room Lights
+      light.kids_bathroom_lights:
+        name: Kids Bathroom Lights
+        description: Kids Bathroom Lights
       light.living_room_lights:
         name: Living Room Lights
         description: Living Room Lights
       light.basement_lights:
         name: Basement Lights
         description: Basement Lights
+      switch.home_theater_system:
+        name: Home Theater System
+        description: Home Theater System
 
 group: !include groups.yaml
 automation: !include automations.yaml

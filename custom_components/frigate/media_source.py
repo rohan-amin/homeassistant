@@ -1,4 +1,5 @@
 """Frigate Media Source."""
+
 from __future__ import annotations
 
 import datetime as dt
@@ -8,16 +9,8 @@ from typing import Any, cast
 
 import attr
 from dateutil.relativedelta import relativedelta
-import pytz
 
-from homeassistant.components.media_player.const import (
-    MEDIA_CLASS_DIRECTORY,
-    MEDIA_CLASS_IMAGE,
-    MEDIA_CLASS_MOVIE,
-    MEDIA_CLASS_VIDEO,
-    MEDIA_TYPE_IMAGE,
-    MEDIA_TYPE_VIDEO,
-)
+from homeassistant.components.media_player.const import MediaClass, MediaType
 from homeassistant.components.media_source.error import MediaSourceError, Unresolvable
 from homeassistant.components.media_source.models import (
     BrowseMediaSource,
@@ -25,11 +18,10 @@ from homeassistant.components.media_source.models import (
     MediaSourceItem,
     PlayMedia,
 )
-from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import system_info
 from homeassistant.helpers.template import DATE_STR_FORMAT
-from homeassistant.util.dt import DEFAULT_TIME_ZONE
+from homeassistant.util.dt import DEFAULT_TIME_ZONE, async_get_time_zone
 
 from . import get_friendly_name
 from .api import FrigateApiClient, FrigateApiClientError
@@ -67,7 +59,7 @@ class FrigateBrowseMediaMetadata:
         return {"event": self.event}
 
 
-class FrigateBrowseMediaSource(BrowseMediaSource):  # type: ignore[misc]
+class FrigateBrowseMediaSource(BrowseMediaSource):
     """Represent a browsable Frigate media file."""
 
     children: list[FrigateBrowseMediaSource] | None
@@ -125,17 +117,17 @@ class Identifier:
         """Get the identifier type."""
         raise NotImplementedError
 
-    def get_integration_proxy_path(self, timezone: str) -> str:
+    def get_integration_proxy_path(self, tz_info: dt.tzinfo) -> str:
         """Get the proxy (Home Assistant view) path for this identifier."""
         raise NotImplementedError
 
     @classmethod
     def _add_frigate_instance_id_to_parts_if_absent(
-        self, parts: list[str], default_frigate_instance_id: str | None = None
+        cls, parts: list[str], default_frigate_instance_id: str | None = None
     ) -> list[str]:
         """Add a frigate instance id if it's not specified."""
         if (
-            self._get_index(parts, 0) == self.get_identifier_type()
+            cls._get_index(parts, 0) == cls.get_identifier_type()
             and default_frigate_instance_id is not None
         ):
             parts.insert(0, default_frigate_instance_id)
@@ -168,32 +160,28 @@ class FrigateMediaType(enum.Enum):
         """Get mime type for this frigate media type."""
         if self == FrigateMediaType.CLIPS:
             return "application/x-mpegURL"
-        else:
-            return "image/jpg"
+        return "image/jpg"
 
     @property
     def media_type(self) -> str:
         """Get media type for this frigate media type."""
         if self == FrigateMediaType.CLIPS:
-            return str(MEDIA_TYPE_VIDEO)
-        else:
-            return str(MEDIA_TYPE_IMAGE)
+            return str(MediaType.VIDEO)
+        return str(MediaType.IMAGE)
 
     @property
     def media_class(self) -> str:
         """Get media class for this frigate media type."""
         if self == FrigateMediaType.CLIPS:
-            return str(MEDIA_CLASS_VIDEO)
-        else:
-            return str(MEDIA_CLASS_IMAGE)
+            return str(MediaClass.VIDEO)
+        return str(MediaClass.IMAGE)
 
     @property
     def extension(self) -> str:
         """Get filename extension."""
         if self == FrigateMediaType.CLIPS:
             return "m3u8"
-        else:
-            return "jpg"
+        return "jpg"
 
 
 @attr.s(frozen=True)
@@ -251,12 +239,11 @@ class EventIdentifier(Identifier):
         """Get the identifier type."""
         return "event"
 
-    def get_integration_proxy_path(self, timezone: str) -> str:
+    def get_integration_proxy_path(self, tz_info: dt.tzinfo) -> str:
         """Get the equivalent Frigate server path."""
         if self.frigate_media_type == FrigateMediaType.CLIPS:
             return f"vod/event/{self.id}/index.{self.frigate_media_type.extension}"
-        else:
-            return f"snapshot/{self.id}"
+        return f"snapshot/{self.id}"
 
     @property
     def mime_type(self) -> str:
@@ -264,7 +251,7 @@ class EventIdentifier(Identifier):
         return self.frigate_media_type.mime_type
 
 
-def _to_int_or_none(data: str) -> int | None:
+def _to_int_or_none(data: str | int) -> int | None:
     """Convert to an integer or None."""
     return int(data) if data is not None else None
 
@@ -375,7 +362,7 @@ def _validate_year_month_day(
         try:
             dt.datetime.strptime(data, "%Y-%m-%d")
         except ValueError as exc:
-            raise ValueError("Invalid date in identifier: %s" % data) from exc
+            raise ValueError(f"Invalid date in identifier: {data}") from exc
 
 
 def _validate_hour(
@@ -383,7 +370,7 @@ def _validate_hour(
 ) -> None:
     """Determine if a value is a valid hour."""
     if value is not None and (int(value) < 0 or int(value) > 23):
-        raise ValueError("Invalid hour in identifier: %s" % value)
+        raise ValueError(f"Invalid hour in identifier: {value}")
 
 
 @attr.s(frozen=True)
@@ -441,9 +428,11 @@ class RecordingIdentifier(Identifier):
                 self._empty_if_none(val)
                 for val in (
                     self.camera,
-                    f"{self.year_month_day}"
-                    if self.year_month_day is not None
-                    else None,
+                    (
+                        f"{self.year_month_day}"
+                        if self.year_month_day is not None
+                        else None
+                    ),
                     f"{self.hour:02}" if self.hour is not None else None,
                 )
             ]
@@ -454,7 +443,7 @@ class RecordingIdentifier(Identifier):
         """Get the identifier type."""
         return "recordings"
 
-    def get_integration_proxy_path(self, timezone: str) -> str:
+    def get_integration_proxy_path(self, tz_info: dt.tzinfo) -> str:
         """Get the integration path that will proxy this identifier."""
 
         if (
@@ -470,8 +459,8 @@ class RecordingIdentifier(Identifier):
                 int(month),
                 int(day),
                 int(self.hour),
-                tzinfo=dt.timezone.utc,
-            ) - (dt.datetime.now(pytz.timezone(timezone)).utcoffset() or dt.timedelta())
+                tzinfo=dt.UTC,
+            ) - (dt.datetime.now(tz_info).utcoffset() or dt.timedelta())
 
             parts = [
                 "vod",
@@ -497,12 +486,12 @@ class RecordingIdentifier(Identifier):
     @property
     def media_class(self) -> str:
         """Get media class for this identifier."""
-        return str(MEDIA_CLASS_MOVIE)
+        return str(MediaClass.MOVIE)
 
     @property
     def media_type(self) -> str:
         """Get media type for this identifier."""
-        return str(MEDIA_TYPE_VIDEO)
+        return str(MediaType.VIDEO)
 
 
 @attr.s(frozen=True)
@@ -524,7 +513,7 @@ class EventSummaryData:
         return cls(summary_data, cameras, labels, zones)
 
 
-class FrigateMediaSource(MediaSource):  # type: ignore[misc]
+class FrigateMediaSource(MediaSource):
     """Provide Frigate camera recordings as media sources."""
 
     name: str = "Frigate"
@@ -536,9 +525,7 @@ class FrigateMediaSource(MediaSource):  # type: ignore[misc]
 
     def _is_allowed_as_media_source(self, instance_id: str) -> bool:
         """Whether a given frigate instance is allowed as a media source."""
-        config_entry: ConfigEntry = get_config_entry_for_frigate_instance_id(
-            self.hass, instance_id
-        )
+        config_entry = get_config_entry_for_frigate_instance_id(self.hass, instance_id)
         return (
             config_entry.options.get(CONF_MEDIA_BROWSER_ENABLE, True) is True
             if config_entry
@@ -554,8 +541,8 @@ class FrigateMediaSource(MediaSource):  # type: ignore[misc]
             return client
 
         raise MediaSourceError(
-            "Could not find client for frigate instance id: %s"
-            % identifier.frigate_instance_id
+            "Could not find client for frigate instance "
+            f"id: {identifier.frigate_instance_id}"
         )
 
     def _get_default_frigate_instance_id(self) -> str | None:
@@ -577,14 +564,19 @@ class FrigateMediaSource(MediaSource):  # type: ignore[misc]
             identifier.frigate_instance_id
         ):
             info = await system_info.async_get_system_info(self.hass)
-            server_path = identifier.get_integration_proxy_path(
-                info.get("timezone", "utc")
-            )
+            tz_name = info.get("timezone", "utc")
+            tz_info = await async_get_time_zone(tz_name)
+            if not tz_info:
+                raise Unresolvable(
+                    f"Could not get timezone object for timezone: {tz_name}"
+                )
+
+            server_path = identifier.get_integration_proxy_path(tz_info)
             return PlayMedia(
                 f"/api/frigate/{identifier.frigate_instance_id}/{server_path}",
                 identifier.mime_type,
             )
-        raise Unresolvable("Unknown or disallowed identifier: %s" % item.identifier)
+        raise Unresolvable(f"Unknown or disallowed identifier: {item.identifier}")
 
     async def async_browse_media(
         self,
@@ -592,19 +584,20 @@ class FrigateMediaSource(MediaSource):  # type: ignore[misc]
     ) -> BrowseMediaSource:
         """Browse media."""
 
-        if item.identifier is None:
+        if not item.identifier:
             base = BrowseMediaSource(
                 domain=DOMAIN,
                 identifier="",
-                media_class=MEDIA_CLASS_DIRECTORY,
-                children_media_class=MEDIA_CLASS_VIDEO,
-                media_content_type=MEDIA_TYPE_VIDEO,
+                media_class=MediaClass.DIRECTORY,
+                children_media_class=MediaClass.VIDEO,
+                media_content_type=MediaType.VIDEO,
                 title=NAME,
                 can_play=False,
                 can_expand=True,
                 thumbnail=None,
                 children=[],
             )
+            base.children = []
             for config_entry in self.hass.config_entries.async_entries(DOMAIN):
                 frigate_instance_id = get_frigate_instance_id_for_config_entry(
                     self.hass, config_entry
@@ -625,8 +618,8 @@ class FrigateMediaSource(MediaSource):  # type: ignore[misc]
                         [
                             BrowseMediaSource(
                                 domain=DOMAIN,
-                                identifier=clips_identifier,
-                                media_class=MEDIA_CLASS_DIRECTORY,
+                                identifier=str(clips_identifier),
+                                media_class=MediaClass.DIRECTORY,
                                 children_media_class=clips_identifier.media_class,
                                 media_content_type=clips_identifier.media_type,
                                 title=f"Clips [{config_entry.title}]",
@@ -637,8 +630,8 @@ class FrigateMediaSource(MediaSource):  # type: ignore[misc]
                             ),
                             BrowseMediaSource(
                                 domain=DOMAIN,
-                                identifier=recording_identifier,
-                                media_class=MEDIA_CLASS_DIRECTORY,
+                                identifier=str(recording_identifier),
+                                media_class=MediaClass.DIRECTORY,
                                 children_media_class=recording_identifier.media_class,
                                 media_content_type=recording_identifier.media_type,
                                 title=f"Recordings [{config_entry.title}]",
@@ -649,8 +642,8 @@ class FrigateMediaSource(MediaSource):  # type: ignore[misc]
                             ),
                             BrowseMediaSource(
                                 domain=DOMAIN,
-                                identifier=snapshots_identifier,
-                                media_class=MEDIA_CLASS_DIRECTORY,
+                                identifier=str(snapshots_identifier),
+                                media_class=MediaClass.DIRECTORY,
                                 children_media_class=snapshots_identifier.media_class,
                                 media_content_type=snapshots_identifier.media_type,
                                 title=f"Snapshots [{config_entry.title}]",
@@ -672,7 +665,7 @@ class FrigateMediaSource(MediaSource):  # type: ignore[misc]
             identifier.frigate_instance_id
         ):
             raise MediaSourceError(
-                "Forbidden media source identifier: %s" % item.identifier
+                f"Forbidden media source identifier: {item.identifier}"
             )
 
         if isinstance(identifier, EventSearchIdentifier):
@@ -719,7 +712,7 @@ class FrigateMediaSource(MediaSource):  # type: ignore[misc]
             except FrigateApiClientError as exc:
                 raise MediaSourceError from exc
 
-        raise MediaSourceError("Invalid media source identifier: %s" % item.identifier)
+        raise MediaSourceError(f"Invalid media source identifier: {item.identifier}")
 
     async def _get_event_summary_data(
         self, identifier: EventSearchIdentifier
@@ -765,8 +758,8 @@ class FrigateMediaSource(MediaSource):  # type: ignore[misc]
 
         base = BrowseMediaSource(
             domain=DOMAIN,
-            identifier=identifier,
-            media_class=MEDIA_CLASS_DIRECTORY,
+            identifier=str(identifier),
+            media_class=MediaClass.DIRECTORY,
             children_media_class=identifier.media_class,
             media_content_type=identifier.media_type,
             title=title,
@@ -775,6 +768,7 @@ class FrigateMediaSource(MediaSource):  # type: ignore[misc]
             thumbnail=None,
             children=[],
         )
+        base.children = []
 
         event_items = self._build_event_response(identifier, events)
 
@@ -786,7 +780,7 @@ class FrigateMediaSource(MediaSource):  # type: ignore[misc]
         else:
             base.children.extend(event_items)
 
-        drilldown_sources = []
+        drilldown_sources: list[BrowseMediaSource] = []
         drilldown_sources.extend(
             self._build_date_sources(summary_data, identifier, len(base.children))
         )
@@ -817,9 +811,11 @@ class FrigateMediaSource(MediaSource):  # type: ignore[misc]
             base.children.append(
                 BrowseMediaSource(
                     domain=DOMAIN,
-                    identifier=attr.evolve(identifier, name=f"{identifier.name}.all"),
-                    media_class=MEDIA_CLASS_DIRECTORY,
-                    children_media_class=MEDIA_CLASS_DIRECTORY,
+                    identifier=str(
+                        attr.evolve(identifier, name=f"{identifier.name}.all")
+                    ),
+                    media_class=MediaClass.DIRECTORY,
+                    children_media_class=MediaClass.DIRECTORY,
                     media_content_type=identifier.media_type,
                     title=f"All ({count})",
                     can_play=False,
@@ -833,8 +829,8 @@ class FrigateMediaSource(MediaSource):  # type: ignore[misc]
     @classmethod
     def _build_event_response(
         cls, identifier: EventSearchIdentifier, events: list[dict[str, Any]]
-    ) -> BrowseMediaSource:
-        children = []
+    ) -> list[FrigateBrowseMediaSource]:
+        children: list[FrigateBrowseMediaSource] = []
         for event in events:
             start_time = event.get("start_time")
             end_time = event.get("end_time")
@@ -854,16 +850,18 @@ class FrigateMediaSource(MediaSource):  # type: ignore[misc]
             children.append(
                 FrigateBrowseMediaSource(
                     domain=DOMAIN,
-                    identifier=EventIdentifier(
-                        identifier.frigate_instance_id,
-                        frigate_media_type=identifier.frigate_media_type,
-                        camera=event["camera"],
-                        id=event["id"],
+                    identifier=str(
+                        EventIdentifier(
+                            identifier.frigate_instance_id,
+                            frigate_media_type=identifier.frigate_media_type,
+                            camera=event["camera"],
+                            id=event["id"],
+                        )
                     ),
                     media_class=identifier.media_class,
                     media_content_type=identifier.media_type,
-                    title=f"{dt.datetime.fromtimestamp(event['start_time'], DEFAULT_TIME_ZONE).strftime(DATE_STR_FORMAT)} [{duration}s, {event['label'].capitalize()} {int(event['top_score']*100)}%]",
-                    can_play=identifier.media_type == MEDIA_TYPE_VIDEO,
+                    title=f"{dt.datetime.fromtimestamp(event['start_time'], DEFAULT_TIME_ZONE).strftime(DATE_STR_FORMAT)} [{duration}s, {event['label'].capitalize()} {int((event['data'].get('top_score') or event['top_score'] or 0) * 100)}%]",
+                    can_play=identifier.media_type == MediaType.VIDEO,
                     can_expand=False,
                     thumbnail=f"/api/frigate/{identifier.frigate_instance_id}/thumbnail/{event['id']}",
                     frigate=FrigateBrowseMediaMetadata(event=event),
@@ -876,7 +874,7 @@ class FrigateMediaSource(MediaSource):  # type: ignore[misc]
         summary_data: EventSummaryData,
         identifier: EventSearchIdentifier,
         shown_event_count: int,
-    ) -> BrowseMediaSource:
+    ) -> list[BrowseMediaSource]:
         sources = []
         for camera in summary_data.cameras:
             count = self._count_by(
@@ -891,13 +889,15 @@ class FrigateMediaSource(MediaSource):  # type: ignore[misc]
             sources.append(
                 BrowseMediaSource(
                     domain=DOMAIN,
-                    identifier=attr.evolve(
-                        identifier,
-                        name=f"{identifier.name}.{camera}",
-                        camera=camera,
+                    identifier=str(
+                        attr.evolve(
+                            identifier,
+                            name=f"{identifier.name}.{camera}",
+                            camera=camera,
+                        )
                     ),
-                    media_class=MEDIA_CLASS_DIRECTORY,
-                    children_media_class=MEDIA_CLASS_DIRECTORY,
+                    media_class=MediaClass.DIRECTORY,
+                    children_media_class=MediaClass.DIRECTORY,
                     media_content_type=identifier.media_type,
                     title=f"{get_friendly_name(camera)} ({count})",
                     can_play=False,
@@ -912,7 +912,7 @@ class FrigateMediaSource(MediaSource):  # type: ignore[misc]
         summary_data: EventSummaryData,
         identifier: EventSearchIdentifier,
         shown_event_count: int,
-    ) -> BrowseMediaSource:
+    ) -> list[BrowseMediaSource]:
         sources = []
         for label in summary_data.labels:
             count = self._count_by(
@@ -927,13 +927,15 @@ class FrigateMediaSource(MediaSource):  # type: ignore[misc]
             sources.append(
                 BrowseMediaSource(
                     domain=DOMAIN,
-                    identifier=attr.evolve(
-                        identifier,
-                        name=f"{identifier.name}.{label}",
-                        label=label,
+                    identifier=str(
+                        attr.evolve(
+                            identifier,
+                            name=f"{identifier.name}.{label}",
+                            label=label,
+                        )
                     ),
-                    media_class=MEDIA_CLASS_DIRECTORY,
-                    children_media_class=MEDIA_CLASS_DIRECTORY,
+                    media_class=MediaClass.DIRECTORY,
+                    children_media_class=MediaClass.DIRECTORY,
                     media_content_type=identifier.media_type,
                     title=f"{get_friendly_name(label)} ({count})",
                     can_play=False,
@@ -948,7 +950,7 @@ class FrigateMediaSource(MediaSource):  # type: ignore[misc]
         summary_data: EventSummaryData,
         identifier: EventSearchIdentifier,
         shown_event_count: int,
-    ) -> BrowseMediaSource:
+    ) -> list[BrowseMediaSource]:
         """Build zone media sources."""
         sources = []
         for zone in summary_data.zones:
@@ -958,13 +960,15 @@ class FrigateMediaSource(MediaSource):  # type: ignore[misc]
             sources.append(
                 BrowseMediaSource(
                     domain=DOMAIN,
-                    identifier=attr.evolve(
-                        identifier,
-                        name=f"{identifier.name}.{zone}",
-                        zone=zone,
+                    identifier=str(
+                        attr.evolve(
+                            identifier,
+                            name=f"{identifier.name}.{zone}",
+                            zone=zone,
+                        )
                     ),
-                    media_class=MEDIA_CLASS_DIRECTORY,
-                    children_media_class=MEDIA_CLASS_DIRECTORY,
+                    media_class=MediaClass.DIRECTORY,
+                    children_media_class=MediaClass.DIRECTORY,
                     media_content_type=identifier.media_type,
                     title=f"{get_friendly_name(zone)} ({count})",
                     can_play=False,
@@ -979,7 +983,7 @@ class FrigateMediaSource(MediaSource):  # type: ignore[misc]
         summary_data: EventSummaryData,
         identifier: EventSearchIdentifier,
         shown_event_count: int,
-    ) -> BrowseMediaSource:
+    ) -> list[BrowseMediaSource]:
         """Build data media sources."""
         sources = []
 
@@ -1058,14 +1062,16 @@ class FrigateMediaSource(MediaSource):  # type: ignore[misc]
                     sources.append(
                         BrowseMediaSource(
                             domain=DOMAIN,
-                            identifier=attr.evolve(
-                                identifier,
-                                name=f"{identifier.name}.{current_date.strftime('%Y-%m')}",
-                                after=start_of_current_month,
-                                before=start_of_next_month,
+                            identifier=str(
+                                attr.evolve(
+                                    identifier,
+                                    name=f"{identifier.name}.{current_date.strftime('%Y-%m')}",
+                                    after=start_of_current_month,
+                                    before=start_of_next_month,
+                                )
                             ),
-                            media_class=MEDIA_CLASS_DIRECTORY,
-                            children_media_class=MEDIA_CLASS_DIRECTORY,
+                            media_class=MediaClass.DIRECTORY,
+                            children_media_class=MediaClass.DIRECTORY,
                             media_content_type=identifier.media_type,
                             title=f"{current_date.strftime('%B')} ({count_current})",
                             can_play=False,
@@ -1099,14 +1105,16 @@ class FrigateMediaSource(MediaSource):  # type: ignore[misc]
                         sources.append(
                             BrowseMediaSource(
                                 domain=DOMAIN,
-                                identifier=attr.evolve(
-                                    identifier,
-                                    name=f"{identifier.name}.{current_date.strftime('%Y-%m-%d')}",
-                                    after=start_of_current_day,
-                                    before=start_of_next_day,
+                                identifier=str(
+                                    attr.evolve(
+                                        identifier,
+                                        name=f"{identifier.name}.{current_date.strftime('%Y-%m-%d')}",
+                                        after=start_of_current_day,
+                                        before=start_of_next_day,
+                                    )
                                 ),
-                                media_class=MEDIA_CLASS_DIRECTORY,
-                                children_media_class=MEDIA_CLASS_DIRECTORY,
+                                media_class=MediaClass.DIRECTORY,
+                                children_media_class=MediaClass.DIRECTORY,
                                 media_content_type=identifier.media_type,
                                 title=f"{current_date.strftime('%B %d')} ({count_current})",
                                 can_play=False,
@@ -1123,13 +1131,15 @@ class FrigateMediaSource(MediaSource):  # type: ignore[misc]
             sources.append(
                 BrowseMediaSource(
                     domain=DOMAIN,
-                    identifier=attr.evolve(
-                        identifier,
-                        name=f"{identifier.name}.today",
-                        after=start_of_today,
+                    identifier=str(
+                        attr.evolve(
+                            identifier,
+                            name=f"{identifier.name}.today",
+                            after=start_of_today,
+                        )
                     ),
-                    media_class=MEDIA_CLASS_DIRECTORY,
-                    children_media_class=MEDIA_CLASS_DIRECTORY,
+                    media_class=MediaClass.DIRECTORY,
+                    children_media_class=MediaClass.DIRECTORY,
                     media_content_type=identifier.media_type,
                     title=f"Today ({count_today})",
                     can_play=False,
@@ -1142,14 +1152,16 @@ class FrigateMediaSource(MediaSource):  # type: ignore[misc]
             sources.append(
                 BrowseMediaSource(
                     domain=DOMAIN,
-                    identifier=attr.evolve(
-                        identifier,
-                        name=f"{identifier.name}.yesterday",
-                        after=start_of_yesterday,
-                        before=start_of_today,
+                    identifier=str(
+                        attr.evolve(
+                            identifier,
+                            name=f"{identifier.name}.yesterday",
+                            after=start_of_yesterday,
+                            before=start_of_today,
+                        )
                     ),
-                    media_class=MEDIA_CLASS_DIRECTORY,
-                    children_media_class=MEDIA_CLASS_DIRECTORY,
+                    media_class=MediaClass.DIRECTORY,
+                    children_media_class=MediaClass.DIRECTORY,
                     media_content_type=identifier.media_type,
                     title=f"Yesterday ({count_yesterday})",
                     can_play=False,
@@ -1165,13 +1177,15 @@ class FrigateMediaSource(MediaSource):  # type: ignore[misc]
             sources.append(
                 BrowseMediaSource(
                     domain=DOMAIN,
-                    identifier=attr.evolve(
-                        identifier,
-                        name=f"{identifier.name}.this_month",
-                        after=start_of_month,
+                    identifier=str(
+                        attr.evolve(
+                            identifier,
+                            name=f"{identifier.name}.this_month",
+                            after=start_of_month,
+                        )
                     ),
-                    media_class=MEDIA_CLASS_DIRECTORY,
-                    children_media_class=MEDIA_CLASS_DIRECTORY,
+                    media_class=MediaClass.DIRECTORY,
+                    children_media_class=MediaClass.DIRECTORY,
                     media_content_type=identifier.media_type,
                     title=f"This Month ({count_this_month})",
                     can_play=False,
@@ -1184,14 +1198,16 @@ class FrigateMediaSource(MediaSource):  # type: ignore[misc]
             sources.append(
                 BrowseMediaSource(
                     domain=DOMAIN,
-                    identifier=attr.evolve(
-                        identifier,
-                        name=f"{identifier.name}.last_month",
-                        after=start_of_last_month,
-                        before=start_of_month,
+                    identifier=str(
+                        attr.evolve(
+                            identifier,
+                            name=f"{identifier.name}.last_month",
+                            after=start_of_last_month,
+                            before=start_of_month,
+                        )
                     ),
-                    media_class=MEDIA_CLASS_DIRECTORY,
-                    children_media_class=MEDIA_CLASS_DIRECTORY,
+                    media_class=MediaClass.DIRECTORY,
+                    children_media_class=MediaClass.DIRECTORY,
                     media_content_type=identifier.media_type,
                     title=f"Last Month ({count_last_month})",
                     can_play=False,
@@ -1207,13 +1223,15 @@ class FrigateMediaSource(MediaSource):  # type: ignore[misc]
             sources.append(
                 BrowseMediaSource(
                     domain=DOMAIN,
-                    identifier=attr.evolve(
-                        identifier,
-                        name=f"{identifier.name}.this_year",
-                        after=start_of_year,
+                    identifier=str(
+                        attr.evolve(
+                            identifier,
+                            name=f"{identifier.name}.this_year",
+                            after=start_of_year,
+                        )
                     ),
-                    media_class=MEDIA_CLASS_DIRECTORY,
-                    children_media_class=MEDIA_CLASS_DIRECTORY,
+                    media_class=MediaClass.DIRECTORY,
+                    children_media_class=MediaClass.DIRECTORY,
                     media_content_type=identifier.media_type,
                     title="This Year",
                     can_play=False,
@@ -1229,19 +1247,13 @@ class FrigateMediaSource(MediaSource):  # type: ignore[misc]
     ) -> int:
         """Return count of events that match the identifier."""
         return sum(
-            [
-                d["count"]
-                for d in summary_data.data
-                if (
-                    (identifier.after is None or d["timestamp"] >= identifier.after)
-                    and (
-                        identifier.before is None or d["timestamp"] < identifier.before
-                    )
-                    and (identifier.camera is None or identifier.camera in d["camera"])
-                    and (identifier.label is None or identifier.label in d["label"])
-                    and (identifier.zone is None or identifier.zone in d["zones"])
-                )
-            ]
+            d["count"]
+            for d in summary_data.data
+            if (identifier.after is None or d["timestamp"] >= identifier.after)
+            and (identifier.before is None or d["timestamp"] < identifier.before)
+            and (identifier.camera is None or identifier.camera in d["camera"])
+            and (identifier.label is None or identifier.label in d["label"])
+            and (identifier.zone is None or identifier.zone in d["zones"])
         )
 
     def _get_recording_base_media_source(
@@ -1250,9 +1262,9 @@ class FrigateMediaSource(MediaSource):  # type: ignore[misc]
         """Get the base BrowseMediaSource object for a recording identifier."""
         return BrowseMediaSource(
             domain=DOMAIN,
-            identifier=identifier,
-            media_class=MEDIA_CLASS_DIRECTORY,
-            children_media_class=MEDIA_CLASS_DIRECTORY,
+            identifier=str(identifier),
+            media_class=MediaClass.DIRECTORY,
+            children_media_class=MediaClass.DIRECTORY,
             media_content_type=identifier.media_type,
             title="Recordings",
             can_play=False,
@@ -1266,17 +1278,20 @@ class FrigateMediaSource(MediaSource):  # type: ignore[misc]
     ) -> BrowseMediaSource:
         """List cameras for recordings."""
         base = self._get_recording_base_media_source(identifier)
+        base.children = []
 
         for camera in config["cameras"].keys():
             base.children.append(
                 BrowseMediaSource(
                     domain=DOMAIN,
-                    identifier=attr.evolve(
-                        identifier,
-                        camera=camera,
+                    identifier=str(
+                        attr.evolve(
+                            identifier,
+                            camera=camera,
+                        )
                     ),
-                    media_class=MEDIA_CLASS_DIRECTORY,
-                    children_media_class=MEDIA_CLASS_DIRECTORY,
+                    media_class=MediaClass.DIRECTORY,
+                    children_media_class=MediaClass.DIRECTORY,
                     media_content_type=identifier.media_type,
                     title=get_friendly_name(camera),
                     can_play=False,
@@ -1292,25 +1307,27 @@ class FrigateMediaSource(MediaSource):  # type: ignore[misc]
     ) -> BrowseMediaSource:
         """List year-month-day options for camera."""
         base = self._get_recording_base_media_source(identifier)
+        base.children = []
 
         for day_item in recording_days:
             try:
                 dt.datetime.strptime(day_item["day"], "%Y-%m-%d")
             except ValueError as exc:
                 raise MediaSourceError(
-                    "Media source is not valid for %s %s"
-                    % (identifier, day_item["day"])
+                    f"Media source is not valid for {identifier} {day_item['day']}"
                 ) from exc
 
             base.children.append(
                 BrowseMediaSource(
                     domain=DOMAIN,
-                    identifier=attr.evolve(
-                        identifier,
-                        year_month_day=day_item["day"],
+                    identifier=str(
+                        attr.evolve(
+                            identifier,
+                            year_month_day=day_item["day"],
+                        )
                     ),
-                    media_class=MEDIA_CLASS_DIRECTORY,
-                    children_media_class=MEDIA_CLASS_DIRECTORY,
+                    media_class=MediaClass.DIRECTORY,
+                    children_media_class=MediaClass.DIRECTORY,
                     media_content_type=identifier.media_type,
                     title=day_item["day"],
                     can_play=False,
@@ -1326,6 +1343,8 @@ class FrigateMediaSource(MediaSource):  # type: ignore[misc]
     ) -> BrowseMediaSource:
         """Browse Frigate recordings."""
         base = self._get_recording_base_media_source(identifier)
+        base.children = []
+
         hour_items: list[dict[str, Any]] = next(
             (
                 hours["hours"]
@@ -1340,14 +1359,13 @@ class FrigateMediaSource(MediaSource):  # type: ignore[misc]
                 title = dt.datetime.strptime(hour_data["hour"], "%H").strftime("%H:00")
             except ValueError as exc:
                 raise MediaSourceError(
-                    "Media source is not valid for %s %s"
-                    % (identifier, hour_data["hour"])
+                    f"Media source is not valid for {identifier} {hour_data['hour']}"
                 ) from exc
 
             base.children.append(
                 BrowseMediaSource(
                     domain=DOMAIN,
-                    identifier=attr.evolve(identifier, hour=hour_data["hour"]),
+                    identifier=str(attr.evolve(identifier, hour=hour_data["hour"])),
                     media_class=identifier.media_class,
                     media_content_type=identifier.media_type,
                     title=title,

@@ -13,6 +13,11 @@ cards:
         title: Driveway
         webrtc_card:
           entity: camera.driveway
+      - camera_entity: camera.frigate_driveway_garage
+        live_provider: webrtc-card
+        title: Driveway Garage
+        webrtc_card:
+          entity: camera.frigate_driveway_garage
       - camera_entity: camera.frigate_front_door
         live_provider: webrtc-card
         title: Front Door

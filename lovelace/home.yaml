@@ -37,12 +37,33 @@ cards:
         tap_action: none
         hold_action: none
 
-      # WEATHER
-      - type: weather-forecast
-        #entity: weather.accuweather
-        entity: weather.openweathermap
-        name: Home
-        show_forecast: true
+    # WEATHER
+      - type: custom:layout-card
+        layout_type: custom:grid-layout
+        layout:
+          grid-template-columns: 1fr
+          grid-template-rows: min-content
+          grid-template-areas: |
+            "weather"
+
+        cards:
+          - type: weather-forecast
+            entity: weather.openweathermap
+            name: Home
+            show_forecast: true
+            forecast_type: daily
+            view_layout:
+              grid-area: weather
+              grid-row: span 1
+            style:
+              height: 60px  # Set the desired height
+              overflow: hidden  # Hide overflow content if needed
+              box-shadow: none # Removes shadow border
+              border: none # Removes the card's border
+
+
+
+
 
       # FAMILY PEOPLE TRACKING
       - type: entities
@@ -197,8 +218,29 @@ cards:
         group_by: date
         show:
           graph: bar
+
+      # SOLAR PANELS
+      - type: custom:layout-card
+        layout_type: vertical
+        layout:
+          align_items: center
+        cards:  
+        - type: gauge
+          name: Current Solar Power
+          entity: sensor.envoy_202428002030_current_power_production
+          min: 0
+          max: 10  # Adjust max according to your system size
+          severity:
+            green: 3
+            yellow: 1
+            red: 0
+          unit: kW
+        - type: entity
+          name: Total Energy Today
+          entity: sensor.envoy_202428002030_energy_production_today
+          icon: mdi:solar-power-variant
  
-      # Garage
+      # GARAGE
       - type: glance
         title: Garage & Gates
         columns: 3
@@ -313,9 +355,6 @@ cards:
             padding: 5px 0px 0px 10px;
           }
         entities:
-          - entity: binary_sensor.linkind_water_sensor_laundry_water_leak
-            name: Laundry Room
-            secondary_info: last-changed
           - entity: binary_sensor.laundry_water_sensor_leak
             name: Laundry Room YoLink
             secondary_info: last-updated
