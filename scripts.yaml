@@ -74,3 +74,23 @@ denon_x8500h_volume_set:
   sequence:
     - service: shell_command.denon_x8500h_volume_set
 
+# Turn on Family Room TV, Kitchen TV Speakers and Open YouTubeTV App
+family_room_tv_kitchen_speakers_youtubetv:
+  alias: "Turn on Family Room TV, Kitchen Speakers and Open YoutubeTV App"
+  sequence:
+    - service: scene.turn_on
+      target:
+        entity_id: scene.kitchen_tv_audio_on
+    - service: media_player.turn_on
+      target:
+        entity_id: media_player.family_room_tv
+
+    - delay: "00:00:07"  # wait for TV to boot up
+
+    - service: androidtv.adb_command
+      target:
+        entity_id: media_player.family_room_tv
+      data:
+        command: "am start -n com.google.android.youtube.tvunplugged/com.google.android.apps.youtube.tvunplugged.activity.MainActivity"
+  mode: single
+

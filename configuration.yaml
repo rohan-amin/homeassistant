@@ -250,7 +250,7 @@ switch:
   - platform: template
     switches:
       deck_tv_audio:
-        value_template: "{{ is_state('media_player.monoprice_kitchen','on') }}"
+        value_template: "{{ is_state('media_player.monoprice_deck','on') }}"
         turn_on:
           service: scene.turn_on
           data:
@@ -263,7 +263,7 @@ switch:
   - platform: template
     switches:
       deck_sonos:
-        value_template: "{{ is_state('media_player.monoprice_kitchen','on') }}"
+        value_template: "{{ is_state('media_player.monoprice_deck','on') }}"
         turn_on:
           service: scene.turn_on
           data:
@@ -304,6 +304,21 @@ switch:
               {% else %}
                 scene.family_room_audio_unmute
               {% endif %}
+  # Family Room TV + Kitchen Speakers + YouTubeTV Turn On/Off
+  - platform: template
+    switches:
+      family_room_tv_kitchen_speakers_youtubetv:
+        value_template: "{{ is_state('media_player.monoprice_kitchen','on') }}"
+        turn_on:
+          service: script.family_room_tv_kitchen_speakers_youtubetv
+        turn_off:
+          sequence:
+            - service: media_player.turn_off
+              target:         
+                entity_id: media_player.family_room_tv
+            - service: service.turn_on
+              target:
+                entity_id: scene.kitchen_speakers_off 
 
 ###############
 ## INPUT NUMBER
@@ -542,6 +557,7 @@ cloud:
         - light.living_room_lights
         - light.basement_lights
         - switch.home_theater_system
+        - switch.family_room_tv_kitchen_speakers_youtubetv
     entity_config:
       media_player.family_room_ump:
         name: Family Room TV
@@ -577,6 +593,9 @@ cloud:
       switch.home_theater_system:
         name: Home Theater System
         description: Home Theater System
+      switch.family_room_tv_kitchen_speakers_youtubetv:
+        name: YouTubeTV
+        description: Family Room TV + Kitchen Speakers + YouTubeTV
 
 group: !include groups.yaml
 automation: !include automations.yaml
