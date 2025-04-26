@@ -32,7 +32,7 @@ cards:
         custom_fields:
           date: >
             [[[ return states['sensor.simple_date'].state ]]]
-          time: >
+          aime: >
             [[[ return states['sensor.simple_time'].state ]]]
         tap_action: none
         hold_action: none
@@ -242,7 +242,7 @@ cards:
  
       # GARAGE
       - type: glance
-        title: Garage & Gates
+        title: Locks, Garages & Gates
         columns: 3
         style: |
           .card-header {
@@ -251,6 +251,10 @@ cards:
             padding: 5px 0px 0px 10px;
           }
         entities:
+          - entity: binary_sensor.mudroom_garage_door_state
+            name: Mudroom Garage Door
+          - entity: lock.mudroom_garage_door
+            name: Lock
           - entity: cover.ratgdo_left_door
             name: Left Garage
           - entity: cover.ratgdo_middle_door
