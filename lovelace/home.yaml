@@ -25,14 +25,16 @@ cards:
             - grid-template-rows: 3fr 2fr
           custom_fields:
             date:
-              - justify-items: center
+              - justify-self: center
+              - align-self: center
             time:
-              - justify-items: center
+              - justify-self: center
+              - align-self: center
               - font-size: 28px
         custom_fields:
           date: >
             [[[ return states['sensor.simple_date'].state ]]]
-          aime: >
+          time: >
             [[[ return states['sensor.simple_time'].state ]]]
         tap_action: none
         hold_action: none
@@ -240,33 +242,47 @@ cards:
           entity: sensor.envoy_202428002030_energy_production_today
           icon: mdi:solar-power-variant
  
-      # GARAGE
-      - type: glance
-        title: Locks, Garages & Gates
-        columns: 3
-        style: |
-          .card-header {
-            font-size: 22px;
-            font-weight: bold;
-            padding: 5px 0px 0px 10px;
-          }
-        entities:
-          - entity: binary_sensor.mudroom_garage_door_state
-            name: Mudroom Garage Door
-          - entity: lock.mudroom_garage_door
-            name: Lock
-          - entity: cover.ratgdo_left_door
-            name: Left Garage
-          - entity: cover.ratgdo_middle_door
-            name: Middle Garage
-          - entity: cover.ratgdo_right_door
-            name: Right Garage
-          - entity: binary_sensor.pool_gate_state
-            name: Pool Gate
-          - entity: binary_sensor.back_patio_gate_state
-            name: Back Patio Gate
-          - entity: binary_sensor.back_yard_steps_gate_state
-            name: Steps Gate
+
+      # DOORS, GARAGE DOORS AND OUTDOOR GATES  
+      - type: vertical-stack
+        cards:
+          # --- DOORS SECTION ---
+          - type: glance
+            title: Mudroom Garage Door
+            columns: 2
+            entities:
+              - entity: binary_sensor.mudroom_garage_door_state
+                name: Door
+              - entity: lock.mudroom_garage_door
+                name: Lock
+
+          # --- GARAGE DOORS SECTION ---
+          - type: glance
+            title: Garage Doors
+            columns: 3
+            entities:
+              - entity: cover.ratgdo_left_door
+                name: Left
+              - entity: cover.ratgdo_middle_door
+                name: Middle
+              - entity: cover.ratgdo_right_door
+                name: Right
+
+          # --- OUTDOOR GATES SECTION ---
+          - type: glance
+            title: Outdoor Gates
+            columns: 3
+            entities:
+              - entity: binary_sensor.pool_gate_state
+                name: Pool
+              - entity: binary_sensor.back_patio_gate_state
+                name: Patio
+              - entity: binary_sensor.back_yard_steps_gate_state
+                name: Back Yard Steps
+
+
+
+
 
 #      # Tesla
 #      - type: glance
